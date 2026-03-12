@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What is Stack$Trader? — The Brief</title>
+  <link rel="stylesheet" href="../style.css">
+  <style> :root { --section-color: var(--brief); } </style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="section-band" style="--section-color: var(--brief);">
+  <a href="../index.html">Home</a> &nbsp;›&nbsp; The Brief
+</div>
+
+<div class="page-wrapper">
+  <div class="article-header">
+    <span class="article-kicker">The Brief</span>
+    <h1 class="article-headline">What is Stack$Trader?</h1>
+    <p class="article-deck">Selling time. That's the entire idea. A plain-language introduction to covered calls, the volatility risk premium, and why a systematic 16-agent approach consistently outperforms gut instinct.</p>
+    <div class="article-byline">By Stack$Trader Research Team &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; 5 min read</div>
+  </div>
+
+  <div class="article-body">
+
+    <p>Every option contract has an expiry date. Every day that passes brings that expiry one day closer. And every day closer to expiry, the option loses a small amount of its value — not because the stock moved, but simply because time passed. This process is called <strong>theta decay</strong>, and it is the engine that powers Stack$Trader.</p>
+
+    <p>The strategy at the heart of the system is the <strong>covered call</strong>: you hold shares of a stock, and simultaneously sell someone else the right to buy those shares at a higher price before a specified date. In exchange for granting that right, you collect a cash premium immediately. If the stock doesn't rise to that price before the date, the option expires worthless, you keep the premium, and you do it again next month. If it does rise above that price, your shares get called away at a profit — but you still keep the premium you collected.</p>
+
+    <div class="pull-quote">
+      <p>"We are not trying to predict where the market goes. We are selling the right to be wrong about it."</p>
+    </div>
+
+    <p>Done systematically, across a diversified portfolio of 41 stocks and ETFs, with disciplined rules about when to engage and when to stand aside, this becomes a reliable income engine. Done naively — without those rules — it becomes a source of expensive mistakes. The difference between naive and systematic is where Stack$Trader lives.</p>
+
+    <h2>Why covered calls work</h2>
+
+    <p>Options are consistently overpriced relative to how much the underlying stock actually moves. This persistent gap between <em>implied volatility</em> (what the market expects) and <em>realized volatility</em> (what actually happens) is called the <strong>Volatility Risk Premium</strong>, or VRP. It exists because buyers of options are willing to pay a small insurance premium to protect against large moves that may never come.</p>
+
+    <p>Stack$Trader harvests this premium systematically. It does not take on naked directional bets. It does not try to predict earnings surprises or Federal Reserve decisions. Its edge is structural: it sells options when implied volatility is elevated, waits for time to pass, and collects the difference. Academic research going back decades — Israelov and Nielsen (2015), Carr and Wu (2009) — has documented this edge across asset classes. The question is not whether the edge exists. The question is whether you can capture it consistently without a catastrophic scenario destroying your gains.</p>
+
+    <h2>The problem with naive execution</h2>
+
+    <p>Selling covered calls around earnings announcements is a reliable way to lose money. A company announces a surprise — good or bad — and the stock gaps 15% overnight. The 2% premium you collected last week is consumed by that single event. Stack$Trader's EarningsAgent monitors earnings proximity for all 41 tickers using Gaussian decay weighting, reducing position aggressiveness in the days surrounding announcements. This single filter, by itself, significantly improved risk-adjusted returns in backtesting.</p>
+
+    <p>Similarly, selling into a crisis regime — when the market has entered a high-volatility, mean-reverting state with downward drift — is another reliable way to turn a winning strategy into a losing one. The HMM (Hidden Markov Model) regime classifier identifies these periods with statistical precision and instructs the system to stand aside.</p>
+
+    <div class="data-callout">
+      <div class="stat">
+        <span class="stat-number">923</span>
+        <span class="stat-label">Strategies Tested</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">59%</span>
+        <span class="stat-label">Showed Positive Alpha</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">4.51</span>
+        <span class="stat-label">Peak Sharpe (LMT)</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">p=0.000</span>
+        <span class="stat-label">Statistical Significance</span>
+      </div>
+    </div>
+
+    <h2>The 16-agent ensemble</h2>
+
+    <p>Rather than a single rule-based filter, Stack$Trader uses a <strong>Mixture-of-Experts</strong> architecture: 16 specialist AI agents, each analysing a different dimension of the market, each producing a score between -1 and +1. Those scores are aggregated by a Supervisor into a single weighted vote. A trade is only entered if the composite vote clears a threshold — and that threshold varies depending on the system's configured risk appetite.</p>
+
+    <p>The agents span the full spectrum of market intelligence: price action, volatility surface analysis, earnings proximity, macroeconomic regime, Hidden Markov state classification, order flow microstructure, volatility surface arbitrage, anomaly detection using variational autoencoders, and dealer positioning via gamma exposure and dark pool flow. When they agree, the signal is strong. When they disagree, the system either reduces size or stands aside.</p>
+
+    <h2>What this journal documents</h2>
+
+    <p>Stack$Trader was built from scratch — from the first line of synthetic data generation code through to a fully validated, broker-integrated live system — over seven development phases spanning several months. This journal documents that journey: the breakthroughs, the dead ends, the statistical validation campaign, and the dual-AI collaboration model that accelerated development substantially.</p>
+
+    <p>Whether you're here for the trading methodology, the quantitative research, the software architecture, or simply the story of what happens when you apply scientific rigour to markets — there is something here for you. Start with the reading path that fits your background, and go as deep as you like.</p>
+
+  </div>
+
+  <div class="article-nav">
+    <div class="article-nav-prev">
+      <span class="article-nav-label">← Home</span>
+      <a class="article-nav-title" href="../index.html">Stack$Trader Cover</a>
+    </div>
+    <div class="article-nav-next">
+      <span class="article-nav-label">Next in The Brief →</span>
+      <a class="article-nav-title" href="numbers-that-matter.html">The Numbers That Matter</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

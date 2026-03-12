@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dealer Positioning: GEX & DIX — Stack$Trader Theory</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>:root { --section-color: var(--theory); }</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="section-band" style="--section-color: var(--theory);">
+  <a href="../index.html">Home</a> &nbsp;›&nbsp; Theory
+</div>
+
+<div class="page-wrapper">
+  <div class="article-header">
+    <span class="article-kicker">Theory</span>
+    <h1 class="article-headline">What the Market Can't Hide: Dealer Positioning</h1>
+    <p class="article-deck">Market makers who sell options must hedge their exposure. That hedging creates predictable mechanical flows in the underlying. GEX, Vanna, Charm, and DIX are the tools for reading those flows — and the basis of Stack$Trader's 13th agent.</p>
+    <div class="article-byline">By Stack$Trader Research Team &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; 10 min read</div>
+  </div>
+
+  <div class="article-body">
+
+    <p>When you buy a call option, you are buying it from someone. That someone — typically a market maker or broker-dealer — now has an obligation to deliver shares if the option is exercised. To manage this risk, the dealer buys shares proportional to their delta exposure. As the stock moves, their delta changes, and they buy or sell more shares to stay hedged. This process is called <strong>delta hedging</strong>, and it creates mechanical, predictable buying and selling pressure in the underlying stock.</p>
+
+    <p>Stack$Trader's DealerPositioningAgent reads these flows. It computes four signals from the live options chain — GEX, Vanna, Charm, and DIX — each measuring a different dimension of dealer hedging activity. Combined, they provide a picture of the mechanical forces that will influence price over the next several days, independent of any fundamental or technical consideration.</p>
+
+    <h2>Gamma Exposure (GEX)</h2>
+
+    <p>Gamma, as explained in the <a href="theta-the-engine.html">Theory section on theta</a>, measures how quickly delta changes as the underlying moves. A dealer who has sold a call option and delta-hedged it at today's price will need to buy more shares if the stock rises (delta increased) and sell shares if it falls (delta decreased). The magnitude of this rebalancing is proportional to gamma.</p>
+
+    <p><strong>Gamma Exposure (GEX)</strong> is the aggregate gamma position of all market makers across all listed options for a given underlying. It is computed as:</p>
+
+    <div class="code-block">GEX = Σ (gamma_i × open_interest_i × contract_multiplier × is_call_i)</div>
+
+    <p>The sign matters critically:</p>
+
+    <blockquote>
+      <strong>Positive GEX</strong> means dealers are net long gamma. They must sell into strength and buy into weakness — their hedging creates a gravitational pull toward the current price. The market becomes range-bound and mean-reverting. Volatility is suppressed. This is the ideal condition for selling covered calls: the dealer flow acts as a natural dampener on sharp moves.
+    </blockquote>
+
+    <blockquote>
+      <strong>Negative GEX</strong> means dealers are net short gamma. They must buy into strength and sell into weakness — their hedging amplifies price moves. Trends extend. Volatility spikes. Covered call sellers suffer. Stack$Trader reduces aggressiveness when GEX turns negative.
+    </blockquote>
+
+    <p>The GEX zero level — the price at which dealer hedging activity reverses direction — is called the "GEX flip" or "gamma neutral" level. When the underlying crosses this level, the regime of dealer flows changes. Stack$Trader monitors proximity to the GEX flip as a key input to entry timing.</p>
+
+    <h2>Vanna — the volatility-delta cross Greek</h2>
+
+    <p>Vanna measures how delta changes as implied volatility changes. A dealer long an at-the-money call that has been delta-hedged will need to re-hedge when vol spikes — not because the stock moved, but because the option's delta changed in response to the vol move. This Vanna-driven hedging creates predictable flows whenever there is a significant move in implied volatility.</p>
+
+    <p>The practical effect: when VIX spikes sharply, Vanna creates mechanical buying pressure in the underlying from dealers who need to re-hedge their delta exposure. This explains why large vol spikes are often accompanied by mechanical buying within one to two days of the initial spike — not because sentiment changed, but because dealers had no choice. Stack$Trader uses Vanna exposure to anticipate these mechanically-driven reversals following vol spikes.</p>
+
+    <div class="pull-quote">
+      <p>"GEX tells you whether the market is likely to be range-bound or trending. Vanna tells you what vol spikes will do to price mechanically."</p>
+    </div>
+
+    <h2>Charm — the time decay of delta</h2>
+
+    <p>Charm (also called delta decay) measures how delta changes as time passes, all else equal. For an option that is slightly in-the-money, delta will drift toward 1.0 as expiry approaches. For a slightly out-of-the-money option, delta drifts toward zero. Dealers holding positions in expiring options must re-hedge their delta as charm moves their exposure, even on days when the underlying doesn't move.</p>
+
+    <p>This Charm-driven rebalancing is highly predictable in timing: it is heaviest on Mondays (3 days of weekend time decay), on expiration Fridays, and in the final week of any options contract. Stack$Trader's Charm-Aware execution timing model uses Charm magnitude to schedule trade entries:</p>
+
+    <div class="code-block">|charm| > 0.03  →  High urgency: delay entry 45 minutes (heavy hedging flow expected)
+0.015 < |charm| ≤ 0.03  →  Medium urgency: delay 20 minutes
+|charm| ≤ 0.015  →  Low urgency: enter immediately</div>
+
+    <p>By avoiding entry during the most intense Charm-driven rebalancing periods, Stack$Trader reduces adverse fill prices caused by mechanical dealer activity that has nothing to do with the trade's signal quality.</p>
+
+    <h2>DIX — The Dark Index</h2>
+
+    <p>GEX, Vanna, and Charm all read the options chain. The Dark Index (DIX) reads a completely different data source: FINRA's required reporting of dark pool transaction volume.</p>
+
+    <p>Dark pools are private, off-exchange trading venues where institutional investors transact large blocks to avoid market impact. When a large institution wants to accumulate or distribute shares, they prefer to do so away from the lit exchange, where their order would immediately move the price against them. FINRA requires dark pool operators to report transaction volumes, providing a delayed but real signal of institutional activity.</p>
+
+    <p>DIX measures the fraction of a stock's total volume that transacted in dark pools on a given day. Persistently elevated DIX signals institutional accumulation — sophisticated players transacting size and willing to pay for discretion. Research suggests DIX has a lead time of 1–3 trading days as a directional indicator, making it a useful entry-timing filter rather than a real-time signal.</p>
+
+    <h2>How the DealerPositioningAgent integrates these signals</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Signal</th><th>Weight</th><th>Positive Score Means</th><th>Negative Score Means</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>GEX</strong></td><td class="num">40%</td><td>Positive GEX — dealer flow suppresses vol, ideal for premium selling</td><td>Negative GEX — dealer flow amplifies vol, hostile to short options</td></tr>
+        <tr><td><strong>Vanna</strong></td><td class="num">30%</td><td>Vanna flow supports entry — vol/delta alignment favourable</td><td>Vol spike risk elevated, Vanna-driven selling pressure expected</td></tr>
+        <tr><td><strong>DIX</strong></td><td class="num">30%</td><td>Institutional accumulation detected — bullish lead</td><td>Dark pool distribution — institutional selling pressure</td></tr>
+      </tbody>
+    </table>
+
+    <p>The composite score is a weighted sum of the three sub-scores, normalised to the [-1, +1] range used by all 16 agents. In high-volatility regimes, the REGIME_WEIGHT_MULTIPLIERS system boosts the DealerPositioningAgent's weight in the ensemble — because GEX effects are most powerful and most reliably predictive when implied volatility is elevated.</p>
+
+    <h2>A note on data quality</h2>
+
+    <p>Dealer positioning signals are only as reliable as the options chain data they are computed from. Stack$Trader uses live Schwab option chain data for GEX, Vanna, and Charm computation, and archives daily GEX profiles in local storage for trend tracking. DIX is derived from FINRA's public dark pool reports, which are released with a one-day lag.</p>
+
+    <p>Historical backtesting of the DealerPositioningAgent requires pre-computed historical GEX profiles — data that is expensive and difficult to obtain. This is one reason the agent's historical validation remains in progress. The Phase 7 roadmap calls for SqueezeMetrics cross-validation (target: >80% correlation between Stack$Trader's GEX computation and SqueezeMetrics' published GEX) as the primary quality benchmark. Until that validation is complete, the DealerPositioningAgent is deployed in live paper trading with monitoring, and its weight in the ensemble is set conservatively.</p>
+
+    <p>The market cannot hide dealer positioning — it is the mechanical consequence of the obligations that options writing creates. Reading it well is not an edge in the traditional sense. It is an understanding of the hydraulics beneath the price.</p>
+
+  </div>
+
+  <div class="article-nav">
+    <div class="article-nav-prev">
+      <span class="article-nav-label">← Theory</span>
+      <a class="article-nav-title" href="theta-the-engine.html">Theta: The Engine That Never Sleeps</a>
+    </div>
+    <div class="article-nav-next">
+      <span class="article-nav-label">Whitepaper →</span>
+      <a class="article-nav-title" href="../whitepaper.html">Full Academic Paper (placeholder)</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

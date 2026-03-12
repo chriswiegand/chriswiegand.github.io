@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From Bench to Backtest — Stack$Trader Features</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>:root { --section-color: var(--features); }</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="section-band" style="--section-color: var(--features);">
+  <a href="../index.html">Home</a> &nbsp;›&nbsp; Features
+</div>
+
+<div class="page-wrapper">
+  <div class="article-header">
+    <span class="article-kicker">Features</span>
+    <h1 class="article-headline">From Bench to Backtest: A Scientist's Approach to Markets</h1>
+    <p class="article-deck">What happens when you apply the rigour of semiconductor process control — measurement systems, control charts, designed experiments — to financial signal detection? The methodology that distinguishes Stack$Trader from a trading strategy built on intuition.</p>
+    <div class="article-byline">By Stack$Trader Research Team &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; 12 min read</div>
+  </div>
+
+  <div class="article-body">
+
+    <p>In semiconductor manufacturing, a process that works on one wafer and fails on the next is not a process — it's a lottery. The difference between a reliable process and an unreliable one is measurement: you instrument everything, you build statistical process control charts, you run designed experiments to isolate one variable at a time, and you do not declare success until your control chart runs in statistical control across a representative sample of production conditions.</p>
+
+    <p>Financial markets are not wafer fabs. But the epistemological problem is identical: how do you distinguish genuine signal from random variation? How do you know whether a strategy that worked in the past will work in the future? How do you avoid the trap of seeing patterns that aren't there?</p>
+
+    <p>These are not investment questions. They are scientific questions. And they have scientific answers.</p>
+
+    <h2>The overfitting problem in quantitative finance</h2>
+
+    <p>The most common failure mode in quantitative trading is overfitting: a strategy that performs spectacularly on historical data because it has been, consciously or unconsciously, optimised to that specific data. The strategy has memorised the noise in its training set rather than learning the signal. When tested on new data, it fails — sometimes catastrophically.</p>
+
+    <div class="pull-quote">
+      <p>"With enough parameters, you can fit any historical dataset perfectly. The question is whether you've learned anything real."</p>
+    </div>
+
+    <p>The challenge is that overfitting is seductive. A strategy with a Sharpe of 4.0 on its training data looks compelling. The only way to evaluate it honestly is to test it on data it has never seen. Stack$Trader's validation framework was built around this principle from the beginning.</p>
+
+    <h2>The walk-forward architecture</h2>
+
+    <p>Every backtest in the Stack$Trader system uses <strong>3-fold walk-forward validation</strong>. The available data is divided into three sequential folds. In each fold, the model is trained (in-sample) on the first portion and tested (out-of-sample) on the subsequent period. The three test periods together cover the full dataset without ever using test data during training.</p>
+
+    <p>This mirrors the scientific concept of a held-out test set — but applied sequentially, respecting the temporal structure of financial data. You cannot use next month's data to calibrate this month's strategy. Walk-forward validation enforces this constraint rigorously.</p>
+
+    <p>The key metric from this framework is <strong>Walk-Forward Efficiency</strong>: the ratio of out-of-sample Sharpe to in-sample Sharpe. A value near 1.0 suggests the strategy transfers well to new conditions. A value substantially above 1.0 — as seen in Stack$Trader's best strategies — suggests the out-of-sample environment was actually more favourable than the training period, which is a further confirmation of structural rather than fitted edge.</p>
+
+    <h2>The 10-test validation battery</h2>
+
+    <p>A single statistical test can be fooled by luck. Stack$Trader runs ten independent tests, each designed to probe a different potential source of spurious performance:</p>
+
+    <p><strong>1. Hansen's Superior Predictive Ability (SPA)</strong> — The primary test for genuine alpha over buy-and-hold. Run with 2,000 block bootstrap permutations. Result: p=0.000.</p>
+
+    <p><strong>2. Theta-Normalised Permutation Test</strong> — All theta-generated returns are stripped out. Only directional timing is tested. Result: p=1.000. Zero timing alpha. Confirms the edge is entirely structural.</p>
+
+    <p><strong>3. Timothy Masters Permutation Test</strong> — 2,000 permutations per strategy variant, testing whether performance exceeds random entry. Applied to all 34 Phase 2 strategy variations.</p>
+
+    <p><strong>4. Walk-Forward Efficiency</strong> — OOS/IS Sharpe ratio. Gold Standard result: 3.886. Confirms no overfitting.</p>
+
+    <p><strong>5. Overnight/Intraday Decomposition</strong> — Following the methodology of Lou, Polk, and Skouras (2019). Separates returns into overnight (close-to-open) and intraday (open-to-close) components. Confirms overnight premium dominance for most tickers.</p>
+
+    <p><strong>6. DFA Hurst Exponent Analysis</strong> — Detrended fluctuation analysis to characterise the memory properties of returns in each regime. Grind regime shows mild persistence (H slightly above 0.5), supporting the held-position approach.</p>
+
+    <p><strong>7. Spectral Density Estimation</strong> — Power spectrum analysis of the return series to detect hidden periodicity or cyclical structure.</p>
+
+    <p><strong>8. Monte Carlo Scenario Stress Test</strong> — 10,000 simulated market scenarios across the full parameter space, including tail events not present in the training data.</p>
+
+    <p><strong>9. Earnings Cluster Stress Test</strong> — Specifically tests performance during periods when multiple tickers in the portfolio have earnings announcements within the same two-week window. The highest-risk scenario for a premium-selling strategy.</p>
+
+    <p><strong>10. Cross-Bucket Generalisation</strong> — Tests whether strategies that perform well on one category of tickers (e.g., energy stocks) transfer to different categories (e.g., tech, ETFs). Measures the generality of the edge rather than its ticker-specific optimisation.</p>
+
+    <h2>Designing experiments, not observations</h2>
+
+    <p>One methodological principle applied consistently throughout development: every new feature or agent is introduced as a controlled experiment, not an observation. When the HMM was added, it was tested in isolation with all other factors held constant. When the DealerPositioningAgent was introduced, its marginal contribution to ensemble Sharpe was measured independently before it was integrated into the full ensemble.</p>
+
+    <p>This is the equivalent of a designed experiment in process development — change one variable, measure the effect, characterise the interaction, then proceed. The alternative — adding multiple new features simultaneously and observing whether overall performance improves — is observational rather than experimental, and cannot disentangle the contribution of individual components.</p>
+
+    <div class="data-callout">
+      <div class="stat">
+        <span class="stat-number">10</span>
+        <span class="stat-label">Independent Validation Tests</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">2,000</span>
+        <span class="stat-label">Permutations per test</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">34</span>
+        <span class="stat-label">Strategy Variations (Phase 2)</span>
+      </div>
+    </div>
+
+    <h2>What the science says about the edge</h2>
+
+    <p>The combination of SPA p=0.000, theta-normalised permutation p=1.000, and WFE of 3.886 tells a coherent, specific story: the strategy earns returns that are statistically indistinguishable from pure theta harvesting. There is no directional timing component. There is no hidden data snooping artefact. The edge is real, it is structural, and it is the same edge that academic researchers have documented in the volatility risk premium literature for decades.</p>
+
+    <p>The validation framework didn't discover this story. It confirmed it. The scientific approach — instrument everything, run controlled experiments, apply independent tests from multiple angles — gave enough evidence to hold the conclusion with confidence, rather than with hope.</p>
+
+    <p>That, more than any single result, is what the scientific method contributes to quantitative trading: not certainty, but earned confidence.</p>
+
+  </div>
+
+  <div class="article-nav">
+    <div class="article-nav-prev">
+      <span class="article-nav-label">← Features</span>
+      <a class="article-nav-title" href="the-machine-that-learns-to-wait.html">The Machine That Learns to Wait</a>
+    </div>
+    <div class="article-nav-next">
+      <span class="article-nav-label">Next in Research →</span>
+      <a class="article-nav-title" href="../research/sixteen-minds-one-trade.html">16 Minds, One Trade</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

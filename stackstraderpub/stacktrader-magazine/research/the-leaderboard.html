@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Leaderboard — Stack$Trader Research</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    :root { --section-color: var(--research); }
+    .leaderboard-controls {
+      display: flex;
+      gap: 12px;
+      margin: 1.5em 0 1em;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .lb-control {
+      font-family: 'Merriweather', serif;
+      font-size: 0.72rem;
+      padding: 6px 14px;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      cursor: pointer;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+    }
+    .lb-control:hover, .lb-control.active { background: var(--black); color: white; border-color: var(--black); }
+    .lb-search {
+      flex: 1;
+      min-width: 160px;
+      padding: 6px 12px;
+      border: 1px solid var(--rule);
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.78rem;
+      color: var(--ink);
+      background: var(--paper);
+    }
+    .lb-search:focus { outline: 2px solid var(--red); border-color: var(--red); }
+    .tier-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      font-family: 'Source Code Pro', monospace;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    .tier-s { background: var(--red); color: white; }
+    .tier-a { background: #1a5c2a; color: white; }
+    .tier-b { background: var(--brief); color: white; }
+    .tier-c { background: var(--theory); color: white; }
+    .tier-f { background: var(--mid); color: white; }
+    #lb-count { font-family: 'Source Code Pro', monospace; font-size: 0.78rem; color: var(--mid); margin-left: auto; }
+    #lb-updated { font-size: 0.65rem; color: var(--mid); font-style: italic; }
+    .sharpe-bar {
+      display: inline-block;
+      height: 8px;
+      background: var(--red);
+      opacity: 0.6;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="section-band" style="--section-color: var(--research);">
+  <a href="../index.html">Home</a> &nbsp;›&nbsp; Research
+</div>
+
+<div class="page-wrapper">
+  <div class="article-header">
+    <span class="article-kicker">Research</span>
+    <h1 class="article-headline">The Leaderboard: 923 Strategies</h1>
+    <p class="article-deck">The full walk-forward backtest results across 41 tickers and 19 trigger combinations, ranked by out-of-sample Sharpe ratio. Tier S begins at Sharpe 2.0. Updated dynamically when the underlying data file is refreshed.</p>
+    <div class="article-byline">Stack$Trader Research Team &nbsp;·&nbsp; <span id="lb-updated">Loading…</span></div>
+  </div>
+
+  <div class="article-body">
+
+    <p>Every number in this table is an <strong>out-of-sample</strong> result from 3-fold walk-forward validation. In-sample performance (IS Sharpe) is shown for reference but is not the ranking criterion. The Walk-Forward Efficiency (WFE = OOS ÷ IS) measures how much of the in-sample performance transferred to unseen data. A WFE above 1.0 indicates that out-of-sample performance actually exceeded in-sample — the strongest possible confirmation of genuine structural edge.</p>
+
+    <div id="summary-strip" class="data-callout">
+      <div class="stat"><span class="stat-number" id="s-total">—</span><span class="stat-label">Total Strategies</span></div>
+      <div class="stat"><span class="stat-number" id="s-pos">—</span><span class="stat-label">Positive Alpha</span></div>
+      <div class="stat"><span class="stat-number" id="s-tier-s">—</span><span class="stat-label">Tier S (Sharpe >2.0)</span></div>
+      <div class="stat"><span class="stat-number" id="s-best">—</span><span class="stat-label">Peak OOS Sharpe</span></div>
+    </div>
+
+    <div class="leaderboard-controls">
+      <button class="lb-control active" onclick="filterTier('all', this)">All</button>
+      <button class="lb-control" onclick="filterTier('S', this)">Tier S</button>
+      <button class="lb-control" onclick="filterTier('A', this)">Tier A</button>
+      <button class="lb-control" onclick="filterTier('B', this)">Tier B</button>
+      <button class="lb-control" onclick="filterTier('C', this)">Tier C</button>
+      <button class="lb-control" onclick="filterTier('F', this)">Tier F</button>
+      <input class="lb-search" id="lb-search" type="text" placeholder="Search ticker or strategy…" oninput="filterSearch()" />
+      <span id="lb-count"></span>
+    </div>
+
+    <table class="data-table" id="leaderboard-table">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th>Ticker</th>
+          <th>Strategy</th>
+          <th class="num">OOS Sharpe</th>
+          <th class="num">IS Sharpe</th>
+          <th class="num">WFE</th>
+          <th>Tier</th>
+        </tr>
+      </thead>
+      <tbody id="lb-tbody">
+        <tr><td colspan="7" style="text-align:center; padding:32px; color:var(--mid); font-style:italic;">Loading leaderboard data…</td></tr>
+      </tbody>
+    </table>
+
+    <p id="lb-note" style="font-size:0.72rem; color:var(--mid); font-style:italic; margin-top:1em; display:none;">
+      Showing top strategies from the full 923-strategy validation run. Tier S = OOS Sharpe > 2.0, Tier A = 1.5–2.0, Tier B = 1.0–1.5, Tier C = 0.5–1.0, Tier F = &lt; 0.5 or negative.
+    </p>
+
+    <h2>How to read this table</h2>
+
+    <p><strong>OOS Sharpe</strong> is the out-of-sample Sharpe ratio — the only number that matters for evaluating whether a strategy has genuine edge. It is computed on data the strategy never saw during its development or parameter optimisation.</p>
+
+    <p><strong>IS Sharpe</strong> is the in-sample Sharpe — included for context and to compute WFE, but not the ranking criterion. A high IS Sharpe with a low OOS Sharpe is the classical fingerprint of overfitting.</p>
+
+    <p><strong>WFE</strong> (Walk-Forward Efficiency) = OOS Sharpe ÷ IS Sharpe. Values above 1.0 indicate that the strategy generalised well to unseen data. Values substantially above 1.0 suggest the out-of-sample period was structurally more favourable than the training period — a positive signal. Values substantially below 1.0 flag potential overfitting.</p>
+
+    <p><strong>Strategy codes:</strong> cc_vrp = covered call with Volatility Risk Premium trigger; cc_bbsq = Bollinger Band squeeze trigger; cc_vix = VIX regime trigger; cc_earn = earnings-proximity filter; cc_bbsq = Bollinger Band squeeze; cc_sink = kitchen sink (all signals); cc_always = always enter (baseline). See the <a href="../theory/theta-the-engine.html">Theory section</a> for full trigger descriptions.</p>
+
+  </div>
+
+  <div class="article-nav">
+    <div class="article-nav-prev">
+      <span class="article-nav-label">← Research</span>
+      <a class="article-nav-title" href="proving-the-edge.html">Proving the Edge</a>
+    </div>
+    <div class="article-nav-next">
+      <span class="article-nav-label">Next in The Lab →</span>
+      <a class="article-nav-title" href="../lab/seven-phases.html">Seven Phases: A Chronicle</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  let allRows = [];
+  let currentTier = 'all';
+
+  fetch('../data/leaderboard.json')
+    .then(r => r.json())
+    .then(data => {
+      // Update summary strip
+      const s = data.summary;
+      document.getElementById('s-total').textContent = s.total.toLocaleString();
+      document.getElementById('s-pos').textContent = s.positive_alpha + ' (' + s.positive_pct + '%)';
+      document.getElementById('s-tier-s').textContent = s.tier_s;
+      document.getElementById('s-best').textContent = s.best_sharpe.toFixed(2);
+      document.getElementById('lb-updated').textContent = 'Data as of ' + data.generated;
+
+      allRows = data.strategies;
+      renderTable(allRows);
+      document.getElementById('lb-note').style.display = '';
+    })
+    .catch(() => {
+      document.getElementById('lb-tbody').innerHTML =
+        '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--mid);">Could not load leaderboard data. Ensure leaderboard.json is present in the /data/ directory.</td></tr>';
+    });
+
+  function renderTable(rows) {
+    const tbody = document.getElementById('lb-tbody');
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--mid);font-style:italic;">No strategies match the current filter.</td></tr>';
+      document.getElementById('lb-count').textContent = '0 results';
+      return;
+    }
+    const maxSharpe = Math.max(...rows.map(r => r.oos_sharpe));
+    tbody.innerHTML = rows.map(row => {
+      const barW = Math.max(0, Math.min(80, (row.oos_sharpe / 5) * 80));
+      const wfe = row.wfe > 0 ? row.wfe.toFixed(2) : '—';
+      const wfeClass = row.wfe >= 1.0 ? 'sig-strong' : (row.wfe > 0 ? '' : 'sig-weak');
+      return `<tr>
+        <td style="color:var(--mid); font-family:'Source Code Pro',monospace; font-size:0.72rem;">${row.rank}</td>
+        <td><strong>${row.ticker}</strong></td>
+        <td style="font-family:'Source Code Pro',monospace; font-size:0.78rem;">${row.strategy}</td>
+        <td class="num">
+          <span class="sharpe-bar" style="width:${barW}px;"></span>
+          <strong style="color: ${row.oos_sharpe >= 2 ? 'var(--red)' : row.oos_sharpe >= 1 ? '#1a5c2a' : 'var(--mid)'}">${row.oos_sharpe.toFixed(2)}</strong>
+        </td>
+        <td class="num" style="color:var(--mid);">${row.is_sharpe.toFixed(2)}</td>
+        <td class="num ${wfeClass}">${wfe}</td>
+        <td><span class="tier-badge tier-${row.tier.toLowerCase()}">${row.tier}</span></td>
+      </tr>`;
+    }).join('');
+    document.getElementById('lb-count').textContent = rows.length + ' strategies shown';
+  }
+
+  function filterTier(tier, btn) {
+    currentTier = tier;
+    document.querySelectorAll('.lb-control').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+
+  function filterSearch() { applyFilters(); }
+
+  function applyFilters() {
+    const q = document.getElementById('lb-search').value.toLowerCase();
+    let filtered = allRows;
+    if (currentTier !== 'all') filtered = filtered.filter(r => r.tier === currentTier);
+    if (q) filtered = filtered.filter(r =>
+      r.ticker.toLowerCase().includes(q) || r.strategy.toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+  }
+</script>
+
+</body>
+</html>

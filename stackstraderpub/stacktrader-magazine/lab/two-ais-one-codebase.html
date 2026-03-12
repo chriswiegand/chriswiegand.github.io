@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two AIs, One Codebase — Stack$Trader Lab</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    :root { --section-color: var(--lab); }
+    .collab-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      margin: 2em 0;
+      background: var(--black);
+    }
+    .collab-agent {
+      background: var(--paper);
+      padding: 24px;
+    }
+    .collab-agent-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--black);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .collab-agent-role {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--agent-clr, var(--mid));
+      display: block;
+      margin-bottom: 14px;
+      border-bottom: 2px solid var(--agent-clr, var(--mid));
+      padding-bottom: 8px;
+    }
+    .collab-resp {
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+    .collab-resp li {
+      margin-bottom: 4px;
+      padding-left: 14px;
+      position: relative;
+    }
+    .collab-resp li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--agent-clr, var(--mid));
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="section-band" style="--section-color: var(--lab);">
+  <a href="../index.html">Home</a> &nbsp;›&nbsp; The Lab
+</div>
+
+<div class="page-wrapper">
+  <div class="article-header">
+    <span class="article-kicker">The Lab</span>
+    <h1 class="article-headline">Two AIs, One Codebase</h1>
+    <p class="article-deck">Claude handles architecture and implementation. Gemini runs research and validation. Here is how two large language models divide labour on a real trading system — what works, what doesn't, and what it reveals about the future of AI collaboration.</p>
+    <div class="article-byline">By Stack$Trader Research Team &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; 8 min read</div>
+  </div>
+
+  <div class="article-body">
+
+    <p>Stack$Trader is unusual in another dimension beyond its trading methodology: it is developed by two AI systems working in parallel, with clearly delineated responsibilities and a formal handoff protocol. This is not a marketing claim. It is a practical response to a real constraint: building a trading system from scratch requires both deep quantitative research capability and rigorous software engineering — and the combination is difficult to sustain in any single agent working in long, complex context windows.</p>
+
+    <h2>The division of labour</h2>
+
+    <div class="collab-split">
+      <div class="collab-agent">
+        <span class="collab-agent-name">Claude</span>
+        <span class="collab-agent-role" style="--agent-clr: var(--red);">Implementation Lead</span>
+        <ul class="collab-resp" style="--agent-clr: var(--red);">
+          <li>All production code — agents, engine, broker integration</li>
+          <li>Test suite design and maintenance (119 tests)</li>
+          <li>Architecture design documents for live deployment</li>
+          <li>Configuration management (supervisor_config.json)</li>
+          <li>Code review and integration of research findings</li>
+          <li>Performance engineering and optimisation</li>
+          <li>Continuous integration and deployment pipeline</li>
+          <li>Agent weight integration after Gemini optimisation</li>
+          <li>Implementation feasibility assessment</li>
+        </ul>
+      </div>
+      <div class="collab-agent">
+        <span class="collab-agent-name">Gemini</span>
+        <span class="collab-agent-role" style="--agent-clr: var(--brief);">Research Lead</span>
+        <ul class="collab-resp" style="--agent-clr: var(--brief);">
+          <li>Academic literature review (options pricing, VRP, regime detection)</li>
+          <li>Statistical validation of all major findings</li>
+          <li>Backtest execution and analysis across ticker universe</li>
+          <li>Feature lift scans and agent weight optimisation</li>
+          <li>Alternative data source evaluation and cost analysis</li>
+          <li>Earnings cluster stress testing</li>
+          <li>Monte Carlo and walk-forward validation</li>
+          <li>Identification of new alpha opportunities</li>
+          <li>Research-to-implementation feasibility guidance</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>The split follows a principle that any research organisation would recognise: separate the people who discover things from the people who build things, but give them a tight collaboration protocol so nothing is lost in translation. In Stack$Trader's case, both "people" are AI systems — but the principle holds.</p>
+
+    <h2>The handoff protocol</h2>
+
+    <p>The coordination mechanism is <code>HANDOFF.md</code> — a living document in the repository that both agents read at the start of every session. It contains: the status of all active tasks, explicitly assigned to one agent; the queue of ready-to-work tasks; any blockers; the last three git commits; and the next synchronisation checkpoint.</p>
+
+    <p>The rule is simple: before starting any work, read <code>HANDOFF.md</code>. Before finishing any work, update <code>HANDOFF.md</code>. This prevents the failure mode where both agents attempt the same work, or where a handoff falls through because the receiving agent didn't know it was ready to receive.</p>
+
+    <p>Git commit messages serve as the secondary communication channel. A commit message like "Phase 6 Task 1A: Validate edge-in sampling strategy — RBF proof confirmed, ready for Claude implementation" is simultaneously a code record and a handoff signal. The commit history is, in effect, the project's audit trail.</p>
+
+    <h2>The decision gate: research → implementation</h2>
+
+    <div class="pull-quote">
+      <p>"Before Claude builds anything: is this signal actually alpha, or just overfitting? Can we implement it cleanly? Will the benefit exceed the complexity cost?"</p>
+    </div>
+
+    <p>Every feature that moves from research to implementation passes through a three-question gate:</p>
+
+    <p><strong>Gemini asks:</strong> Is this signal actually alpha, or am I observing a data-specific pattern that won't generalise? (Statistical rigour gate.)</p>
+
+    <p><strong>Claude asks:</strong> Can this be implemented cleanly within the existing architecture without creating technical debt? (Engineering feasibility gate.)</p>
+
+    <p><strong>Both ask:</strong> Will the expected benefit to ensemble Sharpe exceed the complexity cost of adding another component? (Marginal value gate.)</p>
+
+    <p>A feature that fails any of these three questions doesn't get built. This gate has already prevented several development paths that were statistically interesting but practically unimplementable (real-time options order flow) or whose marginal benefit didn't justify the integration complexity (proprietary volatility surface data at institutional pricing).</p>
+
+    <h2>What works: asynchronous parallelism</h2>
+
+    <p>The most valuable structural feature of the collaboration is that Claude and Gemini work asynchronously. While Claude is implementing Phase 6 Task 1B (edge-in sampling code), Gemini is simultaneously running Phase 6 Task 3A (agent weight optimisation via scipy.optimize on background compute). The two tasks don't interfere. Their outputs integrate cleanly at the next synchronisation point.</p>
+
+    <p>This parallelism compresses the development timeline significantly. Sequential development — research, then implementation, then validation — would take three to four times as long. Asynchronous parallel development means that validation of one feature is running while implementation of the next is underway.</p>
+
+    <h2>What doesn't work: ambiguous ownership</h2>
+
+    <p>The failure mode we've encountered is ambiguous ownership. When a task requires both research and implementation in rapid iteration — when the implementation reveals something that changes the research direction, which then changes the implementation — the handoff protocol breaks down. Both agents end up working on overlapping pieces with slightly different assumptions, producing inconsistent outputs that require significant reconciliation work.</p>
+
+    <p>The solution has been to assign a primary owner for every ambiguous task and have the secondary agent in a supporting role only. "Gemini owns Task 3A, Claude supports by setting up the scipy.optimize framework" is unambiguous. "Both agents work on the weight optimisation" is not.</p>
+
+    <h2>What it reveals about AI collaboration</h2>
+
+    <p>The Stack$Trader collaboration is an early data point in what will become a common pattern: AI systems with different strengths working together on complex, multi-domain problems that no single system can handle optimally. The key lesson from this project is that the collaboration is only as good as the protocol that governs it. Strong, explicit handoffs. Clear ownership. Explicit decision gates. Git as ground truth.</p>
+
+    <p>The romantic version of AI collaboration is two intelligences brainstorming together in real time. The reality is more like a well-run engineering organisation: clear roles, documented communication, explicit deliverables, and a shared artifact (the codebase) that neither agent can unilaterally corrupt. That structure is what makes it work.</p>
+
+  </div>
+
+  <div class="article-nav">
+    <div class="article-nav-prev">
+      <span class="article-nav-label">← The Lab</span>
+      <a class="article-nav-title" href="most-productive-day.html">The Most Productive Day</a>
+    </div>
+    <div class="article-nav-next">
+      <span class="article-nav-label">Next in Theory →</span>
+      <a class="article-nav-title" href="../theory/theta-the-engine.html">Theta: The Engine That Never Sleeps</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

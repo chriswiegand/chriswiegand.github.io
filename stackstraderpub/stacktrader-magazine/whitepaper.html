@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whitepaper — Stack$Trader</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .placeholder-block {
+      border: 2px dashed var(--rule);
+      padding: 64px 48px;
+      text-align: center;
+      margin: 48px 0;
+      background: var(--code-bg);
+    }
+    .placeholder-icon {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      color: var(--rule);
+      line-height: 1;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .placeholder-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 10px;
+    }
+    .placeholder-text {
+      font-size: 0.85rem;
+      color: var(--mid);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+      font-style: italic;
+    }
+    .toc-preview {
+      max-width: 640px;
+      margin: 32px auto 0;
+      text-align: left;
+    }
+    .toc-preview h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.0rem;
+      font-weight: 700;
+      color: var(--black);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.65rem;
+    }
+    .toc-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px dotted var(--rule);
+      font-size: 0.82rem;
+    }
+    .toc-num {
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.7rem;
+      color: var(--red);
+      width: 32px;
+      flex-shrink: 0;
+    }
+    .toc-title { flex: 1; padding: 0 12px; }
+    .toc-status {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .toc-status.draft { color: #1a5c2a; }
+    .toc-status.progress { color: var(--theory); }
+  </style>
+</head>
+<body>
+<script src="nav.js"></script>
+
+<div class="section-band" style="background: #444;">
+  <a href="index.html">Home</a> &nbsp;›&nbsp; Whitepaper
+</div>
+
+<div class="page-wrapper">
+  <div class="article-header">
+    <span class="article-kicker" style="color: #555;">Whitepaper</span>
+    <h1 class="article-headline">StackStrader: A Multi-Agent Mixture-of-Experts System for Systematic Theta and Volatility Risk Premium Harvesting</h1>
+    <p class="article-deck">Version 2.0 — In preparation. The full peer-review-style academic paper covering the complete 10-test statistical framework, system architecture, overnight/intraday decomposition, DFA Hurst exponent analysis, and the 324-parameter grid search with walk-forward validation across 40+ tickers.</p>
+    <div class="article-byline">Stack$Trader Research Team &nbsp;·&nbsp; Target: Q2 2026</div>
+  </div>
+
+  <div class="article-body">
+
+    <div class="placeholder-block">
+      <span class="placeholder-icon">§</span>
+      <div class="placeholder-title">Full Whitepaper Coming Soon</div>
+      <p class="placeholder-text">
+        The complete academic paper is currently in preparation. It will be published here in full, with all supporting data tables, statistical test outputs, and references. In the meantime, the research covered in this publication — the articles across The Brief, Features, Research, Lab, and Theory sections — presents the same findings in editorial form.
+      </p>
+
+      <div class="toc-preview">
+        <h3>Planned table of contents</h3>
+        <div class="toc-item"><span class="toc-num">§1</span><span class="toc-title">Introduction & Motivation</span><span class="toc-status draft">Draft</span></div>
+        <div class="toc-item"><span class="toc-num">§2</span><span class="toc-title">System Architecture: 16-Agent MoE Ensemble</span><span class="toc-status draft">Draft</span></div>
+        <div class="toc-item"><span class="toc-num">§3</span><span class="toc-title">Data Infrastructure & Synthetic Generation</span><span class="toc-status draft">Draft</span></div>
+        <div class="toc-item"><span class="toc-num">§4</span><span class="toc-title">HMM Regime Classification & Experimental Results</span><span class="toc-status draft">Draft</span></div>
+        <div class="toc-item"><span class="toc-num">§5</span><span class="toc-title">Statistical Validation Battery (10 Tests)</span><span class="toc-status draft">Draft</span></div>
+        <div class="toc-item"><span class="toc-num">§6</span><span class="toc-title">Overnight/Intraday Decomposition</span><span class="toc-status draft">Draft</span></div>
+        <div class="toc-item"><span class="toc-num">§7</span><span class="toc-title">DFA Hurst Exponent & Spectral Analysis</span><span class="toc-status progress">In progress</span></div>
+        <div class="toc-item"><span class="toc-num">§8</span><span class="toc-title">Grid Search: 324-Parameter × 40+ Tickers × 3-Fold WFV</span><span class="toc-status progress">In progress</span></div>
+        <div class="toc-item"><span class="toc-num">§9</span><span class="toc-title">Dealer Positioning: GEX, Vanna, Charm, DIX</span><span class="toc-status progress">In progress</span></div>
+        <div class="toc-item"><span class="toc-num">§10</span><span class="toc-title">Live Deployment Architecture & Risk Management</span><span class="toc-status" style="color:#aaa;">Planned</span></div>
+        <div class="toc-item"><span class="toc-num">§11</span><span class="toc-title">Results, Discussion & Limitations</span><span class="toc-status" style="color:#aaa;">Planned</span></div>
+        <div class="toc-item"><span class="toc-num">§A</span><span class="toc-title">Appendix: Full Leaderboard & Validation Tables</span><span class="toc-status" style="color:#aaa;">Planned</span></div>
+        <div class="toc-item"><span class="toc-num">§B</span><span class="toc-title">References</span><span class="toc-status draft">Draft</span></div>
+      </div>
+    </div>
+
+    <p>While the formal paper is in preparation, readers seeking the deepest technical coverage should read the following in sequence:</p>
+
+    <p>For the <strong>system architecture</strong>: <a href="research/sixteen-minds-one-trade.html">16 Minds, One Trade</a> covers the full 16-agent ensemble, the Supervisor's weighted voting rule, and the five character presets.</p>
+
+    <p>For the <strong>statistical validation</strong>: <a href="research/proving-the-edge.html">Proving the Edge</a> documents all ten tests, their procedures, and Stack$Trader's results.</p>
+
+    <p>For the <strong>key research breakthrough</strong>: <a href="features/the-machine-that-learns-to-wait.html">The Machine That Learns to Wait</a> covers the HMM experiments, the holding-period scaling result (Sharpe 8.2 at 20 days), and the Crisis regime findings.</p>
+
+    <p>For the <strong>dealer positioning theory</strong>: <a href="theory/dealer-positioning.html">What the Market Can't Hide</a> explains GEX, Vanna, Charm, and DIX with full context for how they are used in the DealerPositioningAgent.</p>
+
+    <p>Register interest in the whitepaper release by noting: <em>this publication will be updated when the paper is ready.</em> The <a href="research/the-leaderboard.html">Leaderboard</a> will be updated dynamically as new validation results are produced.</p>
+
+  </div>
+
+  <div class="article-nav">
+    <div class="article-nav-prev">
+      <span class="article-nav-label">← Theory</span>
+      <a class="article-nav-title" href="theory/dealer-positioning.html">Dealer Positioning: GEX & DIX</a>
+    </div>
+    <div class="article-nav-next">
+      <span class="article-nav-label">← Back to</span>
+      <a class="article-nav-title" href="index.html">Stack$Trader Cover</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

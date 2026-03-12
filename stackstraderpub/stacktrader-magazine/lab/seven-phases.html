@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seven Phases: A Chronicle — Stack$Trader Lab</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    :root { --section-color: var(--lab); }
+    .timeline { margin: 2em 0; }
+    .phase-entry { display: flex; gap: 0; margin-bottom: 4px; }
+    .phase-gutter {
+      width: 110px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      padding-right: 20px;
+      padding-top: 16px;
+    }
+    .phase-gutter-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--phase-gutter-clr, var(--mid));
+      line-height: 1;
+    }
+    .phase-gutter-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-top: 2px;
+    }
+    .phase-card {
+      flex: 1;
+      border-left: 4px solid var(--phase-border-clr, var(--mid));
+      padding: 16px 24px 20px;
+      background: var(--paper);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .phase-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+    .phase-card-body {
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+    .phase-card-body p { margin-bottom: 0.7em; }
+    .phase-badge {
+      display: inline-block;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      margin-right: 6px;
+      margin-bottom: 8px;
+      color: white;
+      background: var(--phase-border-clr, var(--mid));
+    }
+    .phase-connector {
+      width: 110px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 20px;
+    }
+    .phase-connector-line {
+      width: 1px;
+      height: 12px;
+      background: var(--rule);
+    }
+  </style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="section-band" style="--section-color: var(--lab);">
+  <a href="../index.html">Home</a> &nbsp;›&nbsp; The Lab
+</div>
+
+<div class="page-wrapper">
+  <div class="article-header">
+    <span class="article-kicker">The Lab</span>
+    <h1 class="article-headline">Seven Phases: A Chronicle</h1>
+    <p class="article-deck">From the first line of synthetic data generation code to a live-broker-integrated 16-agent system — the complete development history of Stack$Trader, told phase by phase.</p>
+    <div class="article-byline">By Stack$Trader Research Team &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; 12 min read</div>
+  </div>
+
+  <div class="article-body">
+
+    <p>Stack$Trader was not designed upfront and then built. It was discovered — through a sequence of experiments, dead ends, breakthroughs, and refinements that each changed what came next. This is the honest account of that process.</p>
+
+    <div class="timeline">
+
+      <div class="phase-entry">
+        <div class="phase-gutter" style="--phase-gutter-clr: var(--brief);">
+          <span class="phase-gutter-num">1</span>
+          <span class="phase-gutter-label">Foundation</span>
+        </div>
+        <div class="phase-card" style="--phase-border-clr: var(--brief);">
+          <div class="phase-card-title">Synthetic Data, DataProvider Protocol & Architecture</div>
+          <span class="phase-badge" style="--phase-border-clr: var(--brief);">54,000 synthetic contracts</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--brief);">DataProvider abstraction</span>
+          <div class="phase-card-body">
+            <p>The project began with a problem: no historical options chain data, and no way to get it cheaply at the scale needed for rigorous backtesting. The solution was synthetic generation — a <code>generate_synthetic_chain()</code> function that iterates over 900+ trading days per ticker, producing roughly 54,000 synthetic contracts by computing theoretical prices from realised volatility, time decay, and the risk-free rate. Output was exported to local PyArrow Parquet arrays, bypassing all external API limits.</p>
+            <p>Alongside the data, Phase 1 established the <code>DataProvider</code> protocol — an abstraction layer that enforces a strict interface over data ingestion so the core strategy engine never interacts directly with an API endpoint. This architectural decision paid dividends in every subsequent phase: swapping data sources required no changes to the strategy engine itself.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="phase-connector-line"></div></div>
+
+      <div class="phase-entry">
+        <div class="phase-gutter" style="--phase-gutter-clr: var(--features);">
+          <span class="phase-gutter-num">2</span>
+          <span class="phase-gutter-label">Experiment</span>
+        </div>
+        <div class="phase-card" style="--phase-border-clr: var(--features);">
+          <div class="phase-card-title">The 34-Strategy Experiment & HMM Breakthrough</div>
+          <span class="phase-badge" style="--phase-border-clr: var(--features);">34 strategies tested</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--features);">3-state HMM</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--features);">Sharpe 8.2 at 20-day hold</span>
+          <div class="phase-card-body">
+            <p>Phase 2 was pure quantitative research. Thirty-four strategy variations were tested across five experiments on a 5-year SPY dataset. The Hidden Markov Model, trained on daily SPY returns, classified every trading day into one of three hidden states: Grind (812 days, 66%), Mean-Reversion (213 days, 17%), and Crisis (210 days, 17%).</p>
+            <p>Experiment A — switching from binary HMM classification to posterior probability weighting — improved Sharpe from 2.67 to 4.07. Experiment E — testing the scaling of edge with holding period — found that theta decay in the Grind regime scales linearly with time, reaching Sharpe 8.2 at 20-day hold (p=0.0005). These two findings became the permanent structural foundation of everything that followed.</p>
+            <p>Equally important: Experiment C (microstructure from daily bars) was a complete failure. Every variation showed no edge. This negative result was as valuable as the positive ones — it prevented an entire dead-end development branch.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="phase-connector-line"></div></div>
+
+      <div class="phase-entry">
+        <div class="phase-gutter" style="--phase-gutter-clr: var(--research);">
+          <span class="phase-gutter-num">3</span>
+          <span class="phase-gutter-label">Ensemble</span>
+        </div>
+        <div class="phase-card" style="--phase-border-clr: var(--research);">
+          <div class="phase-card-title">Mixture-of-Experts Architecture & Multi-Ticker Validation</div>
+          <span class="phase-badge" style="--phase-border-clr: var(--research);">12 agents deployed</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--research);">41 tickers</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--research);">Character presets</span>
+          <div class="phase-card-body">
+            <p>Phase 3 expanded the single-signal HMM approach into a full Mixture-of-Experts ensemble. The original 12 agents were built and integrated: Technical, OptionsPricing, Fundamentals, Macro, Earnings, Correlation, Sentiment, AnalystConsensus, HMM, Microstructure, FINN (volatility surface arbitrage), and Anomaly (VAE). The Supervisor module with weighted voting, disagreement penalty, and conviction bonus was designed and implemented.</p>
+            <p>Character presets — Conservative, Moderate, Aggressive, Gold Standard, IncomesFocus — enabled the same underlying architecture to serve different risk profiles without requiring separate codebases. The 41-ticker universe was assembled and validated, confirming that the structural edge generalised across asset classes (equities, ETFs, precious metals).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="phase-connector-line"></div></div>
+
+      <div class="phase-entry">
+        <div class="phase-gutter" style="--phase-gutter-clr: var(--lab);">
+          <span class="phase-gutter-num">4</span>
+          <span class="phase-gutter-label">Validation</span>
+        </div>
+        <div class="phase-card" style="--phase-border-clr: var(--lab);">
+          <div class="phase-card-title">Microstructure, Overnight Decomposition & 10-Test Validation Battery</div>
+          <span class="phase-badge" style="--phase-border-clr: var(--lab);">SPA p=0.000</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--lab);">WFE 3.886</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--lab);">10 independent tests</span>
+          <div class="phase-card-body">
+            <p>Phase 4 was the statistical validation campaign. The 10-test battery was designed and executed: SPA, theta-normalised permutation, walk-forward efficiency, Masters permutation, overnight/intraday decomposition (Lou et al. 2019), DFA Hurst exponent, spectral density, Monte Carlo stress test, earnings cluster stress test, and cross-bucket generalisation.</p>
+            <p>The most significant findings: SPA p=0.000 (real alpha, not selection bias), directional permutation p=1.000 (zero timing component — all edge is structural theta), and WFE of 3.886 (no overfitting, out-of-sample exceeds in-sample). The validation battery is now rerun automatically as part of every major parameter update.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="phase-connector-line"></div></div>
+
+      <div class="phase-entry">
+        <div class="phase-gutter" style="--phase-gutter-clr: var(--theory);">
+          <span class="phase-gutter-num">5</span>
+          <span class="phase-gutter-label">Intelligence</span>
+        </div>
+        <div class="phase-card" style="--phase-border-clr: var(--theory);">
+          <div class="phase-card-title">Alternative Data, Multi-Timeframe Resonance & Gold Standard Profile</div>
+          <span class="phase-badge" style="--phase-border-clr: var(--theory);">16 agents</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--theory);">Gold Standard profile</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--theory);">Multi-TF resonance</span>
+          <div class="phase-card-body">
+            <p>Phase 5 completed the 16-agent ensemble by adding the DealerPositioningAgent (GEX, Vanna, DIX), three SoftTechnicalAgent instances at daily, 60-minute, and 5-minute resolutions, and enhancing the FINN and AnomalyAgent with production-ready implementations. The multi-timeframe resonance filter — which requires alignment across daily, hourly, and 5-minute technical scores before entry — became a key component of the Gold Standard profile.</p>
+            <p>The SchwabOptionProvider was integrated, enabling live option chain data from the Schwab API. The standalone recorder, which sweeps the option chain daily for all 41 tickers and archives strikes and Greeks, was deployed as an always-on background service. Phase 5 closed when the full Gold Standard profile passed its initial validation run.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="phase-connector-line"></div></div>
+
+      <div class="phase-entry">
+        <div class="phase-gutter" style="--phase-gutter-clr: #5c2a00;">
+          <span class="phase-gutter-num">6</span>
+          <span class="phase-gutter-label">Optimisation</span>
+        </div>
+        <div class="phase-card" style="--phase-border-clr: #5c2a00;">
+          <div class="phase-card-title">Grid Search, Edge-In Sampling & Per-Ticker Optimisation</div>
+          <span class="phase-badge" style="--phase-border-clr: #5c2a00;">923 strategies</span>
+          <span class="phase-badge" style="--phase-border-clr: #5c2a00;">324 param combos</span>
+          <span class="phase-badge" style="--phase-border-clr: #5c2a00;">2D RBF interpolation</span>
+          <div class="phase-card-body">
+            <p>Phase 6 was the optimisation and scale-testing phase. The edge-in sampling algorithm replaced the previous sparse discovery approach, selecting 20 calls and 4 puts per ticker by starting at the extremes of the DTE/moneyness grid and working inward — maximising information density at the wings where vol surface curvature matters most. The chain reconstructor was upgraded from 1D cubic spline to 2D RBF (Radial Basis Function) interpolation over a DTE-by-moneyness surface, enabling accurate Greek computation across the full chain.</p>
+            <p>The 324-parameter grid search across 40+ tickers with 3-fold walk-forward validation produced the 923-strategy leaderboard. Per-ticker weight optimisation via <code>scipy.optimize</code> differential evolution identified ticker-specific agent configurations that outperform uniform weights. Phase 6 closed with the per-ticker assignment CSV and the confirmed Gold Standard WFE of 3.886.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-connector"><div class="phase-connector-line"></div></div>
+
+      <div class="phase-entry">
+        <div class="phase-gutter" style="--phase-gutter-clr: var(--red);">
+          <span class="phase-gutter-num">7</span>
+          <span class="phase-gutter-label">Live</span>
+        </div>
+        <div class="phase-card" style="--phase-border-clr: var(--red);">
+          <div class="phase-card-title">Dealer Positioning, Live Integration & Continuous Improvement</div>
+          <span class="phase-badge" style="--phase-border-clr: var(--red);">GEX / Vanna / DIX</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--red);">Live kill switch</span>
+          <span class="phase-badge" style="--phase-border-clr: var(--red);">119 tests passing</span>
+          <div class="phase-card-body">
+            <p>Phase 7 is the current and ongoing phase. The DealerPositioningAgent was implemented — computing Gamma Exposure (GEX), Vanna, and Charm directly from the Schwab live option chain, and integrating Dark Index (DIX) data from FINRA dark pool FINRA reports. The Charm-Aware execution timing model uses |charm| thresholds to schedule entries: high charm (&gt;0.03) triggers a 45-minute delay to avoid hedging flow; medium charm a 20-minute delay; low charm proceeds immediately.</p>
+            <p>A live trading kill switch with environment variable safeguards was deployed, preventing accidental live execution during development. Three architecture design documents — live broker integration, real-time P&L alerting, and risk guardrails — define the path to capital deployment. The dual-AI collaboration framework between Claude (implementation lead) and Gemini (research lead) was formalised. 119 tests currently pass. Phase 7 continues.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="article-nav">
+    <div class="article-nav-prev">
+      <span class="article-nav-label">← Research</span>
+      <a class="article-nav-title" href="../research/the-leaderboard.html">The Leaderboard</a>
+    </div>
+    <div class="article-nav-next">
+      <span class="article-nav-label">Next in The Lab →</span>
+      <a class="article-nav-title" href="most-productive-day.html">The Most Productive Day</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
