@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stack$Trader — An Algorithmic Research Journal</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .edition-label {
+      background: var(--red);
+      color: white;
+      text-align: center;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 6px;
+      margin-bottom: 0;
+    }
+    .cover-edition { margin-top: 0; }
+    .cover-lead-headline a { color: var(--black); text-decoration: none; }
+    .cover-lead-headline a:hover { color: var(--red); }
+
+    .ticker-tape {
+      background: var(--black);
+      color: rgba(255,255,255,0.7);
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.68rem;
+      padding: 6px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--rule);
+    }
+    .ticker-scroll {
+      display: inline-block;
+      animation: scroll-tape 40s linear infinite;
+    }
+    @keyframes scroll-tape {
+      from { transform: translateX(100vw); }
+      to { transform: translateX(-100%); }
+    }
+    .ticker-item { margin-right: 48px; }
+    .ticker-item .up { color: #4CAF50; }
+    .ticker-item .dn { color: var(--red); }
+
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border-bottom: 3px solid var(--black);
+      background: var(--paper);
+    }
+    .stat-strip-item {
+      padding: 18px 20px;
+      border-right: 1px solid var(--rule);
+      text-align: center;
+    }
+    .stat-strip-item:last-child { border-right: none; }
+    .stat-strip-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--red);
+      line-height: 1;
+      display: block;
+    }
+    .stat-strip-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-top: 4px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<script src="nav.js"></script>
+
+<div class="ticker-tape">
+  <span class="ticker-scroll">
+    <span class="ticker-item">SPY &nbsp;<span class="up">▲ 2.94</span> Sharpe</span>
+    <span class="ticker-item">LMT &nbsp;<span class="up">▲ 4.51</span> Sharpe</span>
+    <span class="ticker-item">XOM &nbsp;<span class="up">▲ 4.17</span> Sharpe</span>
+    <span class="ticker-item">GLD &nbsp;<span class="up">▲ 3.80</span> Sharpe</span>
+    <span class="ticker-item">SLV &nbsp;<span class="up">▲ 4.27</span> Sharpe</span>
+    <span class="ticker-item">IWM &nbsp;<span class="up">▲ 3.09</span> Sharpe</span>
+    <span class="ticker-item">VYM &nbsp;<span class="up">▲ 3.50</span> Sharpe</span>
+    <span class="ticker-item">NVDA &nbsp;<span class="up">▲ 2.31</span> Sharpe</span>
+    <span class="ticker-item">CVX &nbsp;<span class="up">▲ 3.88</span> Sharpe</span>
+    <span class="ticker-item">HON &nbsp;<span class="up">▲ 3.86</span> Sharpe</span>
+    <span class="ticker-item">923 strategies tested &nbsp;·&nbsp; 59% positive alpha &nbsp;·&nbsp; 10 validation tests &nbsp;·&nbsp; SPA p=0.000</span>
+  </span>
+</div>
+
+<div class="stat-strip">
+  <div class="stat-strip-item">
+    <span class="stat-strip-num">923</span>
+    <span class="stat-strip-label">Strategies Tested</span>
+  </div>
+  <div class="stat-strip-item">
+    <span class="stat-strip-num">4.51</span>
+    <span class="stat-strip-label">Peak Sharpe Ratio</span>
+  </div>
+  <div class="stat-strip-item">
+    <span class="stat-strip-num">16</span>
+    <span class="stat-strip-label">AI Agents</span>
+  </div>
+  <div class="stat-strip-item">
+    <span class="stat-strip-num">p=0.000</span>
+    <span class="stat-strip-label">SPA Significance</span>
+  </div>
+  <div class="stat-strip-item">
+    <span class="stat-strip-num">41</span>
+    <span class="stat-strip-label">Tickers</span>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <div class="edition-label">Volume 1 &nbsp;·&nbsp; Issue 1 &nbsp;·&nbsp; March 2026</div>
+
+  <!-- COVER STORY -->
+  <div class="cover-edition">
+    <div class="cover-lead">
+      <span class="cover-lead-kicker">Cover Story &nbsp;·&nbsp; Features</span>
+      <h1 class="cover-lead-headline">
+        <a href="features/the-machine-that-learns-to-wait.html">The Machine That Learns When to Wait</a>
+      </h1>
+      <p class="cover-lead-deck">
+        A Hidden Markov Model trained on five years of SPY data discovered something counterintuitive: the most profitable trading strategy is one that declines to trade 34% of the time. Inside the breakthrough that reframed the entire project — from signal prediction to intelligent abstention.
+      </p>
+      <p style="margin-top:16px; font-size:0.72rem; color:var(--mid); font-style:italic;">
+        Also in this issue: <a href="research/sixteen-minds-one-trade.html">How 16 specialist AI agents vote on every trade</a> &nbsp;·&nbsp;
+        <a href="lab/most-productive-day.html">The day 23 commits landed in four hours</a> &nbsp;·&nbsp;
+        <a href="theory/theta-the-engine.html">Theta: the income engine that never sleeps</a>
+      </p>
+    </div>
+    <div class="cover-sidebar">
+      <div class="cover-sidebar-story">
+        <span class="story-section-tag" style="--section-clr: var(--research);">Research</span>
+        <div class="story-title"><a href="research/proving-the-edge.html">Proving the Edge: How We Know This Isn't Luck</a></div>
+        <div class="story-deck">Ten independent statistical tests. Walk-forward efficiency of 3.886. Permutation p-value of 1.000 for directional alpha. What the numbers say.</div>
+      </div>
+      <div class="cover-sidebar-story">
+        <span class="story-section-tag" style="--section-clr: var(--brief);">The Brief</span>
+        <div class="story-title"><a href="brief/what-is-stacktrader.html">What is Stack$Trader?</a></div>
+        <div class="story-deck">The entire idea in 600 words. Start here if you're new.</div>
+      </div>
+      <div class="cover-sidebar-story">
+        <span class="story-section-tag" style="--section-clr: var(--lab);">The Lab</span>
+        <div class="story-title"><a href="lab/two-ais-one-codebase.html">Two AIs, One Codebase</a></div>
+        <div class="story-deck">How Claude and Gemini divide research and implementation labour on a live trading system.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READING PATHS -->
+  <div class="reading-paths">
+    <div class="path">
+      <span class="path-label">New here? Start here</span>
+      <div class="path-title">"I want to understand what this is all about"</div>
+      <ul class="path-links">
+        <li><a href="brief/what-is-stacktrader.html">What is Stack$Trader?</a></li>
+        <li><a href="theory/theta-the-engine.html">Theta: The Engine That Never Sleeps</a></li>
+        <li><a href="features/the-machine-that-learns-to-wait.html">The Machine That Learns to Wait</a></li>
+        <li><a href="lab/seven-phases.html">Seven Phases: A Chronicle</a></li>
+      </ul>
+    </div>
+    <div class="path">
+      <span class="path-label">Show me results</span>
+      <div class="path-title">"I want the evidence and the numbers"</div>
+      <ul class="path-links">
+        <li><a href="brief/numbers-that-matter.html">The Numbers That Matter</a></li>
+        <li><a href="research/proving-the-edge.html">Proving the Edge</a></li>
+        <li><a href="research/the-leaderboard.html">The Leaderboard: 923 Strategies</a></li>
+        <li><a href="features/the-machine-that-learns-to-wait.html">The HMM Breakthrough</a></li>
+      </ul>
+    </div>
+    <div class="path">
+      <span class="path-label">Full technical depth</span>
+      <div class="path-title">"I want to understand the architecture"</div>
+      <ul class="path-links">
+        <li><a href="research/sixteen-minds-one-trade.html">16 Minds, One Trade</a></li>
+        <li><a href="theory/dealer-positioning.html">Dealer Positioning: GEX & DIX</a></li>
+        <li><a href="research/proving-the-edge.html">10-Test Validation Suite</a></li>
+        <li><a href="whitepaper.html">Full Whitepaper (coming)</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- THE BRIEF -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-name" style="color: var(--brief);">The Brief</h2>
+      <div class="section-rule"></div>
+      <a href="brief/what-is-stacktrader.html" class="section-more">All briefs →</a>
+    </div>
+    <div class="story-grid">
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--brief);">The Brief</span>
+        <a class="story-card-title" href="brief/what-is-stacktrader.html">What is Stack$Trader?</a>
+        <p class="story-card-deck">Selling time. That's the entire idea. A concise introduction to covered calls, the volatility risk premium, and why a systematic approach outperforms gut instinct.</p>
+        <a href="brief/what-is-stacktrader.html" class="story-card-read">Read →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--brief);">The Brief</span>
+        <a class="story-card-title" href="brief/numbers-that-matter.html">The Numbers That Matter</a>
+        <p class="story-card-deck">923 strategies. 41 tickers. Sharpe of 4.51. SPA p-value of 0.000. A visual guide to the key metrics that define Stack$Trader's validated edge.</p>
+        <a href="brief/numbers-that-matter.html" class="story-card-read">Read →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--brief);">The Brief</span>
+        <a class="story-card-title" href="lab/seven-phases.html">Seven Phases: A Chronicle</a>
+        <p class="story-card-deck">From synthetic data and the first backtest to a 16-agent live deployment architecture. The complete development story in one readable timeline.</p>
+        <a href="lab/seven-phases.html" class="story-card-read">Read →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-name" style="color: var(--features);">Features</h2>
+      <div class="section-rule"></div>
+      <a href="features/the-machine-that-learns-to-wait.html" class="section-more">All features →</a>
+    </div>
+    <div class="story-grid">
+      <div class="story-card" style="grid-column: span 2;">
+        <span class="story-card-section" style="--section-card-clr: var(--features);">Features</span>
+        <a class="story-card-title" href="features/the-machine-that-learns-to-wait.html" style="font-size:1.3rem;">The Machine That Learns When to Wait</a>
+        <p class="story-card-deck">The Hidden Markov Model trained on SPY classified every trading day over five years into one of three hidden states. What it found in State 2 — 210 days of crisis regime — changed everything about how the system makes decisions. The most important discovery wasn't when to trade. It was when not to.</p>
+        <a href="features/the-machine-that-learns-to-wait.html" class="story-card-read">Read the full feature →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--features);">Features</span>
+        <a class="story-card-title" href="features/from-bench-to-backtest.html">From Bench to Backtest: A Scientist's Approach to Markets</a>
+        <p class="story-card-deck">What happens when you apply the rigour of semiconductor process control to financial signal detection? The methodology behind Stack$Trader's statistical framework.</p>
+        <a href="features/from-bench-to-backtest.html" class="story-card-read">Read →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESEARCH -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-name" style="color: var(--research);">Research</h2>
+      <div class="section-rule"></div>
+      <a href="research/sixteen-minds-one-trade.html" class="section-more">All research →</a>
+    </div>
+    <div class="story-grid">
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--research);">Research</span>
+        <a class="story-card-title" href="research/sixteen-minds-one-trade.html">16 Minds, One Trade</a>
+        <p class="story-card-deck">The Mixture-of-Experts architecture: how 16 specialist AI agents vote on every trade, and why disagreement between agents carries as much signal as agreement.</p>
+        <a href="research/sixteen-minds-one-trade.html" class="story-card-read">Read →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--research);">Research</span>
+        <a class="story-card-title" href="research/proving-the-edge.html">Proving the Edge</a>
+        <p class="story-card-deck">Ten independent statistical tests, designed to be as hard to pass as possible. Walk-forward efficiency. Hansen's SPA. Permutation testing. What we found.</p>
+        <a href="research/proving-the-edge.html" class="story-card-read">Read →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--research);">Research</span>
+        <a class="story-card-title" href="research/the-leaderboard.html">The Leaderboard: 923 Strategies</a>
+        <p class="story-card-deck">The full walk-forward results across all tickers and trigger combinations. Updated dynamically. Tier S starts at Sharpe 2.0 — and the best hits 4.51.</p>
+        <a href="research/the-leaderboard.html" class="story-card-read">View leaderboard →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE LAB -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2 class="section-name" style="color: var(--lab);">The Lab</h2>
+      <div class="section-rule"></div>
+      <a href="lab/seven-phases.html" class="section-more">All lab notes →</a>
+    </div>
+    <div class="story-grid">
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--lab);">The Lab</span>
+        <a class="story-card-title" href="lab/seven-phases.html">Seven Phases: A Chronicle</a>
+        <p class="story-card-deck">From synthetic data generation to live broker integration. The complete arc of a trading system built from scratch over seven development phases.</p>
+        <a href="lab/seven-phases.html" class="story-card-read">Read →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--lab);">The Lab</span>
+        <a class="story-card-title" href="lab/most-productive-day.html">The Most Productive Day in the Project's History</a>
+        <p class="story-card-deck">March 2, 2026. 23 commits. 4 hours. One new AI agent, a live trading kill switch, and the formalization of dual-AI collaboration.</p>
+        <a href="lab/most-productive-day.html" class="story-card-read">Read →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--lab);">The Lab</span>
+        <a class="story-card-title" href="lab/two-ais-one-codebase.html">Two AIs, One Codebase</a>
+        <p class="story-card-deck">Claude handles architecture and implementation. Gemini runs research and validation. Here's how two large language models divide labour on a real trading system.</p>
+        <a href="lab/two-ais-one-codebase.html" class="story-card-read">Read →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- THEORY -->
+  <div class="section-block" style="border-bottom: none;">
+    <div class="section-header">
+      <h2 class="section-name" style="color: var(--theory);">Theory</h2>
+      <div class="section-rule"></div>
+      <a href="theory/theta-the-engine.html" class="section-more">All theory →</a>
+    </div>
+    <div class="story-grid">
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--theory);">Theory</span>
+        <a class="story-card-title" href="theory/theta-the-engine.html">Theta: The Engine That Never Sleeps</a>
+        <p class="story-card-deck">Every day that passes, an option contract loses a little value to time decay. Stack$Trader is built to harvest that decay systematically. Here's how it works — no jargon required.</p>
+        <a href="theory/theta-the-engine.html" class="story-card-read">Read →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: var(--theory);">Theory</span>
+        <a class="story-card-title" href="theory/dealer-positioning.html">What the Market Can't Hide: Dealer Positioning</a>
+        <p class="story-card-deck">GEX, Vanna, Charm, DIX — the footprints that market makers leave in the options chain. Stack$Trader's 13th agent reads them to time entries.</p>
+        <a href="theory/dealer-positioning.html" class="story-card-read">Read →</a>
+      </div>
+      <div class="story-card">
+        <span class="story-card-section" style="--section-card-clr: #555;">Whitepaper</span>
+        <a class="story-card-title" href="whitepaper.html">Full Academic Whitepaper</a>
+        <p class="story-card-deck" style="background:var(--code-bg); padding:12px; font-style:normal; border-left: 3px solid var(--rule); font-size:0.72rem; color:var(--mid);">
+          <em>Coming soon.</em> The full peer-review-style paper covering the complete 10-test statistical framework, overnight/intraday decomposition, DFA Hurst exponent analysis, and the 324-parameter grid search with walk-forward validation.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end page-wrapper -->
+
+</body>
+</html>
