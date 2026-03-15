@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From Stagnation to AutoResearch: Three Generations of Evolutionary Failure &mdash; The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="6">
+  <meta name="date" content="2026-03-14">
+  <meta name="tags" content="AGENT, V5, V6, V7, autoresearch, genetic-algorithm, veto-evolution, cross-ticker, stagnation, fitness, forward-test, covered-calls">
+  <meta name="read-time" content="14">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #555;
+      font-style: italic;
+      margin-bottom: 0.3rem;
+    }
+
+    .byline {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .lede {
+      margin: 1.5rem 0;
+    }
+
+    .lede p {
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    .article-body h2 {
+      font-size: 1.5rem;
+      margin: 2rem 0 0.8rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid #ddd;
+      color: #1a1a1a;
+    }
+
+    .article-body h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #333;
+    }
+
+    .article-body p {
+      margin-bottom: 1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.3rem;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f4f4f0;
+      padding: 0.1em 0.3em;
+      border-radius: 2px;
+    }
+
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      line-height: 1.5;
+    }
+
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      padding: 0.8rem 1.2rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fef9f0;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    table.data-table caption {
+      text-align: left;
+      font-weight: bold;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    table.data-table th {
+      background: #f0ede6;
+      text-align: left;
+      padding: 0.5rem 0.6rem;
+      border-bottom: 2px solid #ccc;
+      font-size: 0.85rem;
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fafaf6;
+    }
+
+    table.data-table tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+
+    table.data-table tr.highlight {
+      background: #fff8e1 !important;
+    }
+
+    table.data-table tfoot td {
+      font-size: 0.8rem;
+      color: #888;
+      padding-top: 0.3rem;
+      border-bottom: none;
+    }
+
+    .positive { color: #2e7d32; }
+    .negative { color: #c62828; }
+
+    .article-footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+    }
+
+    .tags {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 2rem auto;
+      padding: 1rem 0;
+      border-top: 3px solid #CC0001;
+      font-size: 0.85rem;
+      color: #888;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .article-header h1 { font-size: 1.6rem; }
+      table.data-table { font-size: 0.8rem; }
+      table.data-table th, table.data-table td { padding: 0.3rem 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">The StackStrader Review</header>
+  <nav class="section-label"><span>FEATURE</span></nav>
+  <article>
+    <header class="article-header">
+      <h1>From Stagnation to AutoResearch: Three Generations of Evolutionary Failure</h1>
+      <p class="subtitle">V5 through V7 promised smarter evolution. The forward test returned r=0.108. Here is what actually happened, what broke, and why the path forward runs through automated research, not bigger populations.</p>
+      <p class="byline">Chris &middot; March 14, 2026 &middot; 14 min read</p>
+    </header>
+
+    <div class="lede">
+      <p>Training fitness of 3.93 produced forward PNL of -$35,827. The correlation between the two was r=0.108 (p=0.539) &mdash; statistically indistinguishable from random. After three major evolutionary revisions, five A/B tests, and a 35&times;35 cross-ticker matrix, the conclusion is stark: the genetic algorithm (GA) is optimizing the wrong thing. V5 through V7 each solved real problems &mdash; diversity collapse, Sharpe-only myopia, premature convergence &mdash; but the cumulative effect on out-of-sample performance was negligible. This article documents what each version attempted, where each failed, and why the next step is not V8 but a fundamentally different approach: automated research that generates hypotheses before evolution begins.</p>
+    </div>
+
+    <div class="article-body">
+
+      <h2>V5: Diversity Enforcement and Cross-Ticker Meta-Learning</h2>
+
+      <p>V5 addressed the most visible pathology in V1&ndash;V4 runs: premature convergence. By generation 10, 90% of the population would share the same leaf signature as the seed champion. Fitness sharing, introduced in V3, was theoretically sound &mdash; divide fitness by the square root of niche size &mdash; but in practice, the champion's absolute fitness advantage (often 2&ndash;3 points) overpowered the sharing penalty.</p>
+
+      <p>V5 introduced three mechanisms:</p>
+
+      <ul>
+        <li><strong>Diversity enforcement via leaf signature tracking.</strong> Each individual's veto tree was decomposed into its set of leaf triggers. Individuals sharing the same signature had their fitness divided by <code>niche_size ** 0.5</code>. This was already present in V3 but V5 tightened the pressure.</li>
+        <li><strong>Cross-ticker meta-learning.</strong> Top trees from ticker A were injected as seeds into ticker B's evolution. The hypothesis: signals like <code>iv_rank_high</code> or <code>hmm_bull</code> should transfer across equities sharing similar volatility profiles.</li>
+        <li><strong>IV-adjusted delta.</strong> The <code>delta_iv_adjust</code> parameter (range 0.00&ndash;0.15) let the GA discover that volatile tickers benefit from dynamic delta reduction when IV rank is elevated. The ceiling was raised from 0.55 to 0.70, allowing more aggressive premium capture in calm regimes.</li>
+      </ul>
+
+      <p>V5 produced meaningful improvements in training fitness. AAPL climbed from 2.57 to 3.84 (+49%). GOOG rose from 2.28 to 3.25 (+42%). The delta ceiling unlock was the biggest contributor: trees that combined <code>iv_rank_high</code> with aggressive delta targets discovered a genuine regime-conditional strategy. But V5 also introduced a structural problem that would compound through V6 and V7: it made evolution <em>better at fitting the training set</em> without improving generalization.</p>
+
+      <h2>V6: Multi-Objective Fitness and the Sharpe Trap</h2>
+
+      <p>The central insight motivating V6 was that Sharpe-only fitness rewards consistency over magnitude. A strategy earning 3% annually with Sharpe 2.0 outscored one earning 12% annually with Sharpe 1.5. The GA was discovering low-risk, low-return trees and calling them optimal.</p>
+
+      <h3>The Multi-Objective Formula</h3>
+
+      <p>V6 replaced the single-metric fitness with a weighted composite:</p>
+
+<pre>fitness = (
+    0.60 * delta_sharpe +
+    0.25 * norm_return +       # ann_return * 10
+    0.15 * norm_calmar          # min(calmar, 5.0) / 5.0
+) - wfe_penalty</pre>
+
+      <p>Calmar ratio &mdash; annualized return divided by maximum drawdown &mdash; was the new third axis. The Calmar component was capped at 1.0 to prevent drawdown-free strategies from dominating.</p>
+
+      <h3>Trade-Level Drill-Down</h3>
+
+      <p>V6 also added per-trade analysis: win rate, profit factor, average win/loss, tail ratio. This was meant to expose strategies that achieved high Sharpe through concentration &mdash; one lucky trade producing all the alpha. A penalty of &minus;0.20 was applied to strategies with fewer than 10 trades, and &minus;0.10 for profit factor above 10 (suspiciously concentrated). The LLM INTERPRET phase in guided evolution received these trade statistics to generate better mutation suggestions.</p>
+
+      <h3>Bet Size Evolution</h3>
+
+      <p>V6 promoted <code>max_positions</code> (1&ndash;4) and <code>coverage_ratio</code> (0.30&ndash;1.00) from hardcoded values to evolved parameters. The coverage floor dropped from 0.50 to 0.30, letting the GA discover that selling calls on only 30% of shares preserves upside in volatile tickers. Position sizing from <code>data/positions.csv</code> replaced the uniform 100-share assumption with actual portfolio weights.</p>
+
+      <h3>What Went Wrong</h3>
+
+      <p>The multi-objective formula introduced fitness instability. Champions stored with fitness 3.25 under V5's Sharpe-only formula re-evaluated to &minus;1.91 under V6's weighted composite. The <code>ann_return</code> and <code>calmar</code> components penalized strategies that improved Sharpe by reducing exposure &mdash; exactly the strategies V5 had optimized toward. GOOG's delta=0.70 champion, which had been V5's showpiece, scored negative under V6 because its high-delta posture produced poor absolute returns in a flat market.</p>
+
+      <p>More fundamentally, the multi-objective formula did not solve the core problem. It replaced one proxy (Sharpe gap) with a weighted average of three proxies. The forward test would later confirm that the correlation between this composite fitness and actual OOS PNL was negligible.</p>
+
+      <h2>V7: Stagnation Tiers and Cross-Ticker Generalization</h2>
+
+      <p>V7 was the most ambitious revision. It attacked three problems simultaneously: premature convergence, isolated per-ticker evolution, and fitness formula drift.</p>
+
+      <h3>Adaptive Stagnation Tiers</h3>
+
+      <p>The evolution loop now tracked stagnation count (generations without improvement) and escalated its response:</p>
+
+      <table class="data-table">
+        <caption>V7 Stagnation Response Tiers</caption>
+        <thead>
+          <tr><th>Stagnation</th><th>Tier</th><th>Mutation Rate</th><th>Tree Bias</th><th>Immigration</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0&ndash;4</td><td>Normal</td><td>0.30</td><td>50%</td><td>0%</td></tr>
+          <tr><td>5&ndash;9</td><td>Uneasy</td><td>0.30</td><td>50%</td><td>20%</td></tr>
+          <tr><td>10&ndash;19</td><td>Shakeup</td><td>0.51&times; boost</td><td>60%</td><td>33%</td></tr>
+          <tr><td>20&ndash;24</td><td>Nuclear</td><td>0.69&times; boost</td><td>70%</td><td>33%</td></tr>
+          <tr><td>&ge;25</td><td>Park</td><td>&mdash;</td><td>&mdash;</td><td>Early stop</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">Source: <code>scripts/veto_evolver.py</code> lines 1347&ndash;1443</td></tr></tfoot>
+      </table>
+
+      <p>When stagnation reached 5, the top-20 individuals were checked for leaf signature diversity. If fewer than 3 unique signatures existed for 5 consecutive generations, a diversity injection replaced the bottom 30% of the population with fresh random individuals. This mechanism fired regularly &mdash; the logs show injections at generation 15&ndash;25 for most tickers &mdash; but rarely changed the final champion.</p>
+
+      <h3>Hall-of-Fame Universal Champion Seeding</h3>
+
+      <p>The cross-ticker generalization question &mdash; "do champions transfer?" &mdash; required a 35&times;35 matrix evaluation. Each ticker's champion was evaluated on all 34 other tickers, producing 1,190 fitness scores. The results were definitive:</p>
+
+      <table class="data-table">
+        <caption>Universal Champions &mdash; Top 5 by Cross-Ticker Win Rate</caption>
+        <thead>
+          <tr><th>Champion</th><th>Native &Delta;S</th><th>Avg &Delta;S</th><th>Win%</th><th>Classification</th><th>Tree</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>NVDA</td><td class="negative">&minus;0.873</td><td class="positive">+0.215</td><td>69%</td><td>Universal</td><td><code>OR(kitchen_sink, OR(AND(friday, cci_neutral), avwap_sl_near))</code></td></tr>
+          <tr class="highlight"><td>COST</td><td class="negative">&minus;1.258</td><td class="positive">+0.733</td><td>66%</td><td>Universal</td><td><code>AND(OR(vrp, vol_rank), vol_term_contango)</code></td></tr>
+          <tr class="highlight"><td>TSLA</td><td class="positive">+1.103</td><td class="positive">+0.412</td><td>66%</td><td>Universal</td><td><code>OR(hurst_accel, hmm_bull)</code></td></tr>
+          <tr><td>HON</td><td class="positive">+1.020</td><td class="positive">+0.228</td><td>60%</td><td>Universal</td><td><code>AND(OR(psar_bullish, vortex_bullish), cmf_positive)</code></td></tr>
+          <tr><td>PATH</td><td class="positive">+2.227</td><td class="positive">+0.160</td><td>57%</td><td>Maybe</td><td><code>OR(hurst_accel, macd_accel)</code></td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="6">Source: <code>artifacts/cross_ticker_report_v6_20260314_173320.txt</code></td></tr></tfoot>
+      </table>
+
+      <p>The most striking result: COST's champion had a <em>negative</em> native delta-Sharpe (&minus;1.258) but improved 66% of other tickers. NVDA's champion also scored negative on its home ticker but won on 69% of the universe. The best universal champions were not the best native champions. This is strong evidence that per-ticker evolution was finding locally optimal but globally brittle strategies.</p>
+
+      <h3>Archetype Clustering</h3>
+
+      <p>The cross-ticker matrix also revealed that transfer learning within archetypes was real but limited:</p>
+
+      <table class="data-table">
+        <caption>Archetype Clustering &mdash; Intra vs. Inter-Group Transfer</caption>
+        <thead>
+          <tr><th>Archetype</th><th>Intra &Delta;S</th><th>Inter &Delta;S</th><th>Diff</th><th>Clusters?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>mega_tech</td><td class="positive">+0.348</td><td class="negative">&minus;0.177</td><td class="positive">+0.525</td><td>Yes</td></tr>
+          <tr><td>growth_tech</td><td class="positive">+0.231</td><td class="negative">&minus;0.070</td><td class="positive">+0.301</td><td>Yes</td></tr>
+          <tr><td>defensive</td><td class="positive">+0.118</td><td class="negative">&minus;0.125</td><td class="positive">+0.243</td><td>Yes</td></tr>
+          <tr><td>energy</td><td class="negative">&minus;0.124</td><td class="negative">&minus;0.235</td><td class="positive">+0.111</td><td>Yes</td></tr>
+          <tr><td>commodity</td><td class="negative">&minus;0.007</td><td class="negative">&minus;0.042</td><td class="positive">+0.035</td><td>Weak</td></tr>
+          <tr><td>semi</td><td class="negative">&minus;0.467</td><td class="positive">+0.141</td><td class="negative">&minus;0.608</td><td>No</td></tr>
+          <tr><td>etf_broad</td><td class="negative">&minus;0.511</td><td class="negative">&minus;0.193</td><td class="negative">&minus;0.319</td><td>No</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">Source: <code>artifacts/cross_ticker_report_v6_20260314_173320.txt</code>, Section 5</td></tr></tfoot>
+      </table>
+
+      <p>Mega-tech and growth-tech clustered convincingly: champions from AAPL worked better on MSFT and GOOG than on GLD or XOM. But semiconductors showed the opposite pattern &mdash; LRCX and TSM champions performed <em>better</em> outside their archetype than within it. This suggests the semi-conductor archetype shares noise rather than signal.</p>
+
+      <h3>The Seeding A/B Test</h3>
+
+      <p>V7 ran a controlled A/B test comparing three seeding strategies across 5 tickers (AAPL, TSLA, LRCX, VOO, HON), 50 generations, population 120:</p>
+
+      <table class="data-table">
+        <caption>Seeding A/B Test &mdash; Average Across 5 Tickers</caption>
+        <thead>
+          <tr><th>Strategy</th><th>Avg Fitness</th><th>Avg &Delta;Sharpe</th><th>Avg Conv Gen</th><th>Avg Diversity@20</th><th>Wins</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A: Control</td><td>+2.302</td><td>+2.701</td><td>6.2</td><td>8.4</td><td>2/5</td></tr>
+          <tr><td>B: Hall-of-Fame</td><td>+2.211</td><td>+2.512</td><td>29.0</td><td>10.4</td><td>2/5</td></tr>
+          <tr><td>C: Epoch Restart</td><td>+1.814</td><td>+2.119</td><td>32.2</td><td>9.0</td><td>1/5</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="6">Source: <code>artifacts/v7_seeding_ab_test_log.txt</code></td></tr></tfoot>
+      </table>
+
+      <p>The results were humbling. Control &mdash; the existing seeding strategy &mdash; achieved the highest average fitness. Hall-of-Fame seeding delayed convergence substantially (convergence at generation 29 vs. 6.2) and maintained higher diversity (10.4 unique signatures vs. 8.4), but produced lower fitness on 3 of 5 tickers. Epoch Restart was worst by every metric except convergence delay. The only clear HoF winner was AAPL: fitness 2.198 vs. control's 1.746 (+26%), with a far more complex tree: <code>OR(hmm_bull, AND(AND(cmf_positive, bb_squeeze), obv_rising))</code>.</p>
+
+      <p>The lesson: delayed convergence does not imply better solutions. The GA found its best individual early and spent the remaining generations exploring dead space.</p>
+
+      <h2>The Forward Test: The Reality Check</h2>
+
+      <p>All of this &mdash; three evolutionary versions, multi-objective fitness, cross-ticker regularization, Hall-of-Fame seeding &mdash; culminated in a forward test on 2026 data (January 1 through March 5), applied to 35 tickers with $4.8M notional exposure. The veto strategy lost $35,827. The always-on baseline lost $51,696. The veto alpha was +$15,869 &mdash; a genuine improvement, but on a $4.8M portfolio, that is 0.33% over 44 days.</p>
+
+      <table class="data-table">
+        <caption>Forward Test &mdash; Portfolio Summary</caption>
+        <thead>
+          <tr><th>Metric</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Veto Strategy PNL</td><td class="negative">&minus;$35,827</td></tr>
+          <tr><td>Always-On Baseline PNL</td><td class="negative">&minus;$51,696</td></tr>
+          <tr class="highlight"><td>Veto Alpha (excess)</td><td class="positive">+$15,869</td></tr>
+          <tr><td>Total Notional</td><td>$4,816,274</td></tr>
+          <tr><td>PNL-Positive Tickers</td><td>17 / 35 (49%)</td></tr>
+          <tr><td>Avg Training Fitness</td><td>3.928</td></tr>
+          <tr><td><strong>Fitness &harr; Forward PNL Correlation</strong></td><td><strong>r=0.108 (p=0.539)</strong></td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">Source: <code>journal/reports/2026-03-14_v7_forward_report.md</code></td></tr></tfoot>
+      </table>
+
+      <p>The fitness-PNL correlation of r=0.108 is the single most important number in this article. It means that knowing a strategy's training fitness tells you almost nothing about its forward performance. Champions with fitness above 4.0 (TSLA at 4.38, VOO at 1.93) produced both the best and worst forward results. INTC, with $746K notional and fitness around 3.6, lost $77,532. VOO, with $1.26M notional, gained $45,433. The veto tree structures offer no obvious pattern &mdash; INTC's tree (<code>OR(vpin_spike, OR(support_resist, hmm_bull))</code>) uses the same building blocks as winners.</p>
+
+      <div class="pull-quote">
+        Training fitness of 3.93 produced a forward correlation of r=0.108. The GA is optimizing a proxy that does not predict the outcome we care about.
+      </div>
+
+      <h3>Veto Rate as the Hidden Variable</h3>
+
+      <p>The one pattern that survived: low veto rates correlated with forward success. Tickers with 10&ndash;25% veto rates averaged +$10,331 PNL. Those with 50&ndash;75% veto rates averaged &minus;$4,987. Those above 75% averaged &minus;$6,412. The GA learned to veto too much &mdash; high veto rates scored well in training (fewer losing trades = better Sharpe) but destroyed alpha by missing premium-capture opportunities.</p>
+
+      <table class="data-table">
+        <caption>Forward PNL by Veto Rate Bucket</caption>
+        <thead>
+          <tr><th>Veto Rate</th><th>Count</th><th>Avg PNL</th><th>Avg &Delta;Sharpe</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>10&ndash;25%</td><td>6</td><td class="positive">+$10,331</td><td class="negative">&minus;0.199</td></tr>
+          <tr><td>25&ndash;50%</td><td>9</td><td class="positive">+$1,005</td><td class="negative">&minus;0.429</td></tr>
+          <tr><td>50&ndash;75%</td><td>15</td><td class="negative">&minus;$4,987</td><td class="negative">&minus;0.158</td></tr>
+          <tr><td>75&ndash;100%</td><td>5</td><td class="negative">&minus;$6,412</td><td class="negative">&minus;0.379</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">Source: <code>journal/reports/2026-03-14_v7_forward_report.md</code>, Veto Behavior Analysis</td></tr></tfoot>
+      </table>
+
+      <h2>The LLM Experiment: Minimal Value</h2>
+
+      <p>V5 through V7 all included an optional LLM-guided mode, where Claude or GPT would analyze champion trees and suggest mutations. The guided evolution framework (STAR: Synthesize, Test, Analyze, Refine) was inspired by Karpathy's vision of AI-driven research. In practice, the LLM added negligible value.</p>
+
+      <p>The full 80-cycle guided evolution run on March 13 completed in 2.54 hours with <code>--skip-llm</code> mode and zero tokens consumed. Maximum fitness reached 1.39 (LRCX) vs. production champions at 3.62 (LMT). Removing the LLM from the loop had no measurable impact on outcomes because the LLM's suggestions &mdash; typically "try adding <code>hmm_bull</code>" or "consider removing the NOT gate" &mdash; were equivalent to what random mutation already explored.</p>
+
+      <p>The LLM's real limitation was context. It could see the champion tree and trade statistics, but it had no access to the underlying price data, the trigger definitions, or the economic reasoning behind a signal. It was suggesting syntactic changes to trees when what was needed was semantic understanding of market regimes.</p>
+
+      <h2>A Catalog of Failures</h2>
+
+      <p>Across V5, V6, and V7, six distinct failure modes emerged:</p>
+
+      <ol>
+        <li><strong>Premature convergence.</strong> Despite fitness sharing (V3), diversity injection (V7), and adaptive immigration (V3+), the GA converged to a single champion within 10 generations on 3 of 5 A/B tickers. TSLA's control run converged at generation 0 &mdash; the seed was never beaten.</li>
+        <li><strong>Fitness formula instability.</strong> V6's multi-objective formula made V5 champions re-evaluate as negative. Checkpoints became incomparable across versions.</li>
+        <li><strong>Sharpe-only rewarding consistency over returns.</strong> V5's Sharpe-only formula found trees that vetoed 60&ndash;80% of trades, producing stable but tiny returns. V6's fix (adding return and Calmar components) introduced the instability problem above.</li>
+        <li><strong>Stagnation burning cycles.</strong> V7's tiered stagnation response (diversity injection, escalating mutation) extended runs by 30&ndash;50% but rarely found better solutions. The nuclear tier (stagnation 20+) replaced 33% of the population with random individuals, which were immediately outcompeted by the existing champion.</li>
+        <li><strong>Fitness not predicting forward PNL (r=0.108).</strong> The most fundamental failure. Three versions of increasingly sophisticated fitness functions, and the output metric has no predictive power.</li>
+        <li><strong>Cross-ticker seeding losing to control.</strong> The Hall-of-Fame strategy was architecturally elegant &mdash; inject universal champions from the 35&times;35 matrix &mdash; but produced lower average fitness than the control on 3 of 5 tickers.</li>
+      </ol>
+
+      <h2>Why Evolution Alone Is Not Enough</h2>
+
+      <p>The GA is a powerful optimizer, but it has no theory of markets. It cannot distinguish a trigger that fires because of genuine market microstructure (VPIN detecting toxic flow) from one that fires because of a statistical accident in the training window. It explores the space of tree structures exhaustively, but the space of <em>hypotheses about why a tree should work</em> is invisible to it.</p>
+
+      <p>Consider the COST champion: <code>AND(OR(vrp, vol_rank), vol_term_contango)</code>. This tree vetoes entry when two conditions hold: either the volatility risk premium is positive or vol rank is elevated, AND the VIX term structure is in contango. There is a plausible economic narrative &mdash; contango signals complacency, and high VRP means realized vol has been low, so selling premium into that environment risks an uncompensated blowup. But the GA did not discover this narrative. It discovered a tree topology that scored well in three walk-forward folds. Whether the narrative is valid is a question evolution cannot answer.</p>
+
+      <p>This is the gap that AutoResearch is designed to fill.</p>
+
+      <h2>The AutoResearch Vision</h2>
+
+      <p>AutoResearch, inspired by Karpathy's concept of recursive AI-driven research, inverts the pipeline. Instead of evolving trees and hoping they correspond to valid market hypotheses, it starts with hypotheses and generates candidate trees to test them. The system has five phases:</p>
+
+      <ol>
+        <li><strong>Failure Mining.</strong> Analyze the forward test to identify specific loss clusters: which tickers lost, on which dates, under what market conditions. Extract the 5&ndash;10 worst trades and characterize their shared properties.</li>
+        <li><strong>Trigger Synthesis.</strong> Given a failure cluster ("assignment cascade during defense rally"), propose new triggers or trigger combinations that would have identified those conditions in advance. This requires understanding what data is available and how existing triggers are computed.</li>
+        <li><strong>Narrative Intelligence.</strong> Cross-reference failure modes against financial literature, options practitioner wisdom, and macroeconomic events. A credit spread blow-out during a FOMC week is not a statistical accident &mdash; it is a known regime shift that should be codifiable.</li>
+        <li><strong>Fitness Review.</strong> Evaluate whether the current fitness function is measuring what matters. The r=0.108 result demands a fitness redesign &mdash; potentially moving to forward-validated fitness (reserve a 6-month holdout and compute fitness on it) or rank-based fitness (eliminate scale sensitivity).</li>
+        <li><strong>Literature Scan.</strong> Continuously ingest new research on covered call optimization, options microstructure, and regime detection. Map academic findings to implementable triggers.</li>
+      </ol>
+
+      <p>The pipeline architecture separates research from evolution. An orchestrator manages research memory &mdash; accumulated hypotheses, validated findings, dead ends &mdash; and feeds directives into the GA as constraints rather than seeds. A sandbox validates each hypothesis in isolation before it enters the evolutionary pool, preventing untested ideas from contaminating the population.</p>
+
+      <h3>What AutoResearch Changes</h3>
+
+      <p>The critical difference is <em>where intelligence enters the system</em>. In V5&ndash;V7, intelligence was applied <em>during</em> evolution (LLM suggesting mutations, fitness sharing, stagnation tiers). In AutoResearch, intelligence is applied <em>before</em> evolution:</p>
+
+      <ul>
+        <li>The research phase identifies that assignment cascades cost $76K across INTC, VYM, and LMT.</li>
+        <li>It proposes a new trigger: <code>rebuy_momentum</code>, which delays share repurchase when the stock is rallying past the assigned strike.</li>
+        <li>The trigger is validated in a sandbox backtest against the specific failure dates.</li>
+        <li>If validated, it enters the trigger pool for the next evolution run.</li>
+        <li>The GA evolves trees containing this trigger alongside existing ones &mdash; but the trigger itself was created through directed research, not random mutation.</li>
+      </ul>
+
+      <h2>What V8 Looks Like</h2>
+
+      <p>V8 is not a "better GA." It is a different system built on top of the existing GA infrastructure. The planned changes:</p>
+
+      <ul>
+        <li><strong>Forward-validated fitness.</strong> Reserve 2025-H2 as a holdout. Compute fitness on 2024&ndash;2025-H1 training folds, then validate on 2025-H2 before scoring. Champions that score well in training but fail on holdout are penalized.</li>
+        <li><strong>Veto rate constraint.</strong> Hard cap veto rate at 30% based on the forward test finding that low veto rates produce better PNL. The GA currently soft-penalizes above 40% &mdash; this was too permissive.</li>
+        <li><strong>Trigger provenance.</strong> Every trigger in the pool will carry metadata: its source (literature, failure mining, practitioner wisdom), the hypothesis it tests, and its standalone validation statistics. The GA can evolve tree structure, but it cannot invent triggers &mdash; only AutoResearch can.</li>
+        <li><strong>Ensemble voting at runtime.</strong> Instead of deploying 1 champion per ticker, deploy top-3 and require majority vote for a veto. This provides natural regularization: an overfit champion is outvoted by the two more generalizable alternatives.</li>
+        <li><strong>Cross-ticker regularization (selective).</strong> Apply the V7 generalization penalty only to archetypes that cluster (mega-tech, growth-tech, defensive). Skip it for archetypes that do not cluster (semi, ETF broad), where cross-ticker signal is noise.</li>
+      </ul>
+
+      <h2>Lessons Learned</h2>
+
+      <p>Three years of building this system produced one overriding lesson: <strong>optimization is not research</strong>. A genetic algorithm can discover the best tree within a search space, but it cannot question whether the search space is correct. When the best tree in the space produces r=0.108 against forward PNL, the problem is not the optimizer &mdash; it is the space.</p>
+
+      <p>V5 made the optimizer more diverse. V6 made the fitness function more nuanced. V7 made the exploration more persistent. None of them questioned the triggers, the bar frequency, the walk-forward structure, or the economic validity of the veto concept itself. AutoResearch does not promise to answer these questions, but it promises to <em>ask</em> them &mdash; systematically, at scale, before the GA spends 2.54 hours discovering trees that will not generalize.</p>
+
+      <p>The veto alpha is real: +$15,869 on a $4.8M portfolio in 44 days. It is also small, fragile, and inconsistent. The path from here is not more evolution but better hypotheses.</p>
+
+    </div>
+
+    <footer class="article-footer">
+      <p class="tags">Tags: AGENT, V5, V6, V7, autoresearch, genetic-algorithm, veto-evolution, cross-ticker, stagnation, fitness, forward-test, covered-calls</p>
+    </footer>
+  </article>
+  <footer class="issue-footer">
+    <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+  </footer>
+</body>
+</html>

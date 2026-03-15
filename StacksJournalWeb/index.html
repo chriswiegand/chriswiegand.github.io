@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stack$Trader — Algorithmic Research Journal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crimson: #CC0001;
+      --crimson-dk: #8B001E;
+      --bg: #0a0a0a;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --text: #e0e0e0;
+      --text-muted: #888;
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── HERO SECTION ── */
+    header {
+      padding: 6rem 0 4rem;
+      text-align: center;
+      background: radial-gradient(circle at center, rgba(204, 0, 1, 0.15) 0%, transparent 70%);
+    }
+
+    .wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .wordmark .dollar { color: var(--crimson); }
+
+    .tagline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .overview {
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: #ccc;
+      line-height: 1.8;
+    }
+
+    /* ── JOURNALS GRID ── */
+    .journals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 3rem;
+      padding: 4rem 0;
+    }
+
+    .journal-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 3rem;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s, box-shadow 0.4s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .journal-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, transparent 0%, rgba(204, 0, 1, 0.05) 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .journal-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--crimson);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(204, 0, 1, 0.2);
+    }
+
+    .journal-card:hover::before { opacity: 1; }
+
+    .vol-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--crimson);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .journal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .journal-desc {
+      font-size: 1rem;
+      color: #aaa;
+      margin-bottom: 2rem;
+      flex-grow: 1;
+    }
+
+    .explore-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .explore-link span {
+      transition: transform 0.3s;
+    }
+
+    .journal-card:hover .explore-link span {
+      transform: translateX(5px);
+    }
+
+    /* ── FEATURED SECTION ── */
+    .featured-section {
+      padding: 6rem 0;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .rule {
+      height: 1px;
+      background: var(--glass-border);
+      flex-grow: 1;
+    }
+
+    .featured-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .featured-item {
+      padding: 1.5rem;
+      border-left: 2px solid var(--glass-border);
+      transition: border-color 0.3s, background 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .featured-item:hover {
+      border-color: var(--crimson);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .featured-item h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .featured-item p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 4rem 0;
+      text-align: center;
+      border-top: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .footer-logo .dollar { color: var(--crimson); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+
+    @media (max-width: 768px) {
+      .wordmark { font-size: 3.5rem; }
+      .journals-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <div class="wordmark animate">Stack<span class="dollar">$</span>Trader</div>
+      <div class="tagline animate delay-1">An Algorithmic Research Journal</div>
+      <p class="overview animate delay-2">
+        Documenting the evolution of systematic options trading engines. Built with AI collaboration, validated with scientific rigour, and published for the next generation of quantitative researchers.
+      </p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="journals-grid">
+      <a href="stacktrader-launch/index.html" class="journal-card animate" style="animation-delay: 0.6s;">
+        <div>
+          <span class="vol-label">Volume 1</span>
+          <h2 class="journal-title">Whipsaw</h2>
+          <p class="journal-desc">
+            The inaugural edition. Exploring the foundations of systematic trading, early-stage engine design, and the hard-learned lessons of initial market exposure.
+          </p>
+        </div>
+        <div class="explore-link">Explore Volume <span>&rarr;</span></div>
+      </a>
+
+      <a href="StacksVol2/index.html" class="journal-card animate" style="animation-delay: 0.8s;">
+        <div>
+          <span class="vol-label">Volume 2</span>
+          <h2 class="journal-title">The Evolution Issue</h2>
+          <p class="journal-desc">
+            Focusing on genetic algorithms, diversity enforcement, and the transition from manual optimization to automated research frameworks.
+          </p>
+        </div>
+        <div class="explore-link">Explore Volume <span>&rarr;</span></div>
+      </a>
+    </section>
+
+    <section class="featured-section">
+      <div class="section-header">
+        <h3 class="section-title">Featured Research</h3>
+        <div class="rule"></div>
+      </div>
+      <div class="featured-links">
+        <a href="StacksVol2/articles/vol2_08_from-stagnation-to-autoresearch.html" class="featured-item animate" style="animation-delay: 1s;">
+          <h4>From Stagnation to AutoResearch</h4>
+          <p>Analyzing three generations of evolutionary failure and the roadmap for V8.</p>
+        </a>
+        <a href="stacktrader-launch/articles/whipsaw_article_01_cover_story.html" class="featured-item animate" style="animation-delay: 1.1s;">
+          <h4>Building the Machine</h4>
+          <p>The origin story of the Stack$Trader trading engine from scratch.</p>
+        </a>
+        <a href="StacksVol2/articles/vol2_01_cover_story.html" class="featured-item animate" style="animation-delay: 1.2s;">
+          <h4>Natural Selection, AI</h4>
+          <p>How genetic algorithms and LLMs combine for diverse strategy evolution.</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-logo">Stack<span class="dollar">$</span>Trader</div>
+      <p>&copy; 2026 Stack$Trader Research Team</p>
+      <p style="margin-top: 0.5rem; opacity: 0.5;">Quantitative Research for the Algorithmic Age</p>
+    </div>
+  </footer>
+
+</body>
+</html>

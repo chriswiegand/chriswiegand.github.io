@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When Markets Sleep — Stack$Trader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:        #1a1208;
+    --crimson:    #b5121b;
+    --paper:      #f7f3ec;
+    --paper-warm: #ede8df;
+    --rule:       #c8bfa8;
+    --muted:      #6b6050;
+    --gold:       #c8922a;
+    --teal:       #2a6b78;
+    --green:      #2a6b45;
+    --col-w:      680px;
+  }
+
+  html { font-size: 17px; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    line-height: 1.75;
+    padding: 0 20px 100px;
+  }
+
+  /* ── PUB HEADER ───────────────────────────────── */
+  .pub-header {
+    max-width: var(--col-w);
+    margin: 0 auto;
+    border-top: 4px solid var(--crimson);
+    padding: 18px 0 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+  }
+  .pub-wordmark {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 900;
+    color: var(--crimson); letter-spacing: -0.5px;
+  }
+  .pub-issue {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted);
+  }
+
+  /* ── ARTICLE HEADER ───────────────────────────── */
+  .article-header {
+    max-width: var(--col-w);
+    margin: 0 auto;
+    padding: 44px 0 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .article-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--crimson);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .article-kicker::after {
+    content: ''; flex: 1; height: 1px; background: var(--rule);
+  }
+  .article-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.7rem; font-weight: 900;
+    line-height: 1.08; color: var(--ink);
+    letter-spacing: -0.5px; margin-bottom: 8px;
+  }
+  .article-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 400; font-style: italic;
+    color: var(--muted); line-height: 1.4; margin-bottom: 18px;
+  }
+  .article-deck {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.02rem; font-weight: 300; font-style: italic;
+    color: var(--muted); line-height: 1.65;
+    margin-bottom: 26px; max-width: 540px;
+  }
+  .article-byline {
+    display: flex; align-items: center; gap: 20px;
+    padding-top: 18px; border-top: 1px solid var(--rule);
+  }
+  .byline-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.63rem; letter-spacing: 0.08em;
+    color: var(--muted); line-height: 1.6;
+  }
+  .byline-text strong {
+    color: var(--ink); font-weight: 500;
+    display: block; font-size: 0.68rem;
+  }
+  .read-badge {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #fff;
+    background: var(--ink); padding: 4px 10px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* ── BODY ─────────────────────────────────────── */
+  .article-body {
+    max-width: var(--col-w);
+    margin: 0 auto;
+    padding-top: 38px;
+  }
+
+  p {
+    font-size: 1rem; line-height: 1.78;
+    margin-bottom: 1.4em; hyphens: auto;
+  }
+
+  p.dropcap::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.2rem; font-weight: 900;
+    float: left; line-height: 0.8;
+    margin: 6px 10px -2px 0; color: var(--crimson);
+  }
+
+  /* ── SECTION BREAKS ───────────────────────────── */
+  .section-break {
+    display: flex; align-items: center; gap: 14px;
+    margin: 42px 0 28px;
+  }
+  .sb-rule { flex: 1; height: 1px; background: var(--rule); }
+  .sb-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+    flex-shrink: 0;
+  }
+  .sb-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem; font-weight: 700; color: var(--rule); flex-shrink: 0;
+  }
+
+  /* ── CODE BLOCK ───────────────────────────────── */
+  .code-block {
+    background: #1e1a14;
+    padding: 20px 22px;
+    margin: 26px 0;
+    overflow-x: auto;
+  }
+  .code-block pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.76rem;
+    line-height: 1.65;
+    color: #d4cfc5;
+    white-space: pre;
+  }
+  .code-block .comment { color: #6b7a5e; }
+  .code-block .kw      { color: #c07c52; }
+  .code-block .str     { color: #7fa87a; }
+  .code-block .num     { color: #9ab8d0; }
+  .code-block .fn      { color: #d4b86a; }
+  .code-block .cls     { color: #b8a0d4; }
+  .code-block .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.57rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #6b7a5e;
+    border-bottom: 1px solid #2e2920;
+    padding-bottom: 8px; margin-bottom: 12px;
+    display: block;
+  }
+
+  /* ── MATH DISPLAY ─────────────────────────────── */
+  .math-block {
+    background: var(--paper-warm);
+    border-left: 3px solid var(--teal);
+    padding: 18px 22px;
+    margin: 26px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.9;
+    color: var(--ink);
+    overflow-x: auto;
+  }
+  .math-block .math-label {
+    font-size: 0.57rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--teal);
+    display: block; margin-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+  }
+  .math-block .eq { display: block; padding: 2px 0; }
+  .math-block .where {
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.8rem; font-style: italic;
+    color: var(--muted); margin-top: 10px;
+    display: block; line-height: 1.7;
+  }
+
+  /* ── RESULTS TABLE ────────────────────────────── */
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 22px 0 28px;
+    font-size: 0.83rem;
+  }
+  .results-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.57rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    text-align: left; padding: 6px 10px 6px 0;
+    border-bottom: 1px solid var(--ink);
+    white-space: nowrap;
+  }
+  .results-table th:not(:first-child),
+  .results-table td:not(:first-child) {
+    text-align: right; padding-right: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+  }
+  .results-table td {
+    padding: 8px 10px 8px 0;
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.4;
+  }
+  .results-table tr.winner td { font-weight: 600; }
+  .results-table tr.winner td:first-child::after {
+    content: ' ★';
+    color: var(--gold);
+    font-size: 0.7rem;
+  }
+  .results-table .pass  { color: var(--green); font-weight: 600; }
+  .results-table .fail  { color: var(--crimson); }
+  .results-table .muted { color: var(--muted); }
+
+  /* ── STATE CARD GRID ──────────────────────────── */
+  .state-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 24px 0 30px;
+  }
+  .state-card {
+    background: var(--paper);
+    padding: 18px 16px;
+  }
+  .state-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.16em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .state-label.grind   { color: var(--green); }
+  .state-label.meanrev { color: var(--gold); }
+  .state-label.crisis  { color: var(--crimson); }
+
+  .state-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--ink); margin-bottom: 12px;
+    line-height: 1.1;
+  }
+  .state-stat {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem; color: var(--muted);
+    line-height: 1.8;
+    border-top: 1px solid var(--rule);
+    padding-top: 10px;
+  }
+  .state-stat .val {
+    color: var(--ink); font-weight: 500;
+  }
+
+  /* ── PULL QUOTE ───────────────────────────────── */
+  .pull-quote {
+    border-top: 2px solid var(--crimson);
+    border-bottom: 1px solid var(--rule);
+    padding: 20px 0 18px; margin: 34px 0;
+  }
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-weight: 700; font-style: italic;
+    line-height: 1.35; color: var(--ink); margin-bottom: 8px;
+  }
+  .pull-quote cite {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.1em;
+    color: var(--muted); font-style: normal;
+  }
+
+  /* ── ASIDE ────────────────────────────────────── */
+  .aside-note {
+    float: right; width: 215px;
+    margin: 4px 0 20px 28px;
+    padding: 14px 16px;
+    border-top: 2px solid var(--gold);
+    background: var(--paper-warm); clear: right;
+  }
+  .aside-note-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 7px;
+  }
+  .aside-note p {
+    font-size: 0.8rem; line-height: 1.55;
+    color: var(--muted); font-style: italic; margin-bottom: 0;
+  }
+
+  /* ── HOLDING PERIOD CHART ─────────────────────── */
+  .hp-chart {
+    margin: 24px 0 30px;
+    border: 1px solid var(--rule);
+    padding: 20px 20px 14px;
+    background: var(--paper-warm);
+  }
+  .hp-chart-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .hp-rows { display: flex; flex-direction: column; gap: 10px; }
+  .hp-row { display: grid; grid-template-columns: 42px 1fr 80px; gap: 8px; align-items: center; }
+  .hp-dte {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; color: var(--muted); text-align: right;
+  }
+  .hp-bar-track {
+    background: var(--rule);
+    height: 10px; border-radius: 1px; overflow: hidden;
+  }
+  .hp-bar-fill {
+    height: 100%; background: var(--teal);
+    border-radius: 1px;
+    transition: width 0.4s ease;
+  }
+  .hp-stats {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; color: var(--ink); text-align: right;
+    line-height: 1.4;
+  }
+  .hp-stats .pval { font-size: 0.56rem; color: var(--muted); }
+
+  /* ── TRANSITION DIAGRAM ───────────────────────── */
+  .transition-diagram {
+    margin: 24px 0;
+    padding: 20px;
+    border: 1px solid var(--rule);
+    background: var(--paper-warm);
+    text-align: center;
+  }
+  .transition-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .t-nodes {
+    display: flex; justify-content: center;
+    align-items: center; gap: 0;
+  }
+  .t-node {
+    padding: 12px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    border: 1.5px solid;
+    min-width: 100px;
+    line-height: 1.3;
+  }
+  .t-node.grind   { border-color: var(--green);  color: var(--green);   background: rgba(42,107,69,0.06); }
+  .t-node.meanrev { border-color: var(--gold);   color: var(--gold);    background: rgba(200,146,42,0.06); }
+  .t-node.crisis  { border-color: var(--crimson); color: var(--crimson); background: rgba(181,18,27,0.06); }
+  .t-arrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; color: var(--muted);
+    padding: 0 8px; line-height: 1;
+  }
+  .t-cross {
+    font-size: 0.62rem; color: var(--crimson);
+    margin-top: 10px; font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── CALLOUT BOX ──────────────────────────────── */
+  .callout {
+    border-left: 3px solid var(--teal);
+    padding: 16px 20px; margin: 26px 0;
+    background: var(--paper-warm);
+  }
+  .callout-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 8px;
+  }
+  .callout p { font-size: 0.88rem; margin-bottom: 0; font-style: italic; }
+
+  /* ── END / FOOTER ─────────────────────────────── */
+  .end-ornament {
+    text-align: center; margin: 48px 0 36px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; color: var(--rule);
+  }
+  .next-article {
+    max-width: var(--col-w); margin: 0 auto;
+    border-top: 1px solid var(--rule); padding: 20px 0;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .next-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .next-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem; font-style: italic;
+    color: var(--ink); text-align: right; max-width: 340px;
+  }
+  .article-footer {
+    max-width: var(--col-w); margin: 0 auto;
+    padding: 18px 0 0; border-top: 2px solid var(--ink);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .footer-pub {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 900; color: var(--crimson);
+  }
+  .footer-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; color: var(--muted);
+    text-align: right; line-height: 1.7;
+  }
+
+  /* ── ANIMATIONS & UTILS ───────────────────────── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .article-header { animation: fadeIn 0.5s ease both; }
+  .article-body   { animation: fadeIn 0.5s ease 0.1s both; }
+  .clearfix::after { content: ''; display: table; clear: both; }
+
+  @media (max-width: 620px) {
+    html { font-size: 15px; }
+    .article-title { font-size: 2.1rem; }
+    .state-grid { grid-template-columns: 1fr; }
+    .aside-note { float: none; width: 100%; margin: 0 0 20px; }
+    .t-nodes { flex-direction: column; }
+    p.dropcap::first-letter { font-size: 3.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PUB HEADER -->
+<div class="pub-header">
+  <a href="../index.html" class="pub-wordmark" style="text-decoration:none;">Stack$Trader</a>
+  <span class="pub-issue">Vol. I &nbsp;·&nbsp; No. 1 &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; Science &amp; Theory</span>
+</div>
+
+<!-- ARTICLE HEADER -->
+<header class="article-header">
+  <div class="article-kicker">Science &amp; Theory &nbsp;·&nbsp; Article 1 of 3</div>
+  <h1 class="article-title">When Markets Sleep</h1>
+  <p class="article-subtitle">The Hidden Markov Model and the anatomy of a quiet bull regime</p>
+  <p class="article-deck">Markets spend two-thirds of their time in a statistical state that is nearly ideal for selling options premium. A 3-state Gaussian HMM identified this state, quantified its edge to a Sharpe of 8.2, and became the structural foundation on which every subsequent agent in the Stack$Trader ensemble was built.</p>
+  <div class="article-byline">
+    <div class="byline-text">
+      <strong>The Editors</strong>
+      Stack$Trader &nbsp;·&nbsp; March 2026
+    </div>
+    <span class="read-badge">7 min read</span>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="article-body">
+
+<p class="dropcap">A Hidden Markov Model does not observe the market regime directly. It infers it — from a sequence of observable returns — by assuming that the visible data was generated by an unobserved latent process switching between a finite number of hidden states. The inference is probabilistic: the model produces, for each trading day, a posterior probability distribution across states rather than a definitive label. That distinction — probability distribution rather than point estimate — turns out to be the source of most of the edge the HMM provides.</p>
+
+<p>Stack$Trader's Phase 2 deployed a 3-state Gaussian HMM trained on SPY daily returns over a five-year window (2021-03-30 through 2026-02-27, 1,235 trading days). The implementation uses the <code>hmmlearn</code> library's <code>GaussianHMM</code> class with covariance type <code>'full'</code>, trained via the Baum-Welch expectation-maximization algorithm to convergence. The model has three hidden states, each parametrized by a Gaussian emission distribution — mean μ and variance σ² — and a 3×3 transition probability matrix A governing how likely the process is to remain in or exit each state on any given day.</p>
+
+<!-- ── SECTION 1 ─── -->
+<div class="section-break">
+  <span class="sb-num">1</span>
+  <span class="sb-rule"></span>
+  <span class="sb-label">The Three-State Solution</span>
+</div>
+
+<p>After training, the Viterbi algorithm decodes the most likely hidden state sequence given the observed returns. The three emergent states were labeled by their statistical properties, not by assumption:</p>
+
+<div class="state-grid">
+  <div class="state-card">
+    <div class="state-label grind">State 0</div>
+    <div class="state-name">Grind</div>
+    <div class="state-stat">
+      Days: <span class="val">812</span><br>
+      % of time: <span class="val">66%</span><br>
+      Mean daily return: <span class="val">+0.088%</span><br>
+      Ann. volatility: <span class="val">11.3%</span><br>
+      Theta edge: <span class="val">Real &amp; scalable</span>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-label meanrev">State 1</div>
+    <div class="state-name">Mean-Reversion</div>
+    <div class="state-stat">
+      Days: <span class="val">213</span><br>
+      % of time: <span class="val">17%</span><br>
+      Mean daily return: <span class="val">+0.055%</span><br>
+      Ann. volatility: <span class="val">23.2%</span><br>
+      Theta edge: <span class="val">Zero at all DTE</span>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-label crisis">State 2</div>
+    <div class="state-name">Crisis</div>
+    <div class="state-stat">
+      Days: <span class="val">210</span><br>
+      % of time: <span class="val">17%</span><br>
+      Mean daily return: <span class="val">−0.071%</span><br>
+      Ann. volatility: <span class="val">23.2%</span><br>
+      Theta edge: <span class="val">Negative</span>
+    </div>
+  </div>
+</div>
+
+<p>Two observations from this decomposition are immediately striking. First, Grind and Crisis share nearly identical volatility levels — the HMM's emission distributions have similar σ² for States 1 and 2 — which means a volatility filter alone cannot distinguish between them. The critical discriminant is the mean return: +0.088% per day in Grind versus −0.071% in Crisis. A simple VIX threshold would classify both as "elevated volatility" and either block all trades or allow all of them indiscriminately. The HMM separates them.</p>
+
+<p>Second, Mean-Reversion occupies exactly the same volatility band as Crisis but carries a positive — if statistically insignificant — mean return. This state represents the market's decompression phase: volatility is elevated, participants are adjusting positions, but the directional panic has subsided. It is not a premium-selling environment, but it is not a crisis either. Treating it as either would be wrong.</p>
+
+<div class="aside-note">
+  <div class="aside-note-title">Baum-Welch in brief</div>
+  <p>The EM algorithm iterates between an E-step — computing the expected number of state transitions and time spent in each state given current parameters — and an M-step that updates the emission distributions and transition matrix to maximize the data likelihood. Convergence is to a local maximum, so multiple restarts with different initializations were used.</p>
+</div>
+
+<p>The HMM's output at inference time is not a state label but a forward-backward posterior vector: <code>model.predict_proba(obs)</code> returns for each observation day a three-element vector [P(Grind), P(MeanRev), P(Crisis)] that sums to 1.0. It is the treatment of this vector — how it is consumed downstream — that separates the Phase 2 approach from naive regime filtering.</p>
+
+<!-- ── SECTION 2 ─── -->
+<div class="section-break">
+  <span class="sb-num">2</span>
+  <span class="sb-rule"></span>
+  <span class="sb-label">Binary Filter vs. Posterior Weighting</span>
+</div>
+
+<p>The naive approach to HMM-based regime filtering is binary: if the decoded state is Grind, trade; otherwise, abstain. This was Experiment A's baseline, and it improved Sharpe from 1.93 to 2.67 — a genuine improvement, but not the dominant result. The key insight was that binary decoding discards information. On a day where P(Grind) = 0.51, the binary decoder says "trade" with the same conviction as a day where P(Grind) = 0.97. These are not equivalent situations.</p>
+
+<p>The posterior confidence gate replaces the binary threshold with a continuous filter on <em>P(Grind)²</em>. The squared posterior amplifies the discrimination: a day with P(Grind) = 0.9 scores 0.81, while a day with P(Grind) = 0.6 scores 0.36 — a much starker separation than the linear posterior produces. The gate condition is <em>P(Grind)² > 0.25</em>, equivalent to <em>P(Grind) > 0.5</em>, but the squaring serves a second function: it feeds directly into a position-sizing multiplier in the <code>PortfolioModel</code>.</p>
+
+<div class="math-block">
+  <span class="math-label">Posterior Confidence Gate — agents.py · HMMAgent.score()</span>
+  <span class="eq">γ_t = P(S_t = Grind | O_{1:T})     ← forward-backward posterior</span>
+  <span class="eq">confidence = γ_t²                  ← squared to amplify discrimination</span>
+  <span class="eq">entry_allowed  ⟺  confidence > 0.25  (i.e. γ_t > 0.5)</span>
+  <span class="eq">size_multiplier = confidence         ← scales contract count continuously</span>
+  <span class="where">Where O_{1:T} is the observed return sequence and S_t the latent state at time t.</span>
+</div>
+
+<p>In practice, the gate admits exactly 812 days — those where the Viterbi state label is Grind — because when the HMM is in the Grind state it is typically very confident. The posterior distribution collapses near [1, 0, 0] in the heart of a stable Grind regime and spreads across states near regime transitions. The gate effect is therefore most powerful at transition boundaries, where the binary decoder is most likely to issue a false entry signal just as the regime is deteriorating.</p>
+
+<table class="results-table">
+  <thead>
+    <tr>
+      <th>Strategy</th>
+      <th>Entries</th>
+      <th>Edge/trade</th>
+      <th>Sharpe</th>
+      <th>p-value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Baseline — always in</td>
+      <td>1,235</td>
+      <td>0.272%</td>
+      <td>1.93</td>
+      <td class="fail">1.000</td>
+    </tr>
+    <tr>
+      <td>Binary HMM (Grind = trade)</td>
+      <td>1,025</td>
+      <td>0.337%</td>
+      <td>2.67</td>
+      <td class="muted">0.015</td>
+    </tr>
+    <tr>
+      <td>Posterior &gt; 0.5</td>
+      <td>816</td>
+      <td>0.402%</td>
+      <td>4.03</td>
+      <td class="pass">0.005</td>
+    </tr>
+    <tr class="winner">
+      <td>P(grind)² &gt; 0.25</td>
+      <td>812</td>
+      <td>0.403%</td>
+      <td>4.07</td>
+      <td class="pass">0.004</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The implementation of the HMMAgent inside <code>agents.py</code> exposes the posterior score on the [-1, +1] scale the Supervisor expects. A P(Grind) of 1.0 maps to +1.0; P(Crisis) of 1.0 maps to −1.0; the Mean-Reversion state maps to 0.0 (neutral — don't trade, but don't panic). The continuous mapping preserves the full information content of the posterior for the Supervisor's weighted aggregation.</p>
+
+<div class="code-block"><pre><span class="label">agents.py — HMMAgent.score() (simplified)</span>
+<span class="kw">def</span> <span class="fn">score</span>(self, data: pd.DataFrame, ctx: MarketConditions) -&gt; <span class="cls">float</span>:
+    returns = data[<span class="str">'close'</span>].pct_change().dropna().values.reshape(-<span class="num">1</span>, <span class="num">1</span>)
+
+    <span class="comment"># Fit or reuse cached model</span>
+    <span class="kw">if</span> self._model <span class="kw">is</span> <span class="kw">None</span>:
+        self._model = <span class="cls">GaussianHMM</span>(
+            n_components=<span class="num">3</span>,
+            covariance_type=<span class="str">'full'</span>,
+            n_iter=<span class="num">200</span>,
+            random_state=<span class="num">42</span>
+        ).fit(returns)
+
+    <span class="comment"># Posterior probabilities for the most recent bar</span>
+    posteriors = self._model.predict_proba(returns)
+    latest     = posteriors[-<span class="num">1</span>]          <span class="comment"># [P(Grind), P(MR), P(Crisis)]</span>
+
+    grind_idx  = self._identify_grind_state()
+    crisis_idx = self._identify_crisis_state()
+
+    p_grind  = latest[grind_idx]
+    p_crisis = latest[crisis_idx]
+
+    <span class="comment"># Map to [-1, +1]: grind → positive, crisis → negative, MR → near 0</span>
+    raw_score = p_grind - p_crisis
+
+    <span class="comment"># Confidence gate: attenuate near-boundary posteriors</span>
+    confidence = p_grind ** <span class="num">2</span>
+    <span class="kw">return</span> raw_score * min(<span class="num">1.0</span>, confidence / <span class="num">0.25</span>)</pre></div>
+
+<p>One implementation detail worth noting: <code>_identify_grind_state()</code> does not hard-code state index 0 as Grind. It inspects the trained model's emission parameters after fitting and assigns labels by comparing mean returns and volatility levels — the state with the highest mean daily return and lowest variance is Grind, the state with the most negative mean is Crisis. This makes the agent robust to HMM initialization variance: different random seeds will produce different state orderings, but the label assignment is always correct.</p>
+
+<!-- ── SECTION 3 ─── -->
+<div class="section-break">
+  <span class="sb-num">3</span>
+  <span class="sb-rule"></span>
+  <span class="sb-label">The Holding Period Scaling Law</span>
+</div>
+
+<p>The most consequential finding of Phase 2 was not the HMM filter itself but what it revealed about the temporal structure of the Grind regime's edge. The experiment varied holding period from 1 to 20 days while conditioning on the same Grind regime filter, measuring per-trade edge and Sharpe at each horizon. The result was a near-perfect linear scaling that maps directly to the mechanics of theta decay.</p>
+
+<div class="hp-chart">
+  <div class="hp-chart-title">Grind Regime — Edge vs. Holding Period (5y SPY, 2,000 permutations)</div>
+  <div class="hp-rows">
+    <div class="hp-row">
+      <div class="hp-dte">1d</div>
+      <div class="hp-bar-track"><div class="hp-bar-fill" style="width:5.9%"></div></div>
+      <div class="hp-stats">0.088% &nbsp;<span class="pval">p=0.06</span></div>
+    </div>
+    <div class="hp-row">
+      <div class="hp-dte">3d</div>
+      <div class="hp-bar-track"><div class="hp-bar-fill" style="width:17.1%"></div></div>
+      <div class="hp-stats">0.257% &nbsp;<span class="pval">p=0.01</span></div>
+    </div>
+    <div class="hp-row">
+      <div class="hp-dte">5d</div>
+      <div class="hp-bar-track"><div class="hp-bar-fill" style="width:26.7%"></div></div>
+      <div class="hp-stats">0.400% &nbsp;<span class="pval">p=0.006</span></div>
+    </div>
+    <div class="hp-row">
+      <div class="hp-dte">10d</div>
+      <div class="hp-bar-track"><div class="hp-bar-fill" style="width:49.8%"></div></div>
+      <div class="hp-stats">0.747% &nbsp;<span class="pval">p=0.001</span></div>
+    </div>
+    <div class="hp-row">
+      <div class="hp-dte">15d</div>
+      <div class="hp-bar-track"><div class="hp-bar-fill" style="width:75.1%"></div></div>
+      <div class="hp-stats">1.127% &nbsp;<span class="pval">p=0.0005</span></div>
+    </div>
+    <div class="hp-row">
+      <div class="hp-dte">20d</div>
+      <div class="hp-bar-track"><div class="hp-bar-fill" style="width:100%"></div></div>
+      <div class="hp-stats">1.502% &nbsp;<span class="pval">p=0.0005</span></div>
+    </div>
+  </div>
+</div>
+
+<p>The scaling is approximately 0.075% per additional day of holding in the Grind regime. This is not a coincidence. Under Black-Scholes, daily theta for an at-the-money option is approximately proportional to implied volatility divided by twice the square root of time to expiration. In a Grind regime — low realized vol, stable drift, no gap risk — the collected premium decays toward zero along precisely this schedule, and none of it is given back via assignment or stop-out. The holding period analysis is empirical confirmation that the theoretical theta decay schedule is being harvested in practice, without contamination from the regime-driven volatility events that would interrupt it.</p>
+
+<p>The Mean-Reversion regime shows zero edge at every holding period. This result is not simply that the edge is smaller in Mean-Rev — it is genuinely absent. The elevated implied volatility during Mean-Rev periods is <em>correctly priced</em>: the market is charging fair value for the insurance, and the premium seller receives no risk-adjusted excess return. Selling premium into elevated Mean-Rev vol is not a conservative strategy; it is a structurally zero-edge trade that exposes the portfolio to the very tail risk the premium is supposed to compensate for.</p>
+
+<div class="pull-quote">
+  <p>"Selling premium into an elevated Mean-Reversion regime is not conservative. The IV is correctly priced. You are paid nothing for the tail risk you are accepting."</p>
+  <cite>Phase 2 Report — Stack$Trader Development Journal</cite>
+</div>
+
+<!-- ── SECTION 4 ─── -->
+<div class="section-break">
+  <span class="sb-num">4</span>
+  <span class="sb-rule"></span>
+  <span class="sb-label">The Transition Topology</span>
+</div>
+
+<p>Experiment B tested whether regime transition probabilities — the entries of the HMM's learned A matrix — could provide entry signals at regime inflection points. The hypothesis was that the beginning of a new Grind regime, identified by a high transition probability from Crisis or Mean-Reversion into Grind, should be an attractive entry point: regime just turned favorable, premium still elevated from the prior stress period.</p>
+
+<p>The data refuted this hypothesis completely, but in a way that revealed something structurally important about how market regimes sequence:</p>
+
+<div class="transition-diagram">
+  <div class="transition-label">Observed Regime Transition Topology — 5y SPY (1,235 days)</div>
+  <div class="t-nodes">
+    <div class="t-node crisis">Crisis<br><small style="font-size:0.6rem">210 days</small></div>
+    <div class="t-arrow">→</div>
+    <div class="t-node meanrev">Mean-Rev<br><small style="font-size:0.6rem">213 days</small></div>
+    <div class="t-arrow">→</div>
+    <div class="t-node grind">Grind<br><small style="font-size:0.6rem">812 days</small></div>
+  </div>
+  <div class="t-cross">✕ &nbsp; Direct Crisis → Grind transitions: 0 observed in 5 years</div>
+</div>
+
+<p>In five years of SPY daily data, there were zero direct transitions from Crisis to Grind. The process always routes through Mean-Reversion first — a structural decompression phase where volatility remains elevated but the directional collapse has stopped. This is not an artifact of the HMM's training. It is a real feature of how equity market stress resolves: volatility does not snap back to 11% annualized from 23%+; it decays through a transitional period of elevated-but-declining uncertainty before regime stabilization.</p>
+
+<p>The practical consequence is that any entry strategy that attempts to catch the "inflection point" at the start of a Grind regime will always enter during the tail of the Mean-Reversion phase, where the theta edge is zero. The only consistently correct behavior is to wait for the HMM to achieve a high posterior confidence in the Grind state before entering — which is precisely what the P(Grind)² gate implements.</p>
+
+<!-- ── SECTION 5 ─── -->
+<div class="section-break">
+  <span class="sb-num">5</span>
+  <span class="sb-rule"></span>
+  <span class="sb-label">Ticker-Level HMM and the Federated Approach</span>
+</div>
+
+<p>Phase 3 generalized the HMM result beyond SPY by testing whether individual ticker regimes are coherent with — or independent of — the market-level SPY HMM classification. The Multi-Ticker Coherence test ran two configurations for each of AAPL, NVDA, and TSLA: trading on SPY's Grind regime (Market HMM) and trading on a per-ticker HMM trained on the individual stock's own return series (Self HMM).</p>
+
+<table class="results-table">
+  <thead>
+    <tr>
+      <th>Ticker</th>
+      <th>Market HMM Edge</th>
+      <th>Market p</th>
+      <th>Self HMM Edge</th>
+      <th>Self p</th>
+      <th>Verdict</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AAPL</td>
+      <td>1.84%</td>
+      <td class="muted">0.07</td>
+      <td>1.77%</td>
+      <td class="muted">0.07</td>
+      <td>Coherent</td>
+    </tr>
+    <tr class="winner">
+      <td>TSLA</td>
+      <td>3.98%</td>
+      <td class="muted">0.11</td>
+      <td>5.80%</td>
+      <td class="muted">0.06</td>
+      <td>Self-dominant</td>
+    </tr>
+    <tr>
+      <td>NVDA</td>
+      <td>0.88%</td>
+      <td class="fail">0.36</td>
+      <td>0.75%</td>
+      <td class="fail">0.38</td>
+      <td>No edge</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>AAPL is the canonical coherent asset: its return distribution closely tracks SPY's regime states, and the Market HMM and Self HMM produce nearly identical results. When SPY grinds, AAPL grinds. The systematic premium-selling edge generalizes directly.</p>
+
+<p>TSLA demonstrated idiosyncratic regime structure: its own HMM produces a 5.80% per-trade edge that the market-level HMM understates at 3.98%. TSLA experiences quiet windows — periods of low volatility and directional drift — that are independent of SPY's macro regime. Forcing a market-level regime label onto TSLA misses these idiosyncratic Grind periods entirely. The result established the default behavior in <code>supervisor_config.json</code>: <code>mce_hmm_ref_ticker = current_ticker</code>, so each stock's HMM is trained on its own return series.</p>
+
+<p>NVDA was the critical failure. Both Market HMM and Self HMM produced p-values above 0.30 — statistically indistinguishable from random timing. The 3-state Gaussian HMM is a good model for index-like instruments where volatility clustering is the dominant dynamic. For a hyper-growth semiconductor stock with frequent earnings-driven gap events and momentum-driven volatility regimes, the model is misspecified. NVDA's return distribution is too fat-tailed and too asymmetric for a Gaussian emission model to capture the structure that matters.</p>
+
+<div class="callout">
+  <div class="callout-label">Implementation note — supervisor_config.json</div>
+  <p>Per-ticker HMM configuration is stored as <code>"hmm_ref_ticker": "TICKER"</code> in each ticker's config block. Setting this to the ticker itself enables the Federated HMM. Setting it to <code>"SPY"</code> forces Market HMM coherence. For index ETFs (SPY, QQQ, IWM), both configurations produce equivalent results.</p>
+</div>
+
+<!-- ── SECTION 6 ─── -->
+<div class="section-break">
+  <span class="sb-num">6</span>
+  <span class="sb-rule"></span>
+  <span class="sb-label">The HMM Agent in the Full Ensemble</span>
+</div>
+
+<p>By Phase 7, the HMMAgent occupied a fixed weight of 0.20–0.40 across all five character presets — never the highest-weighted agent, but never absent. Its role in the ensemble shifted over the project's development from primary signal to regime filter: a component whose negative score (high P(Crisis) or high P(MeanRev)) carries veto weight regardless of what the technical or microstructure agents say.</p>
+
+<p>The Supervisor's disagreement penalty amplifies this effect. When the HMMAgent scores −0.85 (high crisis posterior) and the TechnicalAgent scores +0.7 (bullish price momentum), the high variance across agent scores triggers a disagreement penalty that reduces the composite below entry threshold. This behavior is correct: a technically bullish picture during a statistical crisis regime is precisely the setup most likely to produce an abrupt reversal and assignment event. The HMM catches it; the technical analysis misses it.</p>
+
+<p>The holding period analysis from Phase 2 also directly shaped the DTE selection logic wired into the engine. A confirmed Grind regime with high P(Grind) sets DTE targets in the 15–20 day range to maximize the linear theta scaling demonstrated in Experiment E. A deteriorating Grind — P(Grind) declining from prior session — shifts the DTE recommendation shorter, reducing gamma exposure before the potential regime transition materializes. The HMM is not just a binary gate on entries; it is a continuous signal that modulates position structure throughout the holding period.</p>
+
+<p>The final architecture point is the most important one: the HMM provides no directional alpha. Phase 6's theta-normalized permutation test confirmed this at p=1.000 — the system's timing edge is zero when the theta component is removed. What the HMM provides is a filter that concentrates trading activity in the 66% of days where theta decay operates without structural interruption, and eliminates exposure during the 34% of days where it does not. The 66% contain all the edge. The 34% contain all the risk. Knowing which is which, reliably and in real time, is the entire contribution of the Hidden Markov Model to the Stack$Trader ensemble.</p>
+
+<div class="end-ornament">· · ·</div>
+
+</div><!-- /article-body -->
+
+<!-- NEXT ARTICLE NAV -->
+<div class="next-article">
+  <span class="next-label">Science &amp; Theory · Article 2 of 3</span>
+  <span class="next-title">Selling Insurance at Scale: The Structural Case for the Volatility Risk Premium →</span>
+</div>
+
+<!-- FOOTER -->
+<footer class="article-footer">
+  <div class="footer-pub">Stack$Trader</div>
+  <div class="footer-meta">
+    Vol. I &nbsp;·&nbsp; No. 1 &nbsp;·&nbsp; March 2026<br>
+    Section III: Science &amp; Theory &nbsp;·&nbsp; Article 1 of 3
+  </div>
+</footer>
+
+
+<div style="max-width:700px; margin:48px auto 0; padding:24px 0; border-top:3px solid #111; font-family:'Playfair Display',serif;">
+  <a href="../index.html" style="font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:#C9002B; text-decoration:none; font-family:'IBM Plex Mono',monospace;">← Back to Stack$Trader</a>
+</div>
+</body>
+</html>

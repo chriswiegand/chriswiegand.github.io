@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stack$Trader — WHIPSAW Vol. II — The Evolution Issue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --crimson:    #b5121b;
+      --crimson-dk: #8B001E;
+      --ink:        #111111;
+      --body-ink:   #1C1C1C;
+      --muted:      #5a5248;
+      --rule:       #c8bfa8;
+      --paper:      #f7f3ec;
+      --paper-warm: #ede8df;
+      --gold:       #c8922a;
+      --teal:       #2a6b78;
+      --green:      #2a6b45;
+      --col:        1100px;
+    }
+
+    html { font-size: 17px; scroll-behavior: smooth; }
+    body {
+      background: var(--paper);
+      color: var(--body-ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      line-height: 1.75;
+    }
+    ::selection { background: var(--crimson); color: white; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── TOP RED RULE ── */
+    .top-rule { height: 5px; background: var(--crimson); }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      border-bottom: 3px solid var(--ink);
+      background: var(--paper);
+    }
+    .masthead-inner {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 16px 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .masthead-meta {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 14px;
+    }
+    .wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.8rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      line-height: 1;
+      text-align: center;
+    }
+    .wordmark .dollar { color: var(--crimson); }
+    .tagline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 5px;
+      margin-bottom: 14px;
+    }
+
+    /* ── NAV ── */
+    .site-nav {
+      width: 100%;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .site-nav a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      padding: 10px 20px;
+      border-right: 1px solid var(--rule);
+      transition: background 0.15s, color 0.15s;
+    }
+    .site-nav a:first-child { border-left: 1px solid var(--rule); }
+    .site-nav a:hover { background: var(--crimson); color: white; }
+    .site-nav a.active { background: var(--ink); color: white; }
+
+    /* ── PAGE BODY ── */
+    .page { max-width: var(--col); margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ── EDITION BAND ── */
+    .edition-band {
+      background: var(--crimson);
+      color: white;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 6px;
+    }
+
+    /* ── TICKER TAPE ── */
+    .ticker-tape {
+      background: var(--ink);
+      color: rgba(255,255,255,0.65);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      padding: 5px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-inner {
+      display: inline-block;
+      animation: tape 55s linear infinite;
+    }
+    @keyframes tape { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+    .tick { margin-right: 56px; }
+    .tick .up { color: #4fc36a; }
+    .tick .dn { color: #ff6b6b; }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border-bottom: 3px solid var(--ink);
+      background: var(--paper-warm);
+    }
+    .stat-cell {
+      padding: 18px 16px;
+      text-align: center;
+      border-right: 1px solid var(--rule);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--crimson);
+      line-height: 1;
+      display: block;
+    }
+    .stat-l {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* ── COVER GRID ── */
+    .cover-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+      padding: 36px 0 32px;
+      border-bottom: 3px solid var(--ink);
+    }
+    .cover-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .cover-kicker::after { content:''; flex:1; height:1px; background: var(--rule); }
+    .cover-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1.08;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .cover-headline a:hover { color: var(--crimson); }
+    .cover-subhead {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .cover-deck {
+      font-size: 1.0rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+    .cover-cta {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: white;
+      background: var(--crimson);
+      padding: 8px 18px;
+      transition: background 0.15s;
+    }
+    .cover-cta:hover { background: var(--crimson-dk); }
+    .cover-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      margin-top: 16px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── SIDEBAR STORIES ── */
+    .cover-sidebar { display: flex; flex-direction: column; gap: 0; }
+    .sidebar-story {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .sidebar-story:first-child { border-top: 2px solid var(--ink); }
+    .sidebar-story:last-child { border-bottom: none; }
+    .ss-section {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: inline-block;
+      padding: 2px 7px;
+      margin-bottom: 7px;
+      color: white;
+    }
+    .ss-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.28;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 5px;
+    }
+    .ss-title:hover { color: var(--crimson); }
+    .ss-deck {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.55;
+    }
+    .ss-read {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      display: inline-block;
+      margin-top: 7px;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin: 32px 0 20px;
+    }
+    .sd-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .sd-rule { flex: 1; height: 1px; background: var(--rule); }
+    .sd-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── ARTICLE CARDS (issue listing) ── */
+    .issue-articles {
+      border-top: 3px solid var(--ink);
+      padding-top: 28px;
+    }
+    .article-row {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 20px 24px;
+      align-items: start;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-row:last-child { border-bottom: none; }
+    .ar-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--rule);
+      line-height: 1;
+      text-align: right;
+    }
+    .ar-section {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: inline-block;
+      padding: 2px 6px;
+      color: white;
+      margin-bottom: 7px;
+    }
+    .ar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .ar-title:hover { color: var(--crimson); }
+    .ar-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .ar-deck {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.6;
+    }
+    .ar-cta {
+      white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      padding-top: 4px;
+    }
+    .ar-read-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-align: right;
+    }
+    .ar-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: white;
+      background: var(--ink);
+      padding: 6px 14px;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .ar-btn:hover { background: var(--crimson); }
+
+    /* ── COMING SOON BAND ── */
+    .pipeline-band {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      padding: 28px 32px;
+      margin: 32px 0 0;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .pipeline-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .pipeline-item {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.55);
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .pipeline-item:last-child { border: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.4);
+      padding: 32px 24px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.05em;
+      margin-top: 48px;
+    }
+    .footer-inner {
+      max-width: var(--col);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 32px;
+    }
+    .footer-wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .footer-wordmark .dollar { color: var(--crimson); }
+    .footer-disclaimer {
+      max-width: 480px;
+      line-height: 1.65;
+      font-size: 0.58rem;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .cover-grid { grid-template-columns: 1fr; gap: 24px; }
+      .stats-strip { grid-template-columns: repeat(3, 1fr); }
+      .article-row { grid-template-columns: 48px 1fr; }
+      .ar-cta { display: none; }
+      .wordmark { font-size: 2.6rem; }
+      .site-nav a { padding: 9px 12px; font-size: 0.58rem; }
+    }
+    @media (max-width: 560px) {
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .article-row { grid-template-columns: 1fr; }
+      .ar-num { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-rule"></div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="masthead-meta">
+        <span>Volume 2 &nbsp;&middot;&nbsp; Issue 2 &nbsp;&middot;&nbsp; March 2026</span>
+        <span>Stack$Trader Research Team</span>
+        <span>The Evolution Issue</span>
+      </div>
+      <div class="wordmark">Stack<span class="dollar">$</span>Trader</div>
+      <div class="tagline">An Algorithmic Research Journal</div>
+      <nav class="site-nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="articles/vol2_01_cover_story.html">Cover Story</a>
+        <a href="articles/vol2_05_full_results.html">Results</a>
+        <a href="articles/vol2_04_guided_evolution.html">Architecture</a>
+        <a href="articles/vol2_06_evidence_and_illusion.html">Best Practices</a>
+        <a href="articles/vol2_07_career_guide.html">Career Guide</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TICKER TAPE -->
+  <div class="ticker-tape">
+    <span class="ticker-inner">
+      <span class="tick">LRCX &nbsp;<span class="up">&#9650; 1.39 Fitness</span></span>
+      <span class="tick">NVO &nbsp;<span class="up">&#9650; 1.04 Fitness</span></span>
+      <span class="tick">TSM &nbsp;<span class="up">&#9650; 0.97 Fitness</span></span>
+      <span class="tick">NVDA &nbsp;<span class="up">&#9650; 0.89 Fitness</span></span>
+      <span class="tick">PLTR &nbsp;<span class="up">&#9650; 0.88 Fitness</span></span>
+      <span class="tick">AAPL &nbsp;<span class="up">&#9650; 2.57 &rarr; 3.84 (V3)</span></span>
+      <span class="tick">34/35 positive &nbsp;&middot;&nbsp; 80 cycles &nbsp;&middot;&nbsp; 2.54 hrs &nbsp;&middot;&nbsp; NOT() gates dominate 34%</span>
+      <span class="tick">63 triggers &nbsp;&middot;&nbsp; 4 versions &nbsp;&middot;&nbsp; 72 hours &nbsp;&middot;&nbsp; Schwab live chains integrated</span>
+    </span>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <span class="stat-n">35</span>
+      <span class="stat-l">Tickers Evolved</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-n">1.39</span>
+      <span class="stat-l">Peak Fitness (LRCX)</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-n">63</span>
+      <span class="stat-l">DNA Pool Triggers</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-n">97%</span>
+      <span class="stat-l">Positive Fitness</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-n">V4</span>
+      <span class="stat-l">AGENT Version</span>
+    </div>
+  </div>
+
+  <div class="edition-band">Volume 2 &nbsp;&middot;&nbsp; Issue 2 &nbsp;&middot;&nbsp; March 2026 &nbsp;&middot;&nbsp; The Evolution Issue</div>
+
+  <!-- PAGE BODY -->
+  <div class="page">
+
+    <!-- COVER STORY + SIDEBAR -->
+    <div class="cover-grid">
+
+      <div class="cover-lead">
+        <div class="cover-kicker">Cover Story &nbsp;&middot;&nbsp; The Long Read</div>
+        <h1 class="cover-headline">
+          <a href="articles/vol2_01_cover_story.html">Natural Selection, Artificial Intelligence</a>
+        </h1>
+        <div class="cover-subhead">How a genetic algorithm went from convergence collapse to a 35-ticker diversity breakthrough in 72 hours</div>
+        <p class="cover-deck">
+          Over four versions and three sleepless nights, the AGENT system &mdash; Agent Guided Evolution Neural Trainer &mdash; evolved from a textbook genetic algorithm into a hybrid framework that combines population-based search with LLM-guided interpretation. Inspired by Karpathy&rsquo;s AutoResearch, it applies recursive self-improvement not to training language models, but to evolving boolean gate trees for a covered-call portfolio. This is the full story of AGENT&rsquo;s four generations, the failures that forced each redesign, and the roadmap for V5.
+        </p>
+        <a href="articles/vol2_01_cover_story.html" class="cover-cta">Read the cover story &rarr;</a>
+        <div class="cover-meta">Stack$Trader Research Team &nbsp;&middot;&nbsp; March 2026 &nbsp;&middot;&nbsp; 22 min read</div>
+      </div>
+
+      <div class="cover-sidebar">
+        <div class="sidebar-story">
+          <span class="ss-section" style="background:#2a6b78;">Data &amp; Markets</span>
+          <a class="ss-title" href="articles/vol2_05_full_results.html">35 Tickers, 80 Cycles, One Clear Winner</a>
+          <p class="ss-deck">LRCX leads at fitness 1.39. NOT() gates dominate a third of the portfolio. IV rank emerges as the single most impactful indicator.</p>
+          <a class="ss-read" href="articles/vol2_05_full_results.html">14 min &rarr;</a>
+        </div>
+        <div class="sidebar-story">
+          <span class="ss-section" style="background:#1a3a5c;">Infrastructure</span>
+          <a class="ss-title" href="articles/vol2_03_from_synthetic_to_live.html">From Synthetic to Live</a>
+          <p class="ss-deck">Real bid/ask spreads, open interest, and market-implied Greeks replace Black-Scholes theory. VYM&rsquo;s 44% spread-to-premium ratio was invisible until today.</p>
+          <a class="ss-read" href="articles/vol2_03_from_synthetic_to_live.html">9 min &rarr;</a>
+        </div>
+        <div class="sidebar-story">
+          <span class="ss-section" style="background:#5a3e78;">Craft</span>
+          <a class="ss-title" href="articles/vol2_06_evidence_and_illusion.html">Evidence and Illusion</a>
+          <p class="ss-deck">Five decades of methodology for distinguishing genuine edge from data-mined illusion. The tools, the traps, and the researchers who built the field.</p>
+          <a class="ss-read" href="articles/vol2_06_evidence_and_illusion.html">20 min &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ISSUE CONTENTS -->
+    <div class="section-divider">
+      <div class="sd-title">In This Issue</div>
+      <div class="sd-rule"></div>
+      <div class="sd-count">Volume 2 &nbsp;&middot;&nbsp; Issue 2 &nbsp;&middot;&nbsp; 8 Articles</div>
+    </div>
+
+    <div class="issue-articles">
+
+      <div class="article-row">
+        <div class="ar-num">01</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: var(--crimson);">Cover Story</span>
+          <a class="ar-title" href="articles/vol2_01_cover_story.html">Natural Selection, Artificial Intelligence</a>
+          <div class="ar-subtitle">How Karpathy&rsquo;s AutoResearch inspired a hybrid genetic + LLM system that evolves trading strategies</div>
+          <p class="ar-deck">The complete AGENT story: from V1&rsquo;s convergence collapse (tournament selection choosing the same 2&ndash;3 topologies by generation 15) through V3&rsquo;s diversity breakthrough (AAPL from 2.57 to 3.84) to V4&rsquo;s hybrid framework that combines population-based search with LLM-guided interpretation &mdash; all compressed into 72 hours of development.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">22 min read</div>
+          <a class="ar-btn" href="articles/vol2_01_cover_story.html">Read &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">02</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #2a6b45;">Engineering</span>
+          <a class="ar-title" href="articles/vol2_02_expanding_gene_pool.html">Expanding the Gene Pool</a>
+          <div class="ar-subtitle">18 new triggers expand the DNA pool from 45 to 63 &mdash; adding sentiment, calendar effects, momentum, and cross-asset signals</div>
+          <p class="ar-deck">Four new information sources enter the evolutionary search space: Perplexity sentiment indices, calendar effects (OpEx week, day-of-week), second-derivative momentum, and TLT cross-asset correlation. Both overnight and intraday evolution runs complete with 100% positive &Delta;Sharpe across all tickers.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">10 min read</div>
+          <a class="ar-btn" href="articles/vol2_02_expanding_gene_pool.html">Read &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">03</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #1a3a5c;">Infrastructure</span>
+          <a class="ar-title" href="articles/vol2_03_from_synthetic_to_live.html">From Synthetic to Live</a>
+          <div class="ar-subtitle">Replacing Black-Scholes with Schwab option chains exposed how far theory drifts from reality</div>
+          <p class="ar-deck">INTC&rsquo;s theoretical $48.00 strike became a real $49.50 contract at $1.29 mark. VOO&rsquo;s $1.70 bid-ask spread consumes 19% of premium. LMT&rsquo;s $4.40 spread was invisible until the integration surfaced it. The champion scanner now prices 24 positions against live market data &mdash; and the gap between signal and execution narrows considerably.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">9 min read</div>
+          <a class="ar-btn" href="articles/vol2_03_from_synthetic_to_live.html">Read &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">04</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #5a2a00;">Architecture</span>
+          <a class="ar-title" href="articles/vol2_04_guided_evolution.html">The Guided Evolution Framework</a>
+          <div class="ar-subtitle">Genetic search does the heavy lifting; Claude Sonnet checks in as research director</div>
+          <p class="ar-deck">Evolution searches hypothesis space for free &mdash; zero tokens, millions of candidates. But the LLM excels at interpretation. Guided Evolution gives each system the job it does best: a four-phase loop (EVOLVE &rarr; INTERPRET &rarr; REDIRECT &rarr; LOG) validated in 13 minutes across 4 tickers. NVDA&rsquo;s consistent convergence toward NOT() gates was the first structural finding.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">11 min read</div>
+          <a class="ar-btn" href="articles/vol2_04_guided_evolution.html">Read &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">05</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #2a6b78;">Data &amp; Markets</span>
+          <a class="ar-title" href="articles/vol2_05_full_results.html">35 Tickers, 80 Cycles, One Clear Winner</a>
+          <div class="ar-subtitle">The full-scale guided evolution results, with portfolio statistics, tree pattern analysis, and indicator frequency</div>
+          <p class="ar-deck">2.54 hours, 80 cycles, 35 tickers, population 120. LRCX leads at fitness 1.39 with a single-leaf <code>NOT(vol_rank)</code> tree. NOT() gate structures dominate 12 of 35 tickers and achieve 63% higher average fitness. Pass 2 improved 13 of 35 tickers. The framework is validated at scale.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">14 min read</div>
+          <a class="ar-btn" href="articles/vol2_05_full_results.html">Read &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">06</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #5a3e78;">Craft</span>
+          <a class="ar-title" href="articles/vol2_06_evidence_and_illusion.html">Evidence and Illusion</a>
+          <div class="ar-subtitle">A field guide to quantitative finance methodology and the traps that swallow everyone else</div>
+          <p class="ar-deck">Walk-forward validation, the Sharpe ratio and its abuses, permutation testing, the SPA and the White Reality Check, strategy longevity across regimes, and the researchers &mdash; Lo, L&oacute;pez de Prado, Fama, Sharpe, Black &mdash; whose work earned permanent authority. A comprehensive practitioner&rsquo;s reference.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">20 min read</div>
+          <a class="ar-btn" href="articles/vol2_06_evidence_and_illusion.html">Read &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">07</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #1e3a5f;">Reference</span>
+          <a class="ar-title" href="articles/vol2_07_career_guide.html">So You Want to Be a Quant</a>
+          <div class="ar-subtitle">The educators, the curricula, the career paths, the firms, and a mock exam with worked answers</div>
+          <p class="ar-deck">A complete map of quantitative finance: the people who built the field, the skills that separate practitioners from tourists, the firms that hire at every level, the curricula that actually prepare you, and a diagnostic exam with fully worked solutions to measure where you stand.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">18 min read</div>
+          <a class="ar-btn" href="articles/vol2_07_career_guide.html">Read &rarr;</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">08</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #CC0001;">Engineering & Research</span>
+          <a class="ar-title" href="articles/vol2_08_from-stagnation-to-autoresearch.html">From Stagnation to AutoResearch</a>
+          <div class="ar-subtitle">Three Generations of Evolutionary Failure & the search for automated research</div>
+          <p class="ar-deck">Training fitness of 3.93 produced forward PNL of -$35,827. The correlation was r=0.108. After three major evolutionary revisions, the conclusion is stark: the genetic algorithm is optimizing the wrong thing. Documentation of what each version attempted, where each failed, and why the next step is not V8 but automated research.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">14 min read</div>
+          <a class="ar-btn" href="articles/vol2_08_from-stagnation-to-autoresearch.html">Read &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PIPELINE / COMING NEXT -->
+    <div class="pipeline-band">
+      <div style="min-width:200px;">
+        <span class="pipeline-label">Coming in Issue 3</span>
+        <div class="pipeline-item">The Shape of Risk: Edge-in Sampling &amp; RBF Vol Surface</div>
+        <div class="pipeline-item">The Dealer&rsquo;s Hand: GEX, Vanna, and DIX</div>
+        <div class="pipeline-item">Safety First, Alpha Second: Kill Switches &amp; Test Suites</div>
+      </div>
+      <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:32px; flex:1;">
+        <span class="pipeline-label">About This Journal</span>
+        <p style="font-family:'Source Serif 4',serif; font-size:0.82rem; font-style:italic; line-height:1.7; color:rgba(255,255,255,0.45);">
+          Stack$Trader documents the research and development of a systematic options trading system &mdash; built with AI collaboration, validated with scientific rigour, and published here on a rolling schedule. New articles publish as the work progresses. Nothing here is investment advice.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-wordmark">Stack<span class="dollar">$</span>Trader</div>
+        <div style="margin-top:4px; letter-spacing:0.12em;">AN ALGORITHMIC RESEARCH JOURNAL</div>
+        <p class="footer-disclaimer" style="margin-top:14px;">
+          Stack$Trader is a research project. Nothing published here constitutes investment advice.
+          All backtested results are hypothetical. Options trading involves significant risk of loss.
+          Past performance does not predict future results.
+        </p>
+      </div>
+      <div style="text-align:right;">
+        <p style="color:rgba(255,255,255,0.25);">&copy; 2026 Stack$Trader Research Team</p>
+        <p style="margin-top:6px; color:rgba(255,255,255,0.2);">Volume 2 &middot; Issue 2 &middot; March 2026</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

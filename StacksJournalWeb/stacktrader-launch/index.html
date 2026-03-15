@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stack$Trader — An Algorithmic Research Journal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --crimson:    #C9002B;
+      --crimson-dk: #8B001E;
+      --ink:        #111111;
+      --body-ink:   #1C1C1C;
+      --muted:      #5a5248;
+      --rule:       #c8bfa8;
+      --paper:      #f7f3ec;
+      --paper-warm: #ede8df;
+      --gold:       #c8922a;
+      --col:        1100px;
+    }
+
+    html { font-size: 17px; scroll-behavior: smooth; }
+    body {
+      background: var(--paper);
+      color: var(--body-ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      line-height: 1.75;
+    }
+    ::selection { background: var(--crimson); color: white; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── TOP RED RULE ── */
+    .top-rule { height: 5px; background: var(--crimson); }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      border-bottom: 3px solid var(--ink);
+      background: var(--paper);
+    }
+    .masthead-inner {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: 16px 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .masthead-meta {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 14px;
+    }
+    .wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.8rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      line-height: 1;
+      text-align: center;
+    }
+    .wordmark .dollar { color: var(--crimson); }
+    .tagline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 5px;
+      margin-bottom: 14px;
+    }
+
+    /* ── NAV ── */
+    .site-nav {
+      width: 100%;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: center;
+    }
+    .site-nav a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      padding: 10px 20px;
+      border-right: 1px solid var(--rule);
+      transition: background 0.15s, color 0.15s;
+    }
+    .site-nav a:first-child { border-left: 1px solid var(--rule); }
+    .site-nav a:hover { background: var(--crimson); color: white; }
+    .site-nav a.active { background: var(--ink); color: white; }
+
+    /* ── PAGE BODY ── */
+    .page { max-width: var(--col); margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ── EDITION BAND ── */
+    .edition-band {
+      background: var(--crimson);
+      color: white;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 6px;
+    }
+
+    /* ── TICKER TAPE ── */
+    .ticker-tape {
+      background: var(--ink);
+      color: rgba(255,255,255,0.65);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      padding: 5px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-inner {
+      display: inline-block;
+      animation: tape 50s linear infinite;
+    }
+    @keyframes tape { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+    .tick { margin-right: 56px; }
+    .tick .up { color: #4fc36a; }
+    .tick .dn { color: #ff6b6b; }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border-bottom: 3px solid var(--ink);
+      background: var(--paper-warm);
+    }
+    .stat-cell {
+      padding: 18px 16px;
+      text-align: center;
+      border-right: 1px solid var(--rule);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--crimson);
+      line-height: 1;
+      display: block;
+    }
+    .stat-l {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* ── COVER GRID ── */
+    .cover-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+      padding: 36px 0 32px;
+      border-bottom: 3px solid var(--ink);
+    }
+    .cover-lead {}
+    .cover-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .cover-kicker::after { content:''; flex:1; height:1px; background: var(--rule); }
+    .cover-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      line-height: 1.08;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .cover-headline a:hover { color: var(--crimson); }
+    .cover-subhead {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .cover-deck {
+      font-size: 1.0rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+    .cover-cta {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: white;
+      background: var(--crimson);
+      padding: 8px 18px;
+      transition: background 0.15s;
+    }
+    .cover-cta:hover { background: var(--crimson-dk); }
+    .cover-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      margin-top: 16px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── SIDEBAR STORIES ── */
+    .cover-sidebar { display: flex; flex-direction: column; gap: 0; }
+    .sidebar-story {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .sidebar-story:first-child { border-top: 2px solid var(--ink); }
+    .sidebar-story:last-child { border-bottom: none; }
+    .ss-section {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: inline-block;
+      padding: 2px 7px;
+      margin-bottom: 7px;
+      color: white;
+    }
+    .ss-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.28;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 5px;
+    }
+    .ss-title:hover { color: var(--crimson); }
+    .ss-deck {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.55;
+    }
+    .ss-read {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      display: inline-block;
+      margin-top: 7px;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin: 32px 0 20px;
+    }
+    .sd-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .sd-rule { flex: 1; height: 1px; background: var(--rule); }
+    .sd-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── ARTICLE CARDS (issue listing) ── */
+    .issue-articles {
+      border-top: 3px solid var(--ink);
+      padding-top: 28px;
+    }
+    .article-row {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 20px 24px;
+      align-items: start;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .article-row:last-child { border-bottom: none; }
+    .ar-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--rule);
+      line-height: 1;
+      text-align: right;
+    }
+    .ar-body {}
+    .ar-section {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: inline-block;
+      padding: 2px 6px;
+      color: white;
+      margin-bottom: 7px;
+    }
+    .ar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .ar-title:hover { color: var(--crimson); }
+    .ar-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .ar-deck {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.6;
+    }
+    .ar-cta {
+      white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      padding-top: 4px;
+    }
+    .ar-read-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-align: right;
+    }
+    .ar-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: white;
+      background: var(--ink);
+      padding: 6px 14px;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .ar-btn:hover { background: var(--crimson); }
+
+    /* ── COMING SOON BAND ── */
+    .pipeline-band {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      padding: 28px 32px;
+      margin: 32px 0 0;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .pipeline-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .pipeline-item {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.55);
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .pipeline-item:last-child { border: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.4);
+      padding: 32px 24px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.05em;
+      margin-top: 48px;
+    }
+    .footer-inner {
+      max-width: var(--col);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 32px;
+    }
+    .footer-wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .footer-wordmark .dollar { color: var(--crimson); }
+    .footer-disclaimer {
+      max-width: 480px;
+      line-height: 1.65;
+      font-size: 0.58rem;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .cover-grid { grid-template-columns: 1fr; gap: 24px; }
+      .stats-strip { grid-template-columns: repeat(3, 1fr); }
+      .article-row { grid-template-columns: 48px 1fr; }
+      .ar-cta { display: none; }
+      .wordmark { font-size: 2.6rem; }
+      .site-nav a { padding: 9px 12px; font-size: 0.58rem; }
+    }
+    @media (max-width: 560px) {
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .article-row { grid-template-columns: 1fr; }
+      .ar-num { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-rule"></div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="masthead-meta">
+        <span>Volume 1 &nbsp;·&nbsp; Issue 1 &nbsp;·&nbsp; March 2026</span>
+        <span>Stack$Trader Research Team</span>
+        <span>stacktrader.pages.dev</span>
+      </div>
+      <div class="wordmark">Stack<span class="dollar">$</span>Trader</div>
+      <div class="tagline">An Algorithmic Research Journal</div>
+      <nav class="site-nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="articles/whipsaw_article_01_cover_story.html">Cover Story</a>
+        <a href="articles/whipsaw_article_09_the_leaderboard.html">Leaderboard</a>
+        <a href="articles/whipsaw_article_04_when_markets_sleep.html">Science &amp; Theory</a>
+        <a href="articles/whipsaw_article_02_99k_lesson.html">Origins</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TICKER TAPE -->
+  <div class="ticker-tape">
+    <span class="ticker-inner">
+      <span class="tick">LMT &nbsp;<span class="up">▲ 4.51 Sharpe</span></span>
+      <span class="tick">SLV &nbsp;<span class="up">▲ 4.27 Sharpe</span></span>
+      <span class="tick">XOM &nbsp;<span class="up">▲ 4.17 Sharpe</span></span>
+      <span class="tick">HON &nbsp;<span class="up">▲ 3.86 Sharpe</span></span>
+      <span class="tick">GLD &nbsp;<span class="up">▲ 3.80 Sharpe</span></span>
+      <span class="tick">IWM &nbsp;<span class="up">▲ 3.09 Sharpe</span></span>
+      <span class="tick">SPY &nbsp;<span class="up">▲ 2.94 Sharpe</span></span>
+      <span class="tick">NVDA &nbsp;<span class="up">▲ 2.31 Sharpe</span></span>
+      <span class="tick">923 strategies &nbsp;·&nbsp; 59% positive alpha &nbsp;·&nbsp; SPA p=0.000 &nbsp;·&nbsp; WFE 3.886</span>
+    </span>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <span class="stat-n">923</span>
+      <span class="stat-l">Strategies Tested</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-n">4.51</span>
+      <span class="stat-l">Peak OOS Sharpe</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-n">16</span>
+      <span class="stat-l">AI Agents</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-n">p=0.000</span>
+      <span class="stat-l">SPA Significance</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-n">41</span>
+      <span class="stat-l">Tickers</span>
+    </div>
+  </div>
+
+  <div class="edition-band">Volume 1 &nbsp;·&nbsp; Issue 1 &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; Inaugural Edition</div>
+
+  <!-- PAGE BODY -->
+  <div class="page">
+
+    <!-- COVER STORY + SIDEBAR -->
+    <div class="cover-grid">
+
+      <div class="cover-lead">
+        <div class="cover-kicker">Cover Story &nbsp;·&nbsp; The Long Read</div>
+        <h1 class="cover-headline">
+          <a href="articles/whipsaw_article_01_cover_story.html">Building the Machine</a>
+        </h1>
+        <div class="cover-subhead">How a scientist and two AIs engineered a systematic options trading engine from scratch</div>
+        <p class="cover-deck">
+          Over seven phases and several hundred thousand lines of code, a scientist with deep roots in precision process engineering turned the same instinct for process control toward financial markets — and built something that a growing body of statistical evidence suggests actually works. This is the full story.
+        </p>
+        <a href="articles/whipsaw_article_01_cover_story.html" class="cover-cta">Read the cover story →</a>
+        <div class="cover-meta">Stack$Trader Research Team &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; 18 min read</div>
+      </div>
+
+      <div class="cover-sidebar">
+        <div class="sidebar-story">
+          <span class="ss-section" style="background:#1a3a5c;">Science &amp; Theory</span>
+          <a class="ss-title" href="articles/whipsaw_article_04_when_markets_sleep.html">When Markets Sleep</a>
+          <p class="ss-deck">Markets spend two-thirds of their time in a state that is nearly ideal for selling options. A 3-state HMM found it — and proved a Sharpe of 8.2.</p>
+          <a class="ss-read" href="articles/whipsaw_article_04_when_markets_sleep.html">7 min →</a>
+        </div>
+        <div class="sidebar-story">
+          <span class="ss-section" style="background:#5a2a00;">Data &amp; Markets</span>
+          <a class="ss-title" href="articles/whipsaw_article_09_the_leaderboard.html">The Leaderboard</a>
+          <p class="ss-deck">923 strategies, 41 tickers, one uncomfortable truth about where alpha actually hides. Why LMT beats AAPL by a factor of nine.</p>
+          <a class="ss-read" href="articles/whipsaw_article_09_the_leaderboard.html">6 min →</a>
+        </div>
+        <div class="sidebar-story">
+          <span class="ss-section" style="background:#2a4a2a;">Origins</span>
+          <a class="ss-title" href="articles/whipsaw_article_02_99k_lesson.html">The $99,000 Lesson</a>
+          <p class="ss-deck">A single API call, a 35-terabyte download order, and a pending bill that nearly ended the project before it began.</p>
+          <a class="ss-read" href="articles/whipsaw_article_02_99k_lesson.html">4 min →</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ISSUE CONTENTS -->
+    <div class="section-divider">
+      <div class="sd-title">In This Issue</div>
+      <div class="sd-rule"></div>
+      <div class="sd-count">Volume 1 &nbsp;·&nbsp; Issue 1 &nbsp;·&nbsp; 4 Articles</div>
+    </div>
+
+    <div class="issue-articles">
+
+      <div class="article-row">
+        <div class="ar-num">01</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: var(--crimson);">Cover Story</span>
+          <a class="ar-title" href="articles/whipsaw_article_01_cover_story.html">Building the Machine</a>
+          <div class="ar-subtitle">How a scientist and two AIs engineered a systematic options trading engine from scratch</div>
+          <p class="ar-deck">The origin story of Stack$Trader in full — from the first design decision to a validated 16-agent ensemble, told with honesty about what worked, what failed, and why the scientific method turns out to be the most valuable tool in the quant finance toolkit.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">18 min read</div>
+          <a class="ar-btn" href="articles/whipsaw_article_01_cover_story.html">Read →</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">02</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #2a4a2a;">Origins</span>
+          <a class="ar-title" href="articles/whipsaw_article_02_99k_lesson.html">The $99,000 Lesson</a>
+          <div class="ar-subtitle">A pending bill that produced the project's most durable architectural innovation</div>
+          <p class="ar-deck">Day one. A well-reasoned API call. A 35-terabyte download order. A $99,000 pending charge. What happened next determined the fundamental architecture of everything that followed — and turned a near-disaster into a permanent competitive advantage.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">4 min read</div>
+          <a class="ar-btn" href="articles/whipsaw_article_02_99k_lesson.html">Read →</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">03</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #1a3a5c;">Science &amp; Theory</span>
+          <a class="ar-title" href="articles/whipsaw_article_04_when_markets_sleep.html">When Markets Sleep</a>
+          <div class="ar-subtitle">The Hidden Markov Model and the anatomy of a quiet bull regime</div>
+          <p class="ar-deck">Markets spend 66% of their time in a statistical state — "Grind" — that is nearly ideal for selling options premium. A 3-state Gaussian HMM identified this state, quantified its edge to a Sharpe of 8.2, and became the structural foundation on which every subsequent agent was built.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">7 min read</div>
+          <a class="ar-btn" href="articles/whipsaw_article_04_when_markets_sleep.html">Read →</a>
+        </div>
+      </div>
+
+      <div class="article-row">
+        <div class="ar-num">04</div>
+        <div class="ar-body">
+          <span class="ar-section" style="background: #5a2a00;">Data &amp; Markets</span>
+          <a class="ar-title" href="articles/whipsaw_article_09_the_leaderboard.html">The Leaderboard</a>
+          <div class="ar-subtitle">923 strategies, 41 tickers, one uncomfortable truth about where alpha actually hides</div>
+          <p class="ar-deck">After 77,760 walk-forward backtests, the results are in. The best covered call strategy on Lockheed Martin outperforms the best on Apple by a factor of nine. Understanding why requires confronting a fundamental question about which assets are structurally suited to premium harvesting — and which are not.</p>
+        </div>
+        <div class="ar-cta">
+          <div class="ar-read-time">6 min read</div>
+          <a class="ar-btn" href="articles/whipsaw_article_09_the_leaderboard.html">Read →</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PIPELINE / COMING NEXT -->
+    <div class="pipeline-band">
+      <div style="min-width:200px;">
+        <span class="pipeline-label">Coming in Issue 2</span>
+        <div class="pipeline-item">The Noise Floor Problem</div>
+        <div class="pipeline-item">NVDA: The Ticker That Breaks Every Model</div>
+        <div class="pipeline-item">Quant Best Practices: A Field Guide</div>
+      </div>
+      <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:32px; flex:1;">
+        <span class="pipeline-label">About This Journal</span>
+        <p style="font-family:'Source Serif 4',serif; font-size:0.82rem; font-style:italic; line-height:1.7; color:rgba(255,255,255,0.45);">
+          Stack$Trader documents the research and development of a systematic options trading system — built with AI collaboration, validated with scientific rigour, and published here on a rolling schedule. New articles publish as the work progresses. Nothing here is investment advice.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-wordmark">Stack<span class="dollar">$</span>Trader</div>
+        <div style="margin-top:4px; letter-spacing:0.12em;">AN ALGORITHMIC RESEARCH JOURNAL</div>
+        <p class="footer-disclaimer" style="margin-top:14px;">
+          Stack$Trader is a research project. Nothing published here constitutes investment advice.
+          All backtested results are hypothetical. Options trading involves significant risk of loss.
+          Past performance does not predict future results.
+        </p>
+      </div>
+      <div style="text-align:right;">
+        <p style="color:rgba(255,255,255,0.25);">© 2026 Stack$Trader Research Team</p>
+        <p style="margin-top:6px; color:rgba(255,255,255,0.2);">Volume 1 · Issue 1 · March 2026</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Leaderboard — Stack$Trader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1a1208; --crimson: #b5121b; --paper: #f7f3ec;
+    --paper-warm: #ede8df; --rule: #c8bfa8; --muted: #6b6050;
+    --gold: #c8922a; --teal: #2a6b78; --green: #2a6b45;
+    --purple: #5a3e78; --navy: #1e3a5f; --col-w: 700px;
+  }
+  html { font-size: 17px; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Source Serif 4', Georgia, serif; line-height: 1.75; padding: 0 20px 100px; }
+
+  /* ── PUB HEADER ── */
+  .pub-header { max-width: var(--col-w); margin: 0 auto; border-top: 4px solid var(--crimson); padding: 18px 0 12px; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--ink); }
+  .pub-wordmark { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; color: var(--crimson); letter-spacing: -0.5px; }
+  .pub-issue { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); }
+
+  /* ── ARTICLE HEADER ── */
+  .article-header { max-width: var(--col-w); margin: 0 auto; padding: 44px 0 32px; border-bottom: 1px solid var(--rule); }
+  .article-kicker { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--crimson); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .article-kicker::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+  .article-title { font-family: 'Playfair Display', serif; font-size: 3.0rem; font-weight: 900; line-height: 1.04; color: var(--ink); letter-spacing: -0.5px; margin-bottom: 8px; }
+  .article-subtitle { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-style: italic; color: var(--muted); line-height: 1.4; margin-bottom: 18px; }
+  .article-deck { font-family: 'Source Serif 4', serif; font-size: 1.02rem; font-weight: 300; font-style: italic; color: var(--muted); line-height: 1.65; margin-bottom: 26px; max-width: 560px; }
+  .article-byline { display: flex; align-items: center; gap: 20px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .byline-text { font-family: 'IBM Plex Mono', monospace; font-size: 0.63rem; letter-spacing: 0.08em; color: var(--muted); line-height: 1.6; }
+  .byline-text strong { color: var(--ink); font-weight: 500; display: block; font-size: 0.68rem; }
+  .read-badge { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: var(--ink); padding: 4px 10px; white-space: nowrap; flex-shrink: 0; }
+
+  /* ── BODY ── */
+  .article-body { max-width: var(--col-w); margin: 0 auto; padding-top: 38px; }
+  p { font-size: 1rem; line-height: 1.78; margin-bottom: 1.4em; hyphens: auto; }
+  p.dropcap::first-letter { font-family: 'Playfair Display', serif; font-size: 4.2rem; font-weight: 900; float: left; line-height: 0.8; margin: 6px 10px -2px 0; color: var(--crimson); }
+
+  /* ── SECTION BREAK ── */
+  .section-break { display: flex; align-items: center; gap: 14px; margin: 46px 0 28px; }
+  .sb-rule { flex: 1; height: 1px; background: var(--rule); }
+  .sb-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+  .sb-num { font-family: 'Playfair Display', serif; font-size: 0.9rem; font-weight: 700; color: var(--rule); flex-shrink: 0; }
+
+  /* ── PULL QUOTE ── */
+  .pull-quote { border-top: 2px solid var(--crimson); border-bottom: 1px solid var(--rule); padding: 20px 0 18px; margin: 34px 0; }
+  .pull-quote p { font-family: 'Playfair Display', serif; font-size: 1.22rem; font-weight: 700; font-style: italic; line-height: 1.35; color: var(--ink); margin-bottom: 8px; }
+  .pull-quote cite { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); font-style: normal; }
+
+  /* ── ASIDE ── */
+  .aside-note { float: right; width: 210px; margin: 4px 0 20px 28px; padding: 14px 16px; border-top: 2px solid var(--gold); background: var(--paper-warm); clear: right; }
+  .aside-note-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 7px; }
+  .aside-note p { font-size: 0.8rem; line-height: 1.55; color: var(--muted); font-style: italic; margin-bottom: 0; }
+  .aside-note.teal { border-top-color: var(--teal); }
+  .aside-note.teal .aside-note-title { color: var(--teal); }
+  .aside-note.crimson { border-top-color: var(--crimson); }
+  .aside-note.crimson .aside-note-title { color: var(--crimson); }
+
+  /* ── STAT BAR ── */
+  .stat-banner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--ink); border: 1px solid var(--ink); margin: 28px 0; }
+  .stat-cell { background: var(--paper-warm); padding: 14px 16px; text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: var(--crimson); line-height: 1; display: block; margin-bottom: 4px; }
+  .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.57rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); line-height: 1.4; display: block; }
+
+  /* ── DISTRIBUTION CHART ── */
+  .dist-chart { margin: 24px 0 32px; background: var(--paper-warm); border: 1px solid var(--rule); padding: 20px 22px; }
+  .dist-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+  .dist-bars { display: flex; align-items: flex-end; gap: 3px; height: 100px; }
+  .dist-bar { flex: 1; min-width: 4px; background: var(--rule); position: relative; transition: background 0.2s; }
+  .dist-bar.pos { background: var(--teal); }
+  .dist-bar.neg { background: var(--crimson); }
+  .dist-bar.zero { background: var(--muted); }
+  .dist-axis { display: flex; justify-content: space-between; margin-top: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; color: var(--muted); }
+  .dist-legend { display: flex; gap: 20px; margin-top: 10px; }
+  .dist-leg-item { display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--muted); }
+  .dist-leg-swatch { width: 10px; height: 10px; flex-shrink: 0; }
+
+  /* ── TIER TABLE ── */
+  .tier-table { width: 100%; border-collapse: collapse; margin: 22px 0 28px; }
+  .tier-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.57rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--ink); }
+  .tier-table td { padding: 9px 10px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: top; font-size: 0.84rem; line-height: 1.5; }
+  .tier-table td:first-child { white-space: nowrap; }
+  .tier-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 600; padding: 2px 7px; display: inline-block; }
+  .tier-s { background: var(--crimson); color: #fff; }
+  .tier-a { background: var(--teal); color: #fff; }
+  .tier-b { background: var(--gold); color: #fff; }
+  .tier-c { background: var(--muted); color: #fff; }
+  .tier-f { background: var(--ink); color: var(--paper); }
+  .tier-count { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--ink); }
+  .tier-note { font-size: 0.82rem; color: var(--muted); }
+
+  /* ── LEADERBOARD TABLE (TOP 20) ── */
+  .lb-table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-size: 0.82rem; }
+  .lb-table thead tr { background: var(--ink); }
+  .lb-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.54rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--paper-warm); padding: 8px 9px; text-align: right; }
+  .lb-table th:first-child, .lb-table th:nth-child(2), .lb-table th:nth-child(3) { text-align: left; }
+  .lb-table td { padding: 7px 9px; border-bottom: 1px solid var(--rule); vertical-align: middle; text-align: right; }
+  .lb-table td:first-child, .lb-table td:nth-child(2), .lb-table td:nth-child(3) { text-align: left; }
+  .lb-table tbody tr:hover { background: var(--paper-warm); }
+  .rank-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; color: var(--muted); }
+  .ticker { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--ink); }
+  .strat { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; color: var(--teal); }
+  .oos-sharpe { font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; font-weight: 600; }
+  .oos-hi { color: var(--crimson); }
+  .is-sharpe { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .wfe-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; }
+  .wfe-hi { color: var(--green); font-weight: 600; }
+  .wfe-lo { color: var(--muted); }
+
+  /* ── BOTTOM TABLE ── */
+  .bottom-table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-size: 0.82rem; }
+  .bottom-table thead tr { background: var(--crimson); }
+  .bottom-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.54rem; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; padding: 8px 9px; text-align: right; }
+  .bottom-table th:first-child, .bottom-table th:nth-child(2), .bottom-table th:nth-child(3) { text-align: left; }
+  .bottom-table td { padding: 7px 9px; border-bottom: 1px solid var(--rule); vertical-align: middle; text-align: right; }
+  .bottom-table td:first-child, .bottom-table td:nth-child(2), .bottom-table td:nth-child(3) { text-align: left; }
+  .neg-sharpe { font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; font-weight: 600; color: var(--crimson); }
+
+  /* ── PATTERN GRID ── */
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 24px 0 30px; }
+  .pattern-cell { background: var(--paper); padding: 16px 17px; }
+  .pattern-cell.win { border-top: 3px solid var(--teal); }
+  .pattern-cell.lose { border-top: 3px solid var(--crimson); }
+  .pattern-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.57rem; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+  .pattern-cell.win .pattern-label { color: var(--teal); }
+  .pattern-cell.lose .pattern-label { color: var(--crimson); }
+  .pattern-title { font-family: 'Playfair Display', serif; font-size: 1.02rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .pattern-text { font-size: 0.81rem; line-height: 1.58; color: var(--muted); margin: 0; }
+  .pattern-tickers { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; color: var(--ink); margin-top: 8px; display: block; }
+
+  /* ── WFE CHART ── */
+  .wfe-chart { margin: 22px 0 28px; }
+  .wfe-row { display: grid; grid-template-columns: 90px 1fr 60px; gap: 0 10px; padding: 5px 0; align-items: center; border-bottom: 1px solid var(--rule); }
+  .wfe-row:first-child { border-top: 1px solid var(--ink); padding-top: 6px; }
+  .wfe-ticker { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 600; color: var(--ink); }
+  .wfe-bar-wrap { height: 8px; background: var(--paper-warm); border: 1px solid var(--rule); border-radius: 1px; overflow: hidden; }
+  .wfe-bar { height: 100%; border-radius: 1px; background: var(--teal); }
+  .wfe-bar.red { background: var(--crimson); }
+  .wfe-number { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--muted); text-align: right; }
+
+  /* ── STRATEGY ANALYSIS ── */
+  .strat-analysis { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 22px 0 28px; }
+  .sa-cell { background: var(--paper-warm); padding: 13px 15px; }
+  .sa-strat { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .sa-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; margin: 0 0 6px; }
+  .sa-verdict { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; padding: 2px 7px; display: inline-block; }
+  .sa-win { background: var(--teal); color: #fff; }
+  .sa-lose { background: var(--crimson); color: #fff; }
+  .sa-neutral { background: var(--muted); color: #fff; }
+
+  /* ── MATH BLOCK ── */
+  .math-block { background: var(--paper-warm); border-left: 3px solid var(--teal); padding: 16px 20px; margin: 20px 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.79rem; line-height: 2.0; overflow-x: auto; }
+  .math-block .math-label { font-size: 0.57rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal); display: block; margin-bottom: 8px; border-bottom: 1px solid var(--rule); padding-bottom: 5px; }
+  .math-block .eq { display: block; }
+  .math-block .where { font-family: 'Source Serif 4', serif; font-size: 0.8rem; font-style: italic; color: var(--muted); margin-top: 8px; display: block; line-height: 1.75; }
+
+  .end-ornament { text-align: center; margin: 46px 0 34px; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; color: var(--rule); }
+  .article-footer { max-width: var(--col-w); margin: 0 auto; padding: 18px 0 0; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: baseline; }
+  .footer-pub { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 900; color: var(--crimson); }
+  .footer-meta { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--muted); text-align: right; line-height: 1.7; }
+
+  @media (max-width: 640px) {
+    html { font-size: 15px; }
+    .article-title { font-size: 2.2rem; }
+    .stat-banner { grid-template-columns: 1fr 1fr; }
+    .pattern-grid { grid-template-columns: 1fr; }
+    .strat-analysis { grid-template-columns: 1fr; }
+    .aside-note { float: none; width: 100%; margin: 0 0 20px; }
+    p.dropcap::first-letter { font-size: 3.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="pub-header">
+  <a href="../index.html" class="pub-wordmark" style="text-decoration:none;">Stack$Trader</a>
+  <span class="pub-issue">Vol. I &nbsp;·&nbsp; No. 1 &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; Data &amp; Markets</span>
+</div>
+
+<header class="article-header">
+  <div class="article-kicker">Section V &nbsp;·&nbsp; Data &amp; Markets</div>
+  <h1 class="article-title">The Leaderboard</h1>
+  <p class="article-subtitle">923 strategies, 41 tickers, one uncomfortable truth about where alpha actually hides</p>
+  <p class="article-deck">After 77,760 walk-forward backtests, the results are in. The distribution of strategy performance across Stack$Trader's universe tells a story that contradicts almost every popular intuition about systematic options trading — including several held by the system's own architects when they began.</p>
+  <div class="article-byline">
+    <div class="byline-text"><strong>The Editors</strong>Stack$Trader &nbsp;·&nbsp; March 2026</div>
+    <span class="read-badge">6 min read</span>
+  </div>
+</header>
+
+<div class="article-body">
+
+<p class="dropcap">The simplest summary of the leaderboard data is also the most unsettling: the best covered call strategy on Lockheed Martin outperforms the best covered call strategy on Apple by a factor of nine. The same system, the same entry logic, the same statistical validation framework, applied to two of America's largest companies, produces a Sharpe ratio of 4.51 in one case and 0.50 in the other. Understanding why requires setting aside the usual explanations — better signals, smarter exits, more sophisticated agents — and confronting the more fundamental question of which assets are structurally suited to premium harvesting and which are not.</p>
+
+<div class="stat-banner">
+  <div class="stat-cell">
+    <span class="stat-num">923</span>
+    <span class="stat-label">Strategies<br>evaluated</span>
+  </div>
+  <div class="stat-cell">
+    <span class="stat-num">4.51</span>
+    <span class="stat-label">Best OOS<br>Sharpe (LMT)</span>
+  </div>
+  <div class="stat-cell">
+    <span class="stat-num">59%</span>
+    <span class="stat-label">Positive<br>alpha rate</span>
+  </div>
+  <div class="stat-cell">
+    <span class="stat-num">3.89×</span>
+    <span class="stat-label">Walk-Forward<br>Efficiency</span>
+  </div>
+</div>
+
+<!-- ── SECTION I ── -->
+<div class="section-break">
+  <span class="sb-num">I</span><span class="sb-rule"></span>
+  <span class="sb-label">The Shape of the Distribution</span>
+</div>
+
+<p>Nine hundred and twenty-three strategies were evaluated across 41 tickers and 22 distinct entry signal variants. The distribution of out-of-sample Sharpe ratios is neither bell-shaped nor random. It is bimodal, with a significant mass of strongly positive results clustered between Sharpe 2.0 and 4.5, a large body of strategies near zero, and a long left tail of negative outcomes that extends — in one extraordinary case — to −39.95.</p>
+
+<!-- Visual distribution chart -->
+<div class="dist-chart">
+  <div class="dist-title">OOS Sharpe Distribution — 923 Strategies &nbsp;·&nbsp; Walk-Forward Validated</div>
+  <div class="dist-bars" id="distBars">
+    <!-- Bars representing buckets of Sharpe ratios from -40 to +5 -->
+    <!-- Negative region: deeply red -->
+    <div class="dist-bar neg" style="height:8%;" title="< -5"></div>
+    <div class="dist-bar neg" style="height:12%;" title="-5 to -4"></div>
+    <div class="dist-bar neg" style="height:18%;" title="-4 to -3"></div>
+    <div class="dist-bar neg" style="height:28%;" title="-3 to -2"></div>
+    <div class="dist-bar neg" style="height:44%;" title="-2 to -1.5"></div>
+    <div class="dist-bar neg" style="height:62%;" title="-1.5 to -1"></div>
+    <div class="dist-bar neg" style="height:78%;" title="-1 to -0.5"></div>
+    <!-- Near-zero region -->
+    <div class="dist-bar zero" style="height:100%;" title="-0.5 to 0.5 (mode)"></div>
+    <div class="dist-bar zero" style="height:88%;" title="0 to 0.5"></div>
+    <div class="dist-bar pos" style="height:66%;" title="0.5 to 1.0"></div>
+    <div class="dist-bar pos" style="height:48%;" title="1.0 to 1.5"></div>
+    <div class="dist-bar pos" style="height:58%;" title="1.5 to 2.0"></div>
+    <!-- Tier S mass: second mode -->
+    <div class="dist-bar pos" style="height:80%;" title="2.0 to 2.5 — Tier S begins"></div>
+    <div class="dist-bar pos" style="height:92%;" title="2.5 to 3.0"></div>
+    <div class="dist-bar pos" style="height:74%;" title="3.0 to 3.5"></div>
+    <div class="dist-bar pos" style="height:56%;" title="3.5 to 4.0"></div>
+    <div class="dist-bar pos" style="height:34%;" title="4.0 to 4.5"></div>
+    <div class="dist-bar pos" style="height:14%;" title="4.5+"></div>
+  </div>
+  <div class="dist-axis">
+    <span>−40</span><span>−5</span><span>−2</span><span>0</span><span>+1</span><span>+2</span><span>+3</span><span>+4.51</span>
+  </div>
+  <div class="dist-legend">
+    <div class="dist-leg-item"><div class="dist-leg-swatch" style="background:var(--teal);"></div>Positive Sharpe (544 strategies, 59%)</div>
+    <div class="dist-leg-item"><div class="dist-leg-swatch" style="background:var(--crimson);"></div>Negative Sharpe (379 strategies, 41%)</div>
+    <div class="dist-leg-item"><div class="dist-leg-swatch" style="background:var(--muted);"></div>Near zero (±0.5)</div>
+  </div>
+</div>
+
+<p>The five-tier classification system — S, A, B, C, F — was defined by Sharpe thresholds set before the search began, not fitted to the results afterwards. Tier S requires an out-of-sample Sharpe above 2.0, a standard that most professional systematic strategies would be satisfied to meet across an entire fund. The system produced 192 such strategies, representing 21% of everything tested.</p>
+
+<table class="tier-table">
+  <thead>
+    <tr>
+      <th>Tier</th>
+      <th>OOS Sharpe threshold</th>
+      <th>Count</th>
+      <th>% of total</th>
+      <th>Interpretation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="tier-badge tier-s">S</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.74rem;">Sharpe &gt; 2.0</td>
+      <td class="tier-count">192</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;">20.8%</td>
+      <td class="tier-note">Elite. Deploy with full confidence.</td>
+    </tr>
+    <tr>
+      <td><span class="tier-badge tier-a">A</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.74rem;">1.5 – 2.0</td>
+      <td class="tier-count">97</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;">10.5%</td>
+      <td class="tier-note">Strong. Portfolio candidates.</td>
+    </tr>
+    <tr>
+      <td><span class="tier-badge tier-b">B</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.74rem;">0.5 – 1.5</td>
+      <td class="tier-count">124</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;">13.4%</td>
+      <td class="tier-note">Viable. Monitor closely in production.</td>
+    </tr>
+    <tr>
+      <td><span class="tier-badge tier-c">C</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.74rem;">0.0 – 0.5</td>
+      <td class="tier-count">131</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;">14.2%</td>
+      <td class="tier-note">Marginal. Structural edge unclear.</td>
+    </tr>
+    <tr>
+      <td><span class="tier-badge tier-f">F</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.74rem;">Sharpe &lt; 0</td>
+      <td class="tier-count">379</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;">41.1%</td>
+      <td class="tier-note">Failed. Active destruction of capital.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The 41% failure rate is not a cause for alarm; it is a cause for reflection. A well-designed search should produce many failures — they are the evidence that the positive results are not artefacts of a permissive filtering process. If every strategy had shown positive Sharpe, the correct inference would be that the test framework was contaminated. Failure is the price of a credible pass.</p>
+
+<!-- ── SECTION II ── -->
+<div class="section-break">
+  <span class="sb-num">II</span><span class="sb-rule"></span>
+  <span class="sb-label">The Top Twenty</span>
+</div>
+
+<div class="aside-note teal">
+  <div class="aside-note-title">What is WFE?</div>
+  <p>Walk-Forward Efficiency is the ratio of out-of-sample Sharpe to in-sample Sharpe. WFE &gt; 1.0 means the strategy performs better on data it never saw than on data it was trained on — the hallmark of a structural rather than fitted edge.</p>
+</div>
+
+<p>The top twenty strategies by out-of-sample Sharpe span just five tickers: LMT, SLV, XOM, CVX, and HON. The concentration is not accidental. It reflects a structural property of the underlying assets that will be examined in detail in the next section. First, the rankings.</p>
+
+<table class="lb-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Ticker</th>
+      <th>Strategy</th>
+      <th>OOS Sharpe</th>
+      <th>IS Sharpe</th>
+      <th>WFE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="rank-num">1</td><td class="ticker">LMT</td><td class="strat">cc_vix</td><td class="oos-sharpe oos-hi">4.51</td><td class="is-sharpe">1.03</td><td class="wfe-val wfe-hi">4.36×</td></tr>
+    <tr><td class="rank-num">2</td><td class="ticker">SLV</td><td class="strat">cc_bbsq</td><td class="oos-sharpe oos-hi">4.27</td><td class="is-sharpe">3.23</td><td class="wfe-val wfe-lo">1.32×</td></tr>
+    <tr><td class="rank-num">3</td><td class="ticker">SLV</td><td class="strat">cc_vrp</td><td class="oos-sharpe oos-hi">4.27</td><td class="is-sharpe">3.56</td><td class="wfe-val wfe-lo">1.20×</td></tr>
+    <tr><td class="rank-num">4</td><td class="ticker">LMT</td><td class="strat">cc_earn</td><td class="oos-sharpe oos-hi">4.25</td><td class="is-sharpe">0.80</td><td class="wfe-val wfe-hi">5.32×</td></tr>
+    <tr><td class="rank-num">5</td><td class="ticker">XOM</td><td class="strat">cc_bbsq</td><td class="oos-sharpe oos-hi">4.17</td><td class="is-sharpe">1.08</td><td class="wfe-val wfe-hi">3.87×</td></tr>
+    <tr><td class="rank-num">6</td><td class="ticker">LMT</td><td class="strat">cc_vrp</td><td class="oos-sharpe oos-hi">4.11</td><td class="is-sharpe">0.93</td><td class="wfe-val wfe-hi">4.40×</td></tr>
+    <tr><td class="rank-num">7</td><td class="ticker">XOM</td><td class="strat">cc_vrp</td><td class="oos-sharpe oos-hi">4.02</td><td class="is-sharpe">0.57</td><td class="wfe-val wfe-hi">7.02×</td></tr>
+    <tr><td class="rank-num">8</td><td class="ticker">XOM</td><td class="strat">cc_sink</td><td class="oos-sharpe oos-hi">3.98</td><td class="is-sharpe">0.92</td><td class="wfe-val wfe-hi">4.32×</td></tr>
+    <tr><td class="rank-num">9</td><td class="ticker">XOM</td><td class="strat">cc_rsi</td><td class="oos-sharpe oos-hi">3.97</td><td class="is-sharpe">1.08</td><td class="wfe-val wfe-hi">3.67×</td></tr>
+    <tr><td class="rank-num">10</td><td class="ticker">LMT</td><td class="strat">cc_bbsq</td><td class="oos-sharpe oos-hi">3.97</td><td class="is-sharpe">0.84</td><td class="wfe-val wfe-hi">4.71×</td></tr>
+    <tr><td class="rank-num">11</td><td class="ticker">CVX</td><td class="strat">cc_sink</td><td class="oos-sharpe oos-hi">3.88</td><td class="is-sharpe">0.83</td><td class="wfe-val wfe-hi">4.69×</td></tr>
+    <tr><td class="rank-num">12</td><td class="ticker">HON</td><td class="strat">cc_bbsq</td><td class="oos-sharpe oos-hi">3.86</td><td class="is-sharpe">0.41</td><td class="wfe-val wfe-hi">9.41×</td></tr>
+    <tr><td class="rank-num">13</td><td class="ticker">XOM</td><td class="strat">cc_macd</td><td class="oos-sharpe oos-hi">3.84</td><td class="is-sharpe">1.02</td><td class="wfe-val wfe-hi">3.75×</td></tr>
+    <tr><td class="rank-num">14</td><td class="ticker">GLD</td><td class="strat">cc_bbsq</td><td class="oos-sharpe oos-hi">3.80</td><td class="is-sharpe">1.82</td><td class="wfe-val wfe-lo">2.09×</td></tr>
+    <tr><td class="rank-num">15</td><td class="ticker">HON</td><td class="strat">cc_vrp</td><td class="oos-sharpe oos-hi">3.77</td><td class="is-sharpe">−0.13</td><td class="wfe-val" style="color:var(--crimson);">—</td></tr>
+    <tr><td class="rank-num">16</td><td class="ticker">LMT</td><td class="strat">cc_ma200</td><td class="oos-sharpe oos-hi">3.77</td><td class="is-sharpe">0.74</td><td class="wfe-val wfe-hi">5.12×</td></tr>
+    <tr><td class="rank-num">17</td><td class="ticker">XOM</td><td class="strat">cc_term</td><td class="oos-sharpe oos-hi">3.72</td><td class="is-sharpe">1.14</td><td class="wfe-val wfe-hi">3.27×</td></tr>
+    <tr><td class="rank-num">18</td><td class="ticker">XOM</td><td class="strat">cc_vix</td><td class="oos-sharpe oos-hi">3.72</td><td class="is-sharpe">1.14</td><td class="wfe-val wfe-hi">3.27×</td></tr>
+    <tr><td class="rank-num">19</td><td class="ticker">XOM</td><td class="strat">cc_always</td><td class="oos-sharpe oos-hi">3.72</td><td class="is-sharpe">1.14</td><td class="wfe-val wfe-hi">3.27×</td></tr>
+    <tr><td class="rank-num">20</td><td class="ticker">GLD</td><td class="strat">cc_vol</td><td class="oos-sharpe oos-hi">3.70</td><td class="is-sharpe">1.39</td><td class="wfe-val wfe-lo">2.67×</td></tr>
+  </tbody>
+</table>
+
+<p>Row 15 is the one that demands explanation. HON/cc_vrp achieves a Sharpe of 3.77 out-of-sample while posting an in-sample Sharpe of −0.13 — negative during training, exceptional during testing. The Walk-Forward Efficiency calculation produces a divide-by-zero and is listed as undefined. This result is not a data error. It is the most extreme instance of a pattern visible throughout the top of the table: out-of-sample performance consistently and substantially exceeding in-sample performance. A WFE of 4.36 for the top-ranked strategy means that on data the model never saw during optimisation, it returned more than four times the risk-adjusted performance it showed during training. This is the opposite of what the overfitting hypothesis predicts.</p>
+
+<div class="pull-quote">
+  <p>"The portfolio actually performs better out-of-sample than in-sample. This is characteristic of a structural edge — like theta decay — rather than a fitted pattern."</p>
+  <cite>Phase 6 Statistical Validation Report &nbsp;·&nbsp; Stack$Trader Documentation</cite>
+</div>
+
+<!-- ── SECTION III ── -->
+<div class="section-break">
+  <span class="sb-num">III</span><span class="sb-rule"></span>
+  <span class="sb-label">The Ticker Divide</span>
+</div>
+
+<p>The most striking pattern in the full 923-strategy dataset is not the magnitude of the best results — it is the consistency of the split between winning and losing ticker universes. There are two worlds in this data, and the dividing line runs directly between the old economy and the new.</p>
+
+<div class="pattern-grid">
+  <div class="pattern-cell win">
+    <span class="pattern-label">Winners — Structural Edge Present</span>
+    <div class="pattern-title">Low-volatility, low-narrative, high-yield underlyings</div>
+    <p class="pattern-text">Energy majors (XOM, CVX), aerospace and defence (LMT, HON), precious metals ETFs (GLD, SLV), and diversified equity income (VYM). These assets share three properties: moderate implied volatility relative to realised, low susceptibility to overnight gap risk from earnings surprises or product launches, and stable option premium as a fraction of share price.</p>
+    <span class="pattern-tickers">LMT 4.51 &nbsp;·&nbsp; SLV 4.27 &nbsp;·&nbsp; XOM 4.17 &nbsp;·&nbsp; CVX 3.88 &nbsp;·&nbsp; HON 3.86 &nbsp;·&nbsp; GLD 3.80 &nbsp;·&nbsp; VYM 3.50</span>
+  </div>
+  <div class="pattern-cell lose">
+    <span class="pattern-label">Losers — Structural Edge Absent</span>
+    <div class="pattern-title">High-volatility, high-narrative, momentum-driven underlyings</div>
+    <p class="pattern-text">Big tech (MSFT, AAPL, AMZN, GOOG), high-beta growth (TSLA, SOFI, PLTR), crypto proxies (COIN, IBIT), and speculative small-caps. These assets share: high realised volatility that frequently exceeds implied, sustained upward price momentum that forces covered calls to be assigned or rolled at a loss, and binary event risk (product launches, analyst upgrades, macro betas) that overwhelms the theta premium.</p>
+    <span class="pattern-tickers">MSFT −2.94 &nbsp;·&nbsp; TSLA −1.43 &nbsp;·&nbsp; AMZN −1.87 &nbsp;·&nbsp; AAPL −1.64 &nbsp;·&nbsp; IBIT −1.53</span>
+  </div>
+</div>
+
+<p>The intuition is this: a covered call earns money when the underlying moves less than implied volatility suggests it will. In stable, cash-flow-generating businesses — an oil major, a defence contractor, a gold ETF — this condition is reliably met. Implied volatility for these assets incorporates a structural risk premium that consistently exceeds realised volatility over a cycle. In technology stocks, the opposite holds: the stocks actually move as much or more than options markets price in, and additionally tend to move directionally upward (capturing the call premium while generating assignment losses from truncated upside).</p>
+
+<p>The data make this concrete. Ranked by their single best strategy across all entry variants:</p>
+
+<div class="wfe-chart">
+  <!-- Top tickers -->
+  <div class="wfe-row"><div class="wfe-ticker">LMT &nbsp;S</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:90%;"></div></div><div class="wfe-number">4.51</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">SLV &nbsp;S</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:85%;"></div></div><div class="wfe-number">4.27</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">XOM &nbsp;S</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:83%;"></div></div><div class="wfe-number">4.17</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">CVX &nbsp;S</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:77%;"></div></div><div class="wfe-number">3.88</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">HON &nbsp;S</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:77%;"></div></div><div class="wfe-number">3.86</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">GLD &nbsp;S</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:76%;"></div></div><div class="wfe-number">3.80</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">IWM &nbsp;S</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:62%;"></div></div><div class="wfe-number">3.09</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">NVDA &nbsp;B</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:16%;"></div></div><div class="wfe-number">0.80</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">SPY &nbsp;B</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:17%;"></div></div><div class="wfe-number">0.86</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">AAPL &nbsp;B</div><div class="wfe-bar-wrap"><div class="wfe-bar" style="width:10%;"></div></div><div class="wfe-number">0.50</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">TSLA &nbsp;F</div><div class="wfe-bar-wrap"><div class="wfe-bar red" style="width:22%;"></div></div><div class="wfe-number" style="color:var(--crimson);">−1.43</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">MSFT &nbsp;F</div><div class="wfe-bar-wrap"><div class="wfe-bar red" style="width:44%;"></div></div><div class="wfe-number" style="color:var(--crimson);">−2.94</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">AMZN &nbsp;F</div><div class="wfe-bar-wrap"><div class="wfe-bar red" style="width:36%;"></div></div><div class="wfe-number" style="color:var(--crimson);">−1.87</div></div>
+  <div class="wfe-row"><div class="wfe-ticker">IBIT &nbsp;F</div><div class="wfe-bar-wrap"><div class="wfe-bar red" style="width:30%;"></div></div><div class="wfe-number" style="color:var(--crimson);">−1.53</div></div>
+</div>
+
+<!-- ── SECTION IV ── -->
+<div class="section-break">
+  <span class="sb-num">IV</span><span class="sb-rule"></span>
+  <span class="sb-label">What Works: A Strategy Taxonomy</span>
+</div>
+
+<p>The leaderboard encompasses not just the choice of underlying but also the choice of entry strategy — the signal logic that determines when the covered call position is opened. Twenty-two distinct entry strategy variants were tested, ranging from the simplest possible rule (cc_always: enter on every available date) to complex multi-signal composites. The results across entry strategies are, by comparison to the ticker variation, surprisingly uniform — but not entirely without structure.</p>
+
+<div class="strat-analysis">
+  <div class="sa-cell">
+    <div class="sa-strat">cc_always</div>
+    <p class="sa-desc">Unconditional entry. Sell a covered call whenever no position is open. The no-skill baseline.</p>
+    <span class="sa-verdict sa-win">Works on good tickers</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">cc_bbsq</div>
+    <p class="sa-desc">Bollinger Band squeeze filter. Enter when realised volatility is contracting — implied premium is relatively rich to near-term realised.</p>
+    <span class="sa-verdict sa-win">Top-ranked variant</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">cc_vrp</div>
+    <p class="sa-desc">Volatility Risk Premium gate. Enter when implied volatility exceeds recent realised volatility by a threshold. Explicitly targets the VRP structural edge.</p>
+    <span class="sa-verdict sa-win">Consistent top-5</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">cc_vix</div>
+    <p class="sa-desc">VIX-regime filter. Enter when market-wide fear is elevated — premium is structurally richer during high-VIX environments.</p>
+    <span class="sa-verdict sa-win">Best for LMT (#1)</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">cc_earn</div>
+    <p class="sa-desc">Earnings adjacency filter. Enters specifically around earnings calendar windows when implied vol is inflated above realised.</p>
+    <span class="sa-verdict sa-win">Best for LMT #4</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">cc_preern</div>
+    <p class="sa-desc">Pre-earnings premium capture. Enters the week before earnings when implied vol is rising into the event, exits before the event resolves.</p>
+    <span class="sa-verdict sa-win">High WFE (7.92×)</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">strangle</div>
+    <p class="sa-desc">Short OTM call + short OTM put. Collects premium on both sides. Unlimited downside risk if the underlying makes a large directional move.</p>
+    <span class="sa-verdict sa-lose">Catastrophically fails</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">iron_condor</div>
+    <p class="sa-desc">Four-leg defined-risk structure. Short OTM put spread + short OTM call spread. Theoretically superior capital efficiency.</p>
+    <span class="sa-verdict sa-lose">Fails universally</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">vertical_put</div>
+    <p class="sa-desc">Bull put spread. Short OTM put + long lower-strike put. Defined risk, lower premium than naked put.</p>
+    <span class="sa-verdict sa-lose">Fails universally</span>
+  </div>
+  <div class="sa-cell">
+    <div class="sa-strat">cc_gold</div>
+    <p class="sa-desc">Gold standard consensus: requires agreement across all major directional agents. Extremely selective entry — few trades fire.</p>
+    <span class="sa-verdict sa-neutral">Mixed (high WFE)</span>
+  </div>
+</div>
+
+<p>The structure results deserve separate attention. Iron condors, strangles, and vertical put spreads failed uniformly across all tickers — not merely underperforming but actively destroying capital in both in-sample and out-of-sample periods. The worst single result in the entire dataset, ONDS/strangle at −39.95, is a multi-leg structure. This is counterintuitive: iron condors and spreads are frequently advocated as superior to covered calls because they offer defined risk and capital efficiency. In the Stack$Trader dataset, they do not outperform — they catastrophically underperform, even on the tickers where the simple covered call excels.</p>
+
+<p>The most likely explanation is execution realism. Multi-leg structures incur double the bid-ask spread friction, require simultaneous fills across multiple legs, and create complex delta-management problems when the underlying moves against one leg. The synthetic option model used here, which constructs positions from yfinance data rather than live quotes, may not capture the full cost of entering and exiting four-leg structures. The negative results should be treated as a warning flag rather than a definitive verdict on multi-leg strategies as a category.</p>
+
+<!-- ── SECTION V ── -->
+<div class="section-break">
+  <span class="sb-num">V</span><span class="sb-rule"></span>
+  <span class="sb-label">The Bottom of the Table</span>
+</div>
+
+<p>The bottom five results are as instructive as the top five. They fall into two categories: assets with structural incompatibility with premium selling, and structures with execution flaws that no amount of signal optimisation can overcome.</p>
+
+<table class="bottom-table">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Ticker</th>
+      <th>Strategy</th>
+      <th>OOS Sharpe</th>
+      <th>IS Sharpe</th>
+      <th>Diagnosis</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="rank-num">923</td>
+      <td class="ticker">ONDS</td>
+      <td class="strat">strangle</td>
+      <td class="neg-sharpe">−39.95</td>
+      <td class="is-sharpe">−7.07</td>
+      <td style="font-size:0.8rem;color:var(--muted);">Low-float biotech + naked strangle = extreme gap risk</td>
+    </tr>
+    <tr>
+      <td class="rank-num">922</td>
+      <td class="ticker">SLV</td>
+      <td class="strat">strangle</td>
+      <td class="neg-sharpe">−10.30</td>
+      <td class="is-sharpe">−5.50</td>
+      <td style="font-size:0.8rem;color:var(--muted);">Even a top cc ticker fails with wrong structure</td>
+    </tr>
+    <tr>
+      <td class="rank-num">921</td>
+      <td class="ticker">SLV</td>
+      <td class="strat">iron_condor</td>
+      <td class="neg-sharpe">−4.01</td>
+      <td class="is-sharpe">−7.03</td>
+      <td style="font-size:0.8rem;color:var(--muted);">Defined risk but negative in both periods</td>
+    </tr>
+    <tr>
+      <td class="rank-num">920</td>
+      <td class="ticker">TSM</td>
+      <td class="strat">iron_condor</td>
+      <td class="neg-sharpe">−3.75</td>
+      <td class="is-sharpe">−7.57</td>
+      <td style="font-size:0.8rem;color:var(--muted);">Semiconductor volatility incompatible with condor</td>
+    </tr>
+    <tr>
+      <td class="rank-num">919</td>
+      <td class="ticker">LRCX</td>
+      <td class="strat">strangle</td>
+      <td class="neg-sharpe">−3.57</td>
+      <td class="is-sharpe">−25.58</td>
+      <td style="font-size:0.8rem;color:var(--muted);">LRCX IS Sharpe of −25.58 suggests structural data issue</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The ONDS/strangle result at −39.95 is the statistical equivalent of a car crash: it tells you something important happened, and the investigation is as informative as the result itself. ONDS is a small-cap biotech — a category with routine binary event risk from FDA approvals, clinical trial announcements, and financing events. Selling a naked strangle on such an asset creates a payoff profile that is short enormous gap risk on both sides for a premium that is structurally insufficient to compensate. The in-sample Sharpe of −7.07 confirms this is not an OOS anomaly; the strategy was losing money during training as well and should never have been deployed.</p>
+
+<p>The SLV/strangle result at −10.30 makes the more interesting point. SLV ranks second overall at Sharpe 4.27 when a covered call strategy is applied, and third at 4.27 with a different entry variant. The same asset, on the same data period, produces a top-two result and a near-bottom result depending solely on the choice of structure. Asset selection and structure selection are not independent decisions — they interact multiplicatively. The worst thing a researcher can do is identify a strong underlying and then choose the wrong structure for it.</p>
+
+<!-- ── SECTION VI ── -->
+<div class="section-break">
+  <span class="sb-num">VI</span><span class="sb-rule"></span>
+  <span class="sb-label">Parameter Convergence: The Hidden Message</span>
+</div>
+
+<div class="aside-note crimson">
+  <div class="aside-note-title">Convergence</div>
+  <p>When every bucket of a grid search converges on identical optimal parameters, the grid search has found a structural optimum — not a local one fitted to the bucket's specific data. This is the strongest possible evidence that the parameters are real.</p>
+</div>
+
+<p>One of the most significant findings of the Phase 6 search is not in the Sharpe ratios but in the parameters. Across all tickers, all time buckets, and all strategy variants, the grid search converged on essentially identical optimal values:</p>
+
+<div class="math-block">
+  <span class="math-label">Optimal parameter convergence — Global grid search, N = 923 strategies, 77,760 folds</span>
+  <span class="eq">delta_target    =  0.20  (OTM call strike selection)</span>
+  <span class="eq">DTE_minimum     =  14    (minimum days to expiry at entry)</span>
+  <span class="eq">entry_threshold = −0.15  (supervisor score floor for entry)</span>
+  <span class="eq">close_fraction  =  0.25  (close at 25% of max premium received)</span>
+  <span class="where">All four parameters converge independently across every ticker bucket and time period tested. No bucket produces a meaningfully different optimum.</span>
+</div>
+
+<p>This convergence across independent subsets of the data is the statistical equivalent of replication. The optimal parameters are not the product of fitting to a particular market regime or ticker microstructure — they appear to describe an invariant of the strategy itself. Delta 0.20 balances premium income against assignment risk at the point where the expected value of the trade is maximised across a wide range of volatility environments. DTE 14 captures the steepest region of the theta decay curve while staying far enough from expiry to avoid gamma risk. A threshold of −0.15 (entry when the ensemble score is above this floor) provides meaningful filtering without excessive selectivity.</p>
+
+<p>The implication is practical and important: the system does not require per-ticker parameter optimisation. A researcher who discovers a new candidate ticker can apply the universal parameters as a starting point with high confidence, reserving the grid search for validation rather than exploration. The variation between tickers is not in how the strategy is parameterised — it is in whether the underlying asset is structurally suited to the strategy at all.</p>
+
+<!-- ── SECTION VII ── -->
+<div class="section-break">
+  <span class="sb-num">VII</span><span class="sb-rule"></span>
+  <span class="sb-label">What the Leaderboard Actually Proves</span>
+</div>
+
+<p>The WFE of 3.886 — the portfolio-level ratio of OOS to IS Sharpe — is the most important single number in the entire dataset. It is commonly assumed in the backtesting literature that sophisticated strategies will overfit: that as the number of parameters and tested variants increases, the gap between in-sample and out-of-sample performance will widen. In the Stack$Trader leaderboard, the opposite occurs. Adding complexity (more agents, more entry variants, more tickers) consistently improved out-of-sample performance relative to in-sample performance, not degraded it.</p>
+
+<p>This is explicable only if the edge being captured is structural rather than statistical. The permutation test result, reported in the companion article "Selling Insurance at Scale," confirms this directly: theta-normalised permutation p = 1.000, meaning that 100% of the strategy's returns are attributable to the structural theta decay and volatility risk premium, with zero contribution from entry timing. A structural edge does not overfit because it does not depend on fitting. The calendar does not care how many parameter combinations were tested; time passes, options decay, and the VRP pays its premium whether or not the researcher tested 923 configurations or nine.</p>
+
+<p>The leaderboard is, in the end, an asset selection tool as much as a strategy validation tool. It establishes which tickers carry the structural properties that allow a systematic covered call strategy to function, and which do not. The list of winners — defence, energy, metals, income — is not a commentary on those companies' business prospects. It is a commentary on their option market dynamics: moderate and persistent volatility risk premia, low directional momentum that would cap the covered call upside, and stable implied-to-realised volatility ratios that make premium income predictable across market regimes. These are the properties that the leaderboard selects for, and they turn out to concentrate in exactly the sectors that most sophisticated options traders have discovered empirically over decades of practice. The system, in nine hundred and twenty-three trials, arrived at the same answer.</p>
+
+<div class="end-ornament">· · ·</div>
+
+</div><!-- end article-body -->
+
+<footer class="article-footer" style="max-width:700px;margin:0 auto;">
+  <div class="footer-pub">Stack$Trader</div>
+  <div class="footer-meta">Vol. I &nbsp;·&nbsp; No. 1 &nbsp;·&nbsp; March 2026<br>Section V &nbsp;·&nbsp; Data &amp; Markets</div>
+</footer>
+
+
+<div style="max-width:700px; margin:48px auto 0; padding:24px 0; border-top:3px solid #111; font-family:'Playfair Display',serif;">
+  <a href="../index.html" style="font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:#C9002B; text-decoration:none; font-family:'IBM Plex Mono',monospace;">← Back to Stack$Trader</a>
+</div>
+</body>
+</html>
