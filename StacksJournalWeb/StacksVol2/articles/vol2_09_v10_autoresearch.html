@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inside the v10 AutoResearch Loop &mdash; WHIPSAW Vol. II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1a1208; --crimson: #b5121b; --crimson-dk: #8B001E; --paper: #f7f3ec;
+  --paper-warm: #ede8df; --rule: #c8bfa8; --muted: #6b6050;
+  --gold: #c8922a; --teal: #2a6b78; --green: #2a6b45; --col-w: 700px;
+}
+html { font-size: 17px; scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: 'Source Serif 4', Georgia, serif; line-height: 1.75; padding: 0 20px 100px; }
+::selection { background: var(--crimson); color: white; }
+a { color: inherit; text-decoration: none; }
+
+/* ── PUB HEADER ── */
+.top-rule { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: var(--crimson); z-index: 100; }
+.pub-header { max-width: var(--col-w); margin: 0 auto; border-top: 4px solid var(--crimson); padding: 18px 0 12px; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--ink); margin-top: 12px; }
+.pub-wordmark { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; }
+.pub-wordmark a { color: var(--ink); }
+.pub-wordmark a:hover { color: var(--crimson); }
+.pub-wordmark .dollar { color: var(--crimson); }
+.pub-issue { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); }
+
+/* ── NAV BAR ── */
+.article-nav { max-width: var(--col-w); margin: 0 auto; padding: 8px 0; display: flex; gap: 0; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+.article-nav a { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 5px 12px; border-right: 1px solid var(--rule); transition: all 0.15s; }
+.article-nav a:first-child { padding-left: 0; }
+.article-nav a:last-child { border-right: none; }
+.article-nav a:hover { color: var(--crimson); }
+.article-nav a.active { color: var(--ink); font-weight: 500; }
+
+/* ── ARTICLE HEADER ── */
+.article-header { max-width: var(--col-w); margin: 0 auto; padding: 44px 0 32px; border-bottom: 1px solid var(--rule); animation: fadeIn 0.5s ease both; }
+.article-kicker { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--crimson); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.article-kicker::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+.article-title { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; line-height: 1.07; color: var(--ink); letter-spacing: -0.5px; margin-bottom: 8px; }
+.article-subtitle { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 400; font-style: italic; color: var(--muted); line-height: 1.4; margin-bottom: 18px; }
+.article-deck { font-family: 'Source Serif 4', serif; font-size: 1.02rem; font-weight: 300; font-style: italic; color: var(--muted); line-height: 1.65; margin-bottom: 26px; max-width: 540px; }
+.article-byline { display: flex; align-items: center; gap: 20px; padding-top: 18px; border-top: 1px solid var(--rule); }
+.byline-text { font-family: 'IBM Plex Mono', monospace; font-size: 0.63rem; letter-spacing: 0.08em; color: var(--muted); line-height: 1.6; }
+.byline-text strong { color: var(--ink); font-weight: 500; display: block; font-size: 0.68rem; }
+.read-badge { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: var(--ink); padding: 4px 10px; white-space: nowrap; flex-shrink: 0; }
+
+/* ── ARTICLE BODY ── */
+.article-body { max-width: var(--col-w); margin: 0 auto; padding-top: 38px; animation: fadeIn 0.5s ease 0.1s both; }
+p { font-size: 1rem; line-height: 1.78; margin-bottom: 1.4em; hyphens: auto; }
+p.dropcap::first-letter { font-family: 'Playfair Display', serif; font-size: 4.2rem; font-weight: 900; float: left; line-height: 0.8; margin: 6px 10px -2px 0; color: var(--crimson); }
+h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; color: var(--ink); margin-top: 4px; }
+h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-top: 1.5rem; margin-bottom: 0.4rem; }
+
+/* ── SECTION BREAKS ── */
+.section-break { display: flex; align-items: center; gap: 14px; margin: 44px 0 28px; }
+.sb-rule  { flex: 1; height: 1px; background: var(--rule); }
+.sb-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+.sb-num   { font-family: 'Playfair Display', serif; font-size: 0.9rem; font-weight: 700; color: var(--rule); flex-shrink: 0; }
+
+/* ── PULL QUOTES ── */
+.pull-quote { border-top: 2px solid var(--crimson); border-bottom: 1px solid var(--rule); padding: 20px 0 18px; margin: 34px 0; }
+.pull-quote p { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; font-style: italic; line-height: 1.35; color: var(--ink); margin-bottom: 8px; }
+.pull-quote cite { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); font-style: normal; }
+
+/* ── ASIDE NOTES ── */
+.aside-note { float: right; width: 215px; margin: 4px 0 20px 28px; padding: 14px 16px; border-top: 2px solid var(--gold); background: var(--paper-warm); clear: right; }
+.aside-note-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 7px; }
+.aside-note p { font-size: 0.8rem; line-height: 1.55; color: var(--muted); font-style: italic; margin-bottom: 0; }
+
+/* ── CODE ── */
+code { font-family: 'IBM Plex Mono', monospace; font-size: 0.82em; background: var(--paper-warm); padding: 0.1em 0.35em; border-radius: 2px; color: var(--crimson-dk); }
+pre { background: var(--paper-warm); border-left: 3px solid var(--teal); padding: 18px 22px; margin: 26px 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78em; line-height: 1.65; overflow-x: auto; border-radius: 0 3px 3px 0; }
+pre code { background: none; padding: 0; color: var(--ink); }
+
+/* ── DATA TABLES ── */
+.data-table { width: 100%; border-collapse: collapse; margin: 26px 0 32px; font-size: 0.84rem; }
+.data-table caption { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-align: left; margin-bottom: 8px; }
+.data-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 8px 10px 8px 0; border-bottom: 2px solid var(--ink); white-space: nowrap; }
+.data-table td { padding: 9px 10px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.45; }
+.data-table tbody tr:hover { background: var(--paper-warm); }
+.data-table tr.highlight { background: rgba(181, 18, 27, 0.04); }
+.data-table tfoot td { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--muted); border-bottom: none; padding-top: 8px; font-style: italic; }
+.positive { color: var(--green); font-weight: 600; }
+.negative { color: var(--crimson); font-weight: 600; }
+.mono { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; }
+
+/* ── DIAGRAM BOX ── */
+.diagram-box { background: var(--paper-warm); border: 1px solid var(--rule); padding: 20px 24px; margin: 26px 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; line-height: 1.8; white-space: pre-line; }
+.diagram-box .label { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 10px; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
+
+/* ── LISTS ── */
+ul, ol { margin: 0 0 1.4em 1.4em; }
+li { margin-bottom: 0.5em; font-size: 1rem; line-height: 1.65; }
+
+/* ── FOOTER ── */
+.article-footer { max-width: var(--col-w); margin: 0 auto; padding: 18px 0 0; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+.footer-pub { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 900; color: var(--ink); }
+.footer-pub .dollar { color: var(--crimson); }
+.footer-meta { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--muted); text-align: right; line-height: 1.7; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 620px) {
+  html { font-size: 15px; }
+  .article-title { font-size: 2.1rem; }
+  .article-nav { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="top-rule"></div>
+
+<div class="pub-header">
+  <span class="pub-wordmark"><a href="../index.html">Stack<span class="dollar">$</span>Trader</a></span>
+  <span class="pub-issue">Vol. II &nbsp;&middot;&nbsp; No. 2 &nbsp;&middot;&nbsp; March 2026 &nbsp;&middot;&nbsp; The Evolution Issue</span>
+</div>
+
+<nav class="article-nav">
+  <a href="../index.html">Home</a>
+  <a href="vol2_01_cover_story.html">Cover Story</a>
+  <a href="vol2_02_expanding_gene_pool.html">Gene Pool</a>
+  <a href="vol2_03_from_synthetic_to_live.html">Live Data</a>
+  <a href="vol2_04_guided_evolution.html">Guided Evo</a>
+  <a href="vol2_05_full_results.html">Results</a>
+  <a href="vol2_06_evidence_and_illusion.html">Best Practices</a>
+  <a href="vol2_07_career_guide.html">Career Guide</a>
+  <a href="vol2_08_from-stagnation-to-autoresearch.html">AutoResearch</a>
+  <a href="vol2_09_v10_autoresearch.html" class="active">v10 Loop</a>
+</nav>
+
+<header class="article-header">
+  <div class="article-kicker">Architecture &nbsp;&middot;&nbsp; Deep Dive</div>
+  <h1 class="article-title">Inside the v10 AutoResearch Loop</h1>
+  <p class="article-subtitle">How six LLM-driven agents close the loop between hypothesis, synthesis, testing, and production in a covered-call veto evolution system</p>
+  <p class="article-deck">The v10 AutoResearch routine is the system that writes its own research. It mines failures from forward tests, synthesizes new trigger code via Claude, validates that code in a sandbox, and feeds confirmed improvements back into the genetic algorithm — all without human intervention.</p>
+  <div class="article-byline">
+    <div class="byline-text"><strong>Chris</strong>Engineer &nbsp;&middot;&nbsp; March 15, 2026</div>
+    <span class="read-badge">18 min read</span>
+  </div>
+</header>
+
+<div class="article-body">
+  <p class="dropcap">The v10 AutoResearch routine is the system that writes its own research. It mines failures from forward tests, synthesizes new trigger code via Claude, validates that code in a sandbox, A/B tests it against champion trees, and feeds confirmed improvements back into the genetic algorithm (GA) — all without human intervention. It runs as a sidecar to the main evolution loop, activated every 10 GA cycles or whenever stagnation exceeds 50% of tickers. In its first live run, it proposed 8 new triggers, 4 of which passed validation and entered the evolution vocabulary. This article dissects the architecture, module by module.</p>
+
+  <div class="section-break">
+    <span class="sb-num">I</span><span class="sb-rule"></span>
+    <span class="sb-label">The AutoResearch Vision</span>
+  </div>
+
+  <p>The inspiration is Karpathy's notion of "software 2.0" — systems where the model writes the code. In StackStrader, the GA evolves boolean veto trees that decide when <em>not</em> to sell covered calls. But the GA can only combine existing triggers; it cannot invent new ones. AutoResearch closes that gap. An LLM examines why the GA stalls, proposes new boolean trigger functions as executable Python, validates them against real market data, and injects the survivors into the next evolution cycle.</p>
+
+  <p>The key design constraint: <strong>the loop must be fully autonomous</strong>. No human reviews trigger code before it enters the GA. Safety comes from AST inspection, restricted namespaces, and sample-data execution — not manual review. The system trusts code that passes three gates: syntax safety, sandboxed execution on 5,000+ bars of SPY data, and a veto-rate sanity check (5%&ndash;95%).</p>
+
+  <div class="section-break">
+    <span class="sb-num">II</span><span class="sb-rule"></span>
+    <span class="sb-label">The 6-Phase Orchestrator</span>
+  </div>
+
+  <p>The orchestrator (<code>scripts/autoresearch/orchestrator.py</code>) coordinates six research phases that run sequentially within a single research cycle. Each phase receives the same context — champion trees, stagnation counts, latest GA results, and a research memory summary — and returns structured JSON directives.</p>
+
+  <div class="diagram-box">
+<span class="label">System Flow</span>
+GA Main Loop
+  │
+  ├─── every 10 cycles OR stagnation > 50%
+  │         │
+  │    ┌────▼────────────────────────────────────┐
+  │    │        AutoResearch Orchestrator         │
+  │    │                                          │
+  │    │  Phase 1: Failure Mining      (Sonnet)   │
+  │    │  Phase 2: Trigger Synthesis   (Opus)     │
+  │    │  Phase 3: Narrative Intel     (Opus)     │
+  │    │  Phase 4: Fitness Review      (Sonnet)   │
+  │    │  Phase 5: Literature Scan     (Opus)     │
+  │    │  Phase 6: Trigger Testing     (closed)   │
+  │    │                                          │
+  │    │  ──► research_directives.json            │
+  │    │  ──► research_state.json (memory)        │
+  │    │  ──► reports/research_*.md               │
+  │    └──────────────────────────────────────────┘
+  │         │
+  │    directives consumed by GA:
+  │      • new_triggers → compile → TRIGGER_MODES
+  │      • seed_trees → initial population
+  │      • fitness_adjustments → per-ticker weights
+  │      • hypotheses → tracked in memory
+  │
+  └─── next evolution cycle
+  </div>
+
+  <p>The orchestrator's decision logic for when to fire is deliberately conservative:</p>
+
+  <pre><code>def should_run_research(self, cycle_num, ticker_stagnation):
+    # Guard: don't run back-to-back
+    if cycle_num - self._last_research_at_ga_cycle < 3:
+        return False
+
+    # Periodic trigger: every 10 GA cycles
+    if cycle_num > 0 and cycle_num % self.research_interval == 0:
+        return True
+
+    # Stagnation trigger: >50% of tickers stagnating >3 cycles
+    if ticker_stagnation:
+        total = len(ticker_stagnation)
+        stagnating = sum(1 for s in ticker_stagnation.values() if s > 3)
+        if stagnating / total > self.stagnation_threshold:
+            return True
+
+    return False</code></pre>
+
+  <p>After all six phases complete, results are merged via <code>_merge_phase_results()</code>, which deduplicates triggers by name, deduplicates seed trees, and deep-merges fitness adjustments (later phases override earlier ones). The merged directives are written to <code>research_directives.json</code>, which the GA consumes on its next cycle. After consumption, the file is renamed with a <code>.consumed_</code> timestamp suffix to prevent re-processing.</p>
+
+  <div class="section-break">
+    <span class="sb-num">III</span><span class="sb-rule"></span>
+    <span class="sb-label">Phase 1: Failure Mining</span>
+  </div>
+
+  <p>The <code>FailureMiner</code> (<code>scripts/autoresearch/failure_mining.py</code>) is the adversarial engine. It selects the worst-performing tickers from the checkpoint, reruns their champion veto trees on 2026 out-of-sample data, extracts the N worst trades by realized PnL, and asks the LLM to explain what went wrong.</p>
+
+  <h3>Workflow</h3>
+  <ol>
+    <li>Select the 5 lowest-fitness tickers from the champion checkpoint</li>
+    <li>For each ticker, run the champion tree on forward data (post-train_cutoff)</li>
+    <li>Pair OPEN/CLOSE trade events and sort by PnL ascending</li>
+    <li>Enrich the 10 worst trades with indicator context (30 indicators at entry, 5-bar price action before/after)</li>
+    <li>Call LLM (Sonnet) per ticker: "What pattern do these failures share?"</li>
+    <li>Call LLM (Sonnet) cross-ticker: "What systematic blind spots exist?"</li>
+  </ol>
+
+  <p>The indicator context capture is detailed enough to give the LLM real signal. For each bad trade, the miner extracts every computed indicator value at the entry bar:</p>
+
+<pre><code>def _get_indicator_context(df, trade_date, window=5):
+    idx_loc = df.index.searchsorted(pd.Timestamp(trade_date))
+    row = df.iloc[idx_loc]
+
+    indicators = {}
+    for col in df.columns:
+        if col.lower() in {"open", "high", "low", "close", "volume"}:
+            continue
+        val = row.get(col)
+        if val is not None and not (isinstance(val, float) and np.isnan(val)):
+            indicators[col] = round(float(val), 6)
+
+    return {
+        "indicators_at_entry": indicators,
+        "price_at_entry": float(df["close"].iloc[idx_loc]),
+        "price_action_before": df["close"].iloc[max(0,idx_loc-5):idx_loc].tolist(),
+        "price_action_after": df["close"].iloc[idx_loc+1:idx_loc+6].tolist(),
+    }</code></pre>
+
+  <p>The cross-ticker synthesis step is critical. Individual per-ticker analyses might identify idiosyncratic patterns, but the cross-ticker LLM call identifies <em>systemic</em> blind spots — failure modes that appear across AAPL, NVDA, and INTC simultaneously. These become the highest-priority inputs for trigger synthesis.</p>
+
+  <div class="section-break">
+    <span class="sb-num">IV</span><span class="sb-rule"></span>
+    <span class="sb-label">Phase 2: Trigger Synthesis</span>
+  </div>
+
+  <p>The <code>TriggerSynthesizer</code> (<code>scripts/autoresearch/trigger_synthesis.py</code>) is where hypotheses become executable code. It takes the failure patterns from Phase 1 and the existing trigger vocabulary (~84 triggers across 15 categories) and asks Claude Opus to write new Python functions.</p>
+
+  <table class="data-table">
+    <caption>Trigger Validation Pipeline</caption>
+    <thead>
+      <tr><th>Stage</th><th>Check</th><th>Rejection Reason</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1. AST Parse</td><td><code>ast.parse(code)</code></td><td>Syntax error</td></tr>
+      <tr><td>2. Safety Scan</td><td><code>_ASTSafetyChecker</code></td><td>Forbidden import/call</td></tr>
+      <tr><td>3. Signature</td><td>Function takes <code>(df)</code></td><td>Wrong signature</td></tr>
+      <tr><td>4. Sandbox</td><td>Run on SPY daily bars</td><td>Runtime error</td></tr>
+      <tr><td>5. Veto Rate</td><td>5% &le; rate &le; 95%</td><td>Always-True/False</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-break">
+    <span class="sb-num">V</span><span class="sb-rule"></span>
+    <span class="sb-label">Phase 3: Narrative Intel</span>
+  </div>
+
+  <p>The <code>NarrativeAnalyzer</code> (<code>scripts/autoresearch/narrative_intel.py</code>) consumes the cross-ticker fitness matrix — a precomputed grid showing how each ticker's champion performs on every other ticker — and produces regime theories explaining the patterns.</p>
+
+  <div class="pull-quote">
+    <p>"The system trusts code that passes three gates: syntax safety, sandboxed execution, and a veto-rate sanity check."</p>
+    <cite>Architecture Design Document, March 2026</cite>
+  </div>
+
+  <div class="section-break">
+    <span class="sb-num">VI</span><span class="sb-rule"></span>
+    <span class="sb-label">Phase 4: Fitness Function Review</span>
+  </div>
+
+  <p>The <code>FitnessReviewer</code> audits whether the fitness function is producing good champions or enabling gaming. It checks for four failure modes: high Sharpe on few trades, excessive veto rates, concentrated profit, and calendar-only trees.</p>
+
+  <table class="data-table">
+    <caption>Gaming Detection Rules</caption>
+    <thead>
+      <tr><th>Pattern</th><th>Detection Rule</th><th>Recommended Fix</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>High Sharpe, few trades</td><td>Sharpe &gt; 1.5 AND trades &lt; 8</td><td>Raise min_trades_penalty</td></tr>
+      <tr><td>Excessive veto rate</td><td>Veto rate &gt; 80%</td><td>Lower max_veto_rate</td></tr>
+      <tr><td>Concentrated profit</td><td>PF &gt; 10 AND trades &lt; 20</td><td>Max trade contribution penalty</td></tr>
+      <tr><td>Calendar-only trees</td><td>All leaves are calendar</td><td>Increase calendar_penalty</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-break">
+    <span class="sb-num">VII</span><span class="sb-rule"></span>
+    <span class="sb-label">Phase 5: Literature Scan</span>
+  </div>
+
+  <p>The <code>LiteratureScanner</code> uses academic finance knowledge to propose structurally-motivated signals grounded in options pricing theory, market microstructure, and behavioral finance (e.g., Garleanu &amp; Pedersen 2011, Bollen &amp; Whaley 2004).</p>
+
+  <div class="section-break">
+    <span class="sb-num">VIII</span><span class="sb-rule"></span>
+    <span class="sb-label">The Closed Loop</span>
+  </div>
+
+  <p>Phase 6 is where the loop closes. Untested synthesized triggers from Phase 2 are compiled, registered into the live <code>TRIGGER_MODES</code> dictionary, and A/B tested against baseline fitness. If a trigger improves fitness, it is marked as confirmed in the research memory.</p>
+
+  <div class="diagram-box">
+<span class="label">Hypothesis Lifecycle</span>
+1. GENERATION (FailureMiner)
+2. SYNTHESIS (TriggerSynthesizer)
+3. VALIDATION (AST & Sandbox)
+4. COMPILATION (Runtime registration)
+5. EVOLUTION (GA testing)
+6. CONFIRMATION (Memory logging)
+  </div>
+</div>
+
+<div class="article-footer">
+  <span class="footer-pub">Stack<span class="dollar">$</span>Trader Review</span>
+  <div class="footer-meta">
+    Vol. II &nbsp;&middot;&nbsp; No. 2 &nbsp;&middot;&nbsp; March 2026<br>
+    The Evolution Issue
+  </div>
+</div>
+
+</body>
+</html>

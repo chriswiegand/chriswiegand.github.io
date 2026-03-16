@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoResearch Reports — WHIPSAW Vol. II</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #1a1208; --crimson: #b5121b; --crimson-dk: #8B001E; --paper: #f7f3ec;
+      --paper-warm: #ede8df; --rule: #c8bfa8; --muted: #6b6050;
+      --gold: #c8922a; --teal: #2a6b78; --green: #2a6b45; --col-w: 1100px;
+    }
+    html { font-size: 17px; scroll-behavior: smooth; }
+    body { background: var(--paper); color: var(--ink); font-family: 'Source Serif 4', Georgia, serif; line-height: 1.75; padding: 0 20px 100px; }
+    
+    .top-rule { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: var(--crimson); z-index: 100; }
+    .pub-header { max-width: var(--col-w); margin: 0 auto; border-top: 4px solid var(--crimson); padding: 18px 0 12px; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--ink); margin-top: 12px; }
+    .pub-wordmark { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; }
+    .pub-wordmark .dollar { color: var(--crimson); }
+    .pub-issue { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); }
+
+    .reports-header { max-width: var(--col-w); margin: 0 auto; padding: 60px 0 40px; text-align: center; }
+    .reports-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 15px; }
+    .reports-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--crimson); margin-bottom: 30px; }
+    .reports-deck { font-family: 'Source Serif 4', serif; font-size: 1.1rem; max-width: 800px; margin: 0 auto; color: var(--muted); font-style: italic; }
+
+    .reports-grid { max-width: var(--col-w); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 30px; padding: 40px 0; }
+    .report-card { background: var(--paper-warm); border: 1px solid var(--rule); padding: 30px; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative; }
+    .report-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-color: var(--crimson); }
+    
+    .report-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--rule); padding-bottom: 10px; }
+    .report-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: #fff; background: var(--crimson); padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
+    .report-cycle { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+    .report-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--muted); }
+    
+    .report-summary { font-size: 0.95rem; color: var(--ink); line-height: 1.6; flex-grow: 1; margin-bottom: 20px; text-align: justify; hyphens: auto; }
+    .report-link { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--crimson); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; display: flex; align-items: center; gap: 5px; }
+    .report-link:hover { color: var(--crimson-dk); }
+
+    footer { max-width: var(--col-w); margin: 60px auto 0; padding-top: 30px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: baseline; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--muted); }
+    .footer-wordmark { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 900; color: var(--ink); }
+
+    @media (max-width: 960px) { .reports-grid { grid-template-columns: 1fr; } .reports-title { font-size: 2.5rem; } }
+  </style>
+</head>
+<body>
+  <div class="top-rule"></div>
+  <div class="pub-header">
+    <span class="pub-wordmark"><a href="index.html">Stack<span class="dollar">$</span>Trader</a></span>
+    <span class="pub-issue">Vol. II &nbsp;&middot;&nbsp; March 2026 &nbsp;&middot;&nbsp; AutoResearch Telemetry</span>
+  </div>
+
+  <header class="reports-header">
+    <div class="reports-subtitle">Automated Hypotheses & Failure Mining</div>
+    <h1 class="reports-title">The AutoResearch Logs</h1>
+    <p class="reports-deck">Documenting the iterative evolution of the AGENT framework. Each cycle represents a full loop of failure analysis, hypothesis synthesis, and genetic redirection across the 35-ticker portfolio.</p>
+  </header>
+
+  <main class="reports-grid">
+    {
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v9</span>
+        <span class="report-cycle">Cycle 21</span>
+        <span class="report-time">20260315T235615</span>
+      </div>
+      <div class="report-summary">
+        Cycle 21 failure mining identifies five structural failure modes accounting for stagnation across 60%+ of the portfolio. (1) SRPT gene pool collapse is the most acute: convergence_gen=0 with all 5 indicators at 10/10 frequency means every individual in the pool converged on the NOT(AND(...)) pattern anchored by earn_avoid, rsi_neutral, and ma_uptrend simultaneously — frequency penalties of 0.20 on all three plus seed injection of AND(NOT(earn_avoid), OR(vol_expansion_onset, vpin_spike)) are required to recover exploration. (2) NVDA and AMD kitchen_sink stagnation: both at stagnation=1 because kitchen_sink satisfies ~40% of days with no vol-state discrimination — vol_expansion_onset (5d/21d) and realized_vol_term_ratio (5d/63d) provide a vol-transition signal pair that is collinearity-free with all existing avwap/momentum signals in these gene pools, targeting the vol regime transition that causes actual assignment failures. (3) Rate-sensitive cohort ceiling (TLT 1.52, VYM 1.43, GLD ...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v9_cycle21_20260315T235615.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v9</span>
+        <span class="report-cycle">Cycle 11</span>
+        <span class="report-time">20260316T013738</span>
+      </div>
+      <div class="report-summary">
+        VOO (stagnation=1, convergence_gen=0) is in acute gene pool collapse: all top-5 indicators at 10/10 frequency means the evolver has no diversity to escape AND(cmf_positive, OR(macro_risk_day, avwap_sh_above)). The failure pattern is structural — CMF and AVWAP are positive-regime anchors that fire broadly, causing the tree to veto on broadly-bullish days (false vetoes) while missing the specific macro stress regimes where index covered calls are most dangerous (rate acceleration, bond vol spike, breadth deterioration). The low-beta ETF cohort failure is two-sided: (1) false vetoes on calm trending days kill premium collection, and (2) false passes during rate-shock regimes allow assignment at the worst possible prices. Three new triggers target the specific failure modes: MOVE/VIX divergence (bond markets pricing tail risk before equity does), OBV exhaustion at highs (distribution phase detection), and TLT rate acceleration (rate shock onset). NOT-root seeds are injected to break the...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v9_cycle11_20260316T013738.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v9</span>
+        <span class="report-cycle">Cycle 11</span>
+        <span class="report-time">20260315T230749</span>
+      </div>
+      <div class="report-summary">
+        Cycle 11 failure analysis identifies three distinct failure clusters. First, the vol-transition blind spot: NVDA (3.95, stagnation=1), AMD (3.59, stagnation=1), AMZN (3.87, stagnation=1) are all locked in kitchen_sink or hurst_accel local optima because no active trigger detects the vol-drought-to-expansion transition moment — the exact point where assignment risk is highest. vol_expansion_onset (rv5/rv21 > 1.25) targets this transition directly and is orthogonal to all avwap/support_resist signals currently dominating those gene pools. Second, the rate-direction vacuum: TLT (1.52), VYM (1.43), and GLD (1.21) have been fitness-capped below 2.0 for 10+ cycles because every evolved champion uses price-action signals (hurst, cci, stoch) on assets whose primary driver is yield direction. yield_adverse_regime uses the already-present tlt_ret_5d and yield_curve columns to provide the first rate-sensitive gate for this cohort. Third, gene pool convergence in the low-beta cohort: VOO's late...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v9_cycle11_20260315T230749.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v8</span>
+        <span class="report-cycle">Cycle 51</span>
+        <span class="report-time">20260315T203835</span>
+      </div>
+      <div class="report-summary">
+        Primary failure modes this cycle: (1) VYM acute gene pool collapse — latest fitness 0.585 from champion 1.4346, with adx_strong and avwap_sh_near both at 10/10 frequency, indicating complete gene pool convergence. The root cause is absence of any yield-direction signal; VYM is a dividend ETF whose price action is yield-driven but all active triggers are price-momentum based. yield_adverse_regime directly addresses this structural gap. (2) GLD stagnation=10 mirrors VYM's collapse — same structure, same missing yield signal. Rate-sensitive cohort (TLT 1.5187, VYM 1.4346, GLD 1.2128, VOO 1.91) shares a single root cause: zero triggers capture yield direction. yield_adverse_regime + parkinson_compression NOT-root seeds are the primary intervention for all four. (3) GOOG terminal stagnation — champion OR(hurst, AND(OR(OR(stoch_neutral, macd_accel), credit_calm), vix_regime)) has not improved because stoch_neutral fires ~40% of days acting as a satisficing floor. daily_autocorr_momentum i...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v8_cycle51_20260315T203835.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v8</span>
+        <span class="report-cycle">Cycle 41</span>
+        <span class="report-time">20260315T191133</span>
+      </div>
+      <div class="report-summary">
+        Cycle 41 failure analysis reveals four structural failure modes: (1) GLD stagnation=7 with convergence_gen=57 and all 5 indicators at 10/10 frequency is a terminal gene pool collapse — the evolver exhausted all price-action signal combinations and converged on a brittle 5-node tree with fitness 0.86 vs champion 1.21. Root cause: zero yield-direction triggers. rate_headwind_acute (tlt_ret_5d < -1.5%) is the missing signal. (2) Rate-sensitive cohort (TLT 1.35, VYM 1.43, GLD 1.21) shares the identical structural failure — all champions use price-action signals mismatched to yield-driven dynamics. rate_headwind_acute seed injection with NOT(vol_term_contango) provides the first orthogonal signal dimension. (3) NVDA (stagnation=1, fitness 3.77) and AMD (stagnation=1, fitness 3.59) are kitchen_sink-trapped — the trigger fires ~45% of days, creating a satisficing floor that prevents the evolver from exploring lower-frequency precision signals. vol_expansion_onset (5d/21d RV ratio > 1.25) t...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v8_cycle41_20260315T191133.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v8</span>
+        <span class="report-cycle">Cycle 31</span>
+        <span class="report-time">20260315T174152</span>
+      </div>
+      <div class="report-summary">
+        Cycle 31 failure analysis reveals three distinct failure clusters. Cluster 1 (Gene Pool Collapse): AAPL champion contains cmf_positive twice (AND with itself = tautology), identical to the SRPT/COST collapse pattern — convergence_gen=0 for COST with vol_rank=vrp=vol_term_contango all at 10/10 confirms full convergence. AAPL is 1-2 cycles from the same state. Cluster 2 (Structural Signal Absence): TLT (1.35), VYM (1.43), GLD (1.21), HON (2.74), CVX (2.78) remain fitness-capped because zero yield-direction signals exist in active triggers. All 8 active triggers (earnings_vol_rebuild, realized_skewness_negative, overnight_gap_persistent, realized_kurtosis_regime, hmm_breadth_veto, vol_surface_stress, vrp_regime_rich, monday_gap_risk) are price-momentum or vol-regime signals — none capture rate direction. Cluster 3 (Kitchen Sink + Stagnation Trap): NVDA (stagnation=1), AMD (stagnation=1), XOM (stagnation=1), MSFT (stagnation=1) all use kitchen_sink or single-axis signals. The vol_drough...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v8_cycle31_20260315T174152.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v8</span>
+        <span class="report-cycle">Cycle 21</span>
+        <span class="report-time">20260315T164536</span>
+      </div>
+      <div class="report-summary">
+        Cycle 21 failure mining identifies six structural failure modes. (1) Vol-drought-to-expansion transition blindspot: NVDA (3.77, stagnation=1) and AMD (3.59, stagnation=1) both use price/AVWAP signals that fire correctly during vol droughts but miss the critical transition when 5d realized vol crosses above 21d — the highest covered-call assignment risk window. (2) Rate-direction vacuum: TLT (1.35), VYM (1.41), GLD (1.21) have been below 2.0 for 10+ cycles because zero evolved champions detect yield moves — all use lagging price/volume signals downstream of rate changes. yield_adverse_regime provides the upstream yield-direction gate. (3) GOOG terminal gene pool saturation: stoch_neutral fires ~40% of days, creating a fitness floor that prevents evolver from replacing it. Champion has not improved in 10+ cycles. daily_autocorr_momentum is statistically orthogonal to stoch_k/stoch_d by construction. (4) SRPT indicator_frequency collapse: all 5 indicators at max frequency (10/10), conv...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v8_cycle21_20260315T164536.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v8</span>
+        <span class="report-cycle">Cycle 11</span>
+        <span class="report-time">20260315T153754</span>
+      </div>
+      <div class="report-summary">
+        Failure mining cycle 11 reveals four structural failure clusters: (1) Vol-drought/expansion transition blindness in NVDA/AMD — champions fire on static AVWAP proximity but miss the vol-regime shift that precedes assignment failures; (2) Rate-direction vacuum in TLT/VYM/GLD — yield_adverse_regime is active but not yet seeded into these tickers' gene pools, leaving all three rate-sensitive champions relying on price-momentum proxies orthogonal to their actual return driver; (3) GOOG stoch_neutral gene-pool lock — stoch_neutral fires ~40% of days, satisfices fitness at 1.54, and blocks exploration of momentum-autocorrelation signals that would break the plateau; (4) Kitchen_sink local optima in NVDA/SOFI/XOM — broad coverage prevents convergence on sharper orthogonal signals. Two triggers addressing these failures (vol_expansion_onset, daily_autocorr_momentum) are repeatedly hypothesized but absent from the active trigger set — they must be injected this cycle.
+
+Cycle 11 trigger synthe...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v8_cycle11_20260315T153754.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 91</span>
+        <span class="report-time">20260315T122939</span>
+      </div>
+      <div class="report-summary">
+        Cycle 91 reveals three distinct failure modes. First, AAPL has an active live regression: champion fitness 1.7946 vs latest best 0.9671 — the gene pool has completely lost bb_squeeze (absent from indicator_frequency) replaced by pre_earnings (frequency=9). This is a high-frequency satisficing trap: pre_earnings fires on a deterministic calendar schedule (~12x/year) while bb_squeeze fires rarely but precisely captures vol compression risk. The evolver chose calendar frequency over precision. Second, four stagnation=10 tickers (GOOG, VYM, GLD, TLT) share a structural gap: none of their champions contain a yield-directional signal despite TLT/GLD/VYM being yield-driven assets and GOOG being rate-sensitive growth. Their fitness ceiling is not signal quality — it is signal domain mismatch. Third, the vol_drought→expansion transition (the moment when assignment risk is highest) is still undetected: ONDS champion uses NOT(vol_drought) as a sustained state gate but misses the transition ons...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle91_20260315T122939.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 81</span>
+        <span class="report-time">20260315T113249</span>
+      </div>
+      <div class="report-summary">
+        Cycle 81 failure analysis reveals four distinct failure modes. (1) Gene pool collapse in GOOG (stagnation=10), GLD (stagnation=10), TLT (stagnation=10), and VYM (stagnation=7): the evolver converges on a single anchor trigger that fires broadly, preventing discrimination. GOOG anchors on stoch_neutral (~40% fire rate), TLT anchors on cci_neutral, VYM just collapsed to single-node credit_stress (fitness 0.2517 vs 1.41 champion). (2) Rate-sensitive structural blind spot: TLT, GLD, VYM, HON, CVX champions contain zero yield-direction signals despite their price action being >60% explained by rate moves. NOT(hurst), vol_term_contango, and ma_uptrend are price-based proxies that fire at the wrong time for yield-driven assets. (3) Kitchen_sink local optima trap active in NVDA, XOM, SOFI: kitchen_sink satisfies ~40% of fitness cases, giving it tournament selection dominance despite providing no marginal information over the union of its components. (4) High-fitness overfitting in ONDS (11....
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle81_20260315T113249.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 71</span>
+        <span class="report-time">20260315T103533</span>
+      </div>
+      <div class="report-summary">
+        Three acute failure modes dominate cycle 71. (1) TLT is in active regression: the latest cycle produced fitness 0.6883 vs champion 1.345, with cci_neutral collapsing the gene pool (10/22 trigger slots) while yield_curve_warn appeared only 2 times. This is the stoch_neutral/GOOG failure pattern replicated on TLT — cci_neutral fires ~35-40% of days on TLT, acts as a satisficer, and crowds out yield-direction signals that should dominate. (2) GOOG stagnation=10 and GLD stagnation=10 remain unresolved — both have gene pool anchors (stoch_neutral for GOOG, psar_bullish for GLD) that produce fitness floors blocking hill-climbing. (3) The low-beta rate-sensitive cohort (TLT 1.35, GLD 1.21, VYM 1.41, VOO 1.81) is structurally capped because no champion in this cohort uses a yield-direction signal despite yield being the primary price driver. Five kitchen_sink tickers (NVDA, XOM, SOFI, AMD via avwap collinearity) are at stagnation=1, indicating kitchen_sink is acting as a local optima trap w...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle71_20260315T103533.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 61</span>
+        <span class="report-time">20260315T094819</span>
+      </div>
+      <div class="report-summary">
+        Cycle 61 failure mining reveals three distinct failure modes. (1) GLD gene pool collapse: the latest cycle regressed 50% (0.6042 vs champion 1.2128) due to total population convergence on AND(hurst, psar_bullish) — frequency shows hurst=10, psar_bullish=10 out of 10 positions, while correct signals (obv_rising, cmf_positive) appear at count=1. Prior research confirms psar_bullish is an anti-signal; the evolver is falling into it because it fires frequently enough to look correlated on short windows. This is the most actionable failure this cycle. (2) GOOG stagnation=10 is the longest-running failure (fitness=1.001). stoch_neutral acts as a gene pool anchor — fires on ~40% of days creating a false fitness floor, preventing escape to higher-fitness territory. Champion includes stoch_neutral via OR chain which dilutes everything else. (3) Low-beta cohort (VOO 1.81, VYM 1.41, GLD 1.21, TLT 1.35) are all fitness-capped below 2.0 because no rate-direction or yield-curve signal exists in t...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle61_20260315T094819.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 51</span>
+        <span class="report-time">20260315T091452</span>
+      </div>
+      <div class="report-summary">
+        Cycle 51 failure mining reveals four distinct failure modes: (1) VYM catastrophic regression — latest cycle found 0.0488 fitness exploring psar_bullish-heavy space (8 appearances) while abandoning the champion NOT(hurst) at 1.0877; this is a seed-anchor failure, not a signal failure. (2) GOOG chronic flatness at stagnation=10 — champion tree OR(hurst, AND(OR(OR(stoch_neutral, macd_accel), credit_calm), vix_regime)) contains stoch_neutral which fires ~40% of days and pollutes signal purity; the evolver cannot escape because stoch_neutral provides enough marginal fitness to stay dominant. (3) Kitchen_sink local optima trap still active in NVDA, XOM, SOFI — kitchen_sink satisfies ~45% of days creating a broad-coverage plateau that blocks more precise signals from competing. (4) Low-beta structural ceiling: VOO(1.81), VYM(1.09), GLD(1.21), TLT(1.35) all below 2.0 because their price action is driven by yield direction not momentum signals — hurst, avwap, and psar are wrong indicator fam...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle51_20260315T091452.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 41</span>
+        <span class="report-time">20260315T083201</span>
+      </div>
+      <div class="report-summary">
+        Cycle 41 reveals four failure modes: (1) GOOG fitness surface collapse — latest cycle regressed to -0.0996 with stoch_neutral dominating (8/17 gene occurrences), indicating a flat fitness plateau where the evolver has no gradient signal to climb; the champion at 1.001 is fragile and the gene pool is polluted with a single low-information trigger. (2) Kitchen_sink absorption trap — NVDA, XOM, SOFI, and transitively GOOG are stuck because kitchen_sink masks signal orthogonality; any novel trigger added to an OR with kitchen_sink contributes zero marginal fitness. (3) Low-beta ETF fitness ceiling — VOO (1.81), VYM (1.09), GLD (1.21), TLT (1.35) cannot breach 2.0 because zero triggers in the active gene pool capture yield direction, duration risk, or real-rate regime; their champions use generic signals (hurst, obv_rising, ma_uptrend) that misfire on rate-driven moves. (4) Episodic overfit in ONDS (11.44) and OPEN (11.35) — fitness inflated by gap/catalyst events in training window; the...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle41_20260315T083201.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 31</span>
+        <span class="report-time">20260315T074847</span>
+      </div>
+      <div class="report-summary">
+        Cycle 31 failure mining reveals five distinct failure modes. (1) GOOG (0.84) is trapped in a kitchen_sink local optimum on a flat fitness surface — the OR(avwap_sh_near, OR(bb_squeeze, kitchen_sink)) champion is essentially a noise interpolator because GOOG's compressed vol makes no individual trigger decisive. Fix: penalize kitchen_sink, inject novelty seeds using parkinson_compression and sector_rotate_out which are orthogonal to current signal set. (2) Low-beta cohort (VOO 1.81, VYM 1.09, GLD 1.21, TLT 1.35) fails because all champions are drawn from an equity-momentum signal library that is structurally mismatched to rate-sensitive instruments. NOT(hurst) for VYM is the lone clue: these tickers need NOT-root architectures with rate-direction signals. rate_headwind_acute targets this directly. (3) COST premature convergence at gen 17 (below current champion) signals population diversity collapse before the fitness peak. Stagnation injection at gen 10 with 40% population refresh w...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle31_20260315T074847.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 21</span>
+        <span class="report-time">20260315T071036</span>
+      </div>
+      <div class="report-summary">
+        Cycle 21 failure mining reveals four distinct failure modes: (1) Rate-sensitive assets (TLT 1.35, VYM 0.97, GLD 1.21) have no yield/rate-direction signals in the trigger set, causing the evolver to find trivially weak trees. (2) Semiconductor stagnation (NVDA=1, AMD=1) stems from stock-level signals failing to distinguish sector-wide momentum from stock-specific setups — kitchen_sink becomes the fallback because no signal captures the semis-complex co-movement. (3) GOOG fitness at 0.84 is near-random; the champion OR(avwap_sh_above, OR(bb_squeeze, kitchen_sink)) fires too broadly with no qualifying conditions, suggesting the fitness function is nearly flat for GOOG's regime profile. (4) The psar_bullish anti-pattern (NOT(psar_bullish) in both CEG and SOFI champions) reveals that PSAR bullish = trending stock = call gets assigned = real loss. This is a generalized failure: tickers without a PSAR-awareness term are missing a directional assignment-risk gate.
+
+Cycle 21 reveals two stru...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle21_20260315T071036.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 11</span>
+        <span class="report-time">20260315T063946</span>
+      </div>
+      <div class="report-summary">
+        Failure mining across 35 champion trees reveals four primary failure modes: (1) Vol drought blindness — low-fitness tickers (GOOG 0.84, VYM 0.97, GLD 1.21, TLT 1.35, VOO 1.81) rarely gate on vol_drought, while ONDS (11.4) and COIN (7.2) explicitly avoid selling into compressed premium environments; covered calls in vol drought capture near-zero premium while still capping upside. (2) Trend-only trees without regime context fail on tickers with episodic breakout behavior — GLD/TLT use trend indicators (ma200, ma_uptrend, obv_rising) without vol surface or regime filters, meaning they veto in calm uptrends but miss the actual risk windows. (3) Kitchen_sink overuse in stagnating tickers (NVDA, AMD, GOOG, SOFI, XOM) suggests overfitting to historical noise rather than causal structure — fitness ceilings near 2-3 indicate the tree is not identifying genuine regime shifts. (4) Missing ex-dividend and post-event IV crush gates: VYM and dividend-heavy names have no ex_div protection; earnin...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle11_20260315T063946.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v7</span>
+        <span class="report-cycle">Cycle 101</span>
+        <span class="report-time">20260315T131947</span>
+      </div>
+      <div class="report-summary">
+        Cycle 101 failure mining surfaces four distinct and actionable failure modes. (1) Tautology trap: VOO's latest cycle converged on AND(cmf_positive, OR(credit_stress, credit_calm)) at gen 42—credit_stress OR credit_calm covers ~95% of market days, making this champion functionally AND(cmf_positive, TRUE). The indicator_frequency confirms the pathology: cmf_positive(7), credit_stress(7), credit_calm(6) are the top three signals, all firing nearly every day. This is a degenerate tautology that produces marginal fitness without genuine discrimination. (2) Signal domain mismatch (stagnation=10 cohort): TLT champion uses vol_term_contango + ma_uptrend + obv_rising + soft_tech_bull. GLD uses no_gap + hurst + obv_rising. VYM uses single-node NOT(hurst). GOOG uses stoch_neutral + macd_accel + credit_calm + vix_regime. None of these four stagnation=10 tickers has a yield-direction signal despite TLT and GLD being 90%+ yield-driven assets and VYM being a dividend ETF highly sensitive to rate d...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v7_cycle101_20260315T131947.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10d</span>
+        <span class="report-cycle">Cycle 31</span>
+        <span class="report-time">20260316T051940</span>
+      </div>
+      <div class="report-summary">
+        Failure mining cycle 31 identifies three structural failure modes causing the low-beta cohort (GLD 0.77, VYM 1.11, TLT 1.25) to stagnate. First, TLT's immediate gen=0 convergence to OR(kitchen_sink, turn_of_month) is a gene pool collapse identical to prior GOOG/cci_neutral and TLT/cci_neutral collapses — kitchen_sink's broad fire rate (~50%) acts as a fitness floor that blocks all rate-specific signal exploration. The fix is simultaneous penalization of kitchen_sink (0.4 weight) plus injection of tlt_collapse_guard seeds that provide high-precision rate-shock detection orthogonal to turn_of_month. Second, GLD's AND(hurst, no_gap) stagnation=2 is caused by signal collinearity — both triggers fire in the same low-vol regimes, giving the evolver no combinatorial diversity. gold_safe_haven_surge breaks this by requiring the price-near-high condition (call strike exposure) combined with Hurst trending AND VIX elevation — a triplet that is genuinely orthogonal to no_gap. Third, VYM's sing...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10d_cycle31_20260316T051940.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10d</span>
+        <span class="report-cycle">Cycle 21</span>
+        <span class="report-time">20260316T042809</span>
+      </div>
+      <div class="report-summary">
+        Failure mining for cycle 21 identifies five distinct failure regimes: (1) Rate-sensitive cohort collapse (TLT 0.95, VYM 0.86, GLD 0.77) caused by complete absence of rate/duration triggers in champion trees — TLT's kitchen_sink and GLD's AND(hurst, no_gap) are structurally blind to the primary driver of these assets. New triggers real_rate_headwind, yield_curve_stress_regime, and vol_surface_backwardation directly address this. (2) VOO gene pool collapse onto cmf_positive + avwap_sh_above (both at 10/10 frequency, stagnation=2) — these two triggers have near-identical firing patterns making them effectively one signal. obv_divergence_distribution and cmf_obv_divergence provide orthogonal distribution-phase detection that cmf_positive cannot see. (3) Vol regime blindness in trending equity champions (VST 4.47, XOM 1.55) — hurst + sma200 combinations miss the dangerous case where a trend coincides with vol expansion. hurst_vol_divergence captures this breakout-in-progress regime. (4) ...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10d_cycle21_20260316T042809.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10d</span>
+        <span class="report-cycle">Cycle 11</span>
+        <span class="report-time">20260316T033214</span>
+      </div>
+      <div class="report-summary">
+        Failure mining for cycle 11 identifies four structural failure modes across the 14-ticker portfolio.
+
+FAILURE MODE 1 — RATE-REGIME BLINDNESS (VYM 0.67, GLD 0.67, HON 1.92): The three lowest-fitness tickers are rate-sensitive assets whose champions contain zero rate-direction awareness. VYM's OR(NOT(hurst), AND(obv_rising, vvix_proxy_spike)) and GLD's AND(hurst, no_gap) fire on momentum signals orthogonal to their primary risk driver: interest rate direction. When TLT is in a 5-day decline AND below 20d MA, rate-sensitive covered calls face gamma expansion and correlation-driven drawdown that current trees cannot detect. This is the primary fitness ceiling for the 0.67 cohort. tlt_rate_headwind directly addresses this gap with a two-condition rate-regime gate.
+
+FAILURE MODE 2 — CMF ATTRACTOR CONTAMINATION (VOO 1.79, MSFT 2.38): cmf_positive has a documented 10/10 frequency attractor history across multiple cycles. VOO's champion AND(cmf_positive, OR(macro_risk_day, avwap_sh_above)) c...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10d_cycle11_20260316T033214.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10c</span>
+        <span class="report-cycle">Cycle 31</span>
+        <span class="report-time">20260316T051109</span>
+      </div>
+      <div class="report-summary">
+        Failure mining for cycle 31 identifies three distinct failure archetypes across the stagnating tickers. (1) Calendar-trap stagnation (LRCX/MAR/LULU): OR(opex_week, credit_stress) is a depth-1 local optima that fires on schedule but misses intraperiod vol regime shifts — the regime between opex windows where rapid ATR expansion or short-RV/long-RV divergence creates equal or greater assignment risk. realized_vol_term_ratio and atr_regime_expansion are the targeted displacers. (2) Depth-1 macro-proxy saturation (IBM): hmm_bull at single-node depth captures macro breadth but fires too broadly (~40% of days). Every wrong veto day is a day premium was foregone. hurst_velocity_bull as an AND-gate refines the signal to trending+accelerating regimes where gap risk is structurally higher. (3) Joint stress blind spots (MAR/LULU): credit_stress triggers on credit spread level but misses the co-movement events where credit AND VIX spike simultaneously — the regime where discretionary covered ca...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10c_cycle31_20260316T051109.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10c</span>
+        <span class="report-cycle">Cycle 21</span>
+        <span class="report-time">20260316T041927</span>
+      </div>
+      <div class="report-summary">
+        LRCX is the critical failure case this cycle: convergence_gen=0 with opex_week:7 and credit_stress:7 (100% gene pool collapse on two calendar/macro anchors). This mirrors the MAR champion OR(monday_gap_risk, credit_stress) — both are moderate-beta industrials/semis trapped in a calendar+credit combo that fires infrequently but reliably, leaving the evolver no gradient to climb. IBM is in depth-1 local optima with single-node hmm_bull (fitness 2.19) — shallow but stable, preventing the evolver from exploring compound structures. The LRCX failure pattern is the most actionable: opex_week and credit_stress are negatively correlated signals (opex fires ~4x/year on schedule; credit_stress fires ~10-15x/year on macro events) — their OR union is near-maximal coverage with near-zero discriminative power for LRCX's specific failure modes, which are vol expansion events in semiconductor equipment cycles. The active triggers (vpin_acceleration, vrp_compression_regime, hurst_macd_compound, week...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10c_cycle21_20260316T041927.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10c</span>
+        <span class="report-cycle">Cycle 11</span>
+        <span class="report-time">20260316T032912</span>
+      </div>
+      <div class="report-summary">
+        The most critical failure pattern this cycle is the LRCX/MAR identical tree convergence: two structurally unrelated tickers — semiconductor equipment (LRCX) and hospitality (MAR) — evolved to OR(opex_week, credit_stress) with both signals at 10/10 frequency saturation. This is not a coincidence of fitness optima; it is a gene pool collapse onto the two highest-frequency generic signals in the trigger library. opex_week fires every month; credit_stress fires during any macro stress window. Together they cover roughly 35-40% of all trading days without requiring any ticker-specific information. The evolver found a local optimum where these two signals explain marginal variance in CC outcomes through correlation with macro regimes, but the fitness ceiling (~1.2-1.9) reflects the maximum achievable by calendar-signal-only trees.
+
+The failure modes they miss are precisely the dangerous ones for each ticker: LRCX faces semiconductor earnings clusters (ASML, TSMC, NVDA reporting within the...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10c_cycle11_20260316T032912.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10b</span>
+        <span class="report-cycle">Cycle 31</span>
+        <span class="report-time">20260316T052631</span>
+      </div>
+      <div class="report-summary">
+        Three structural failure modes dominate cycle 31. First, INTC's convergence_gen=0 signals acute gene pool collapse: hmm_bull, vpin_spike, and support_resist are highly correlated (all fire in the same HMM bull + microstructure stress regime), producing a degenerate OR tree that cannot discriminate. Injection of credit_spread_velocity as a leading-edge macro trigger breaks this collinearity since credit widens 1-3 days before HMM re-classifies. Second, GOOG (0.1059) remains trapped by kitchen_sink despite 10+ cycles of intervention — the root cause is that kitchen_sink's ~40% fire rate creates a fitness floor that blocks exploration of low-fire-rate idiosyncratic triggers. Simultaneous penalization (0.7x fitness contribution) plus seeding with macro_credit_vol_confluence AND momentum_breadth_acceleration is required. Third, VOO's signal redundancy ceiling (cmf_positive and avwap_sh_above overlap 85%+) limits fitness to ~1.79 regardless of tree complexity. Penalizing both signals forc...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10b_cycle31_20260316T052631.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10b</span>
+        <span class="report-cycle">Cycle 21</span>
+        <span class="report-time">20260316T043118</span>
+      </div>
+      <div class="report-summary">
+        Failure mining across cycle 21 reveals three distinct failure modes. (1) GOOG (0.1059) is in terminal kitchen_sink gene lock — the evolver cannot escape because kitchen_sink fires broadly enough to produce a positive-but-low fitness floor, preventing exploration of alternative signal spaces. (2) AAPL (1.7396) is ceiling-limited by cmf_positive acting as a mandatory gate that filters out valid trend days when CMF is neutral despite real price momentum; the tree structure forces AND(*, cmf_positive) which kills roughly 40% of potential veto opportunities. (3) VOO (1.7924) is in soft collapse with cmf_positive and avwap_sh_above acting as near-duplicate signals — both measure price relative to volume-weighted mean, so the AND gate is almost always either both-true or both-false, giving no marginal discrimination. The cross-ticker pattern: triggers that rely on a single volume-flow metric (CMF, OBV) as a mandatory gate are systematically underperforming because these metrics lag price b...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10b_cycle21_20260316T043118.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10b</span>
+        <span class="report-cycle">Cycle 11</span>
+        <span class="report-time">20260316T033217</span>
+      </div>
+      <div class="report-summary">
+        Cycle 11 failure mining identifies three dominant failure modes. (1) GOOG terminal collapse: fitness -0.1952 with kitchen_sink dominating at 5/5 frequency alongside hurst, opex_week, and credit_stress — all at identical frequency, confirming complete gene pool collapse. kitchen_sink fires ~35-40% of days with low discrimination, collecting a broad fitness floor that traps the evolver. Two interventions target this: gex_negative_regime (fires ~10-15% on structurally high-risk days) and NOT(cross_asset_risk_on) root seed trees that force the evolver away from broad-catch genes. (2) cmf_positive / avwap_sh_above redundancy (VOO, MSFT): these two triggers have near-identical fire rates and temporal overlap, wasting half of VOO's gene diversity on the same signal. The macro_risk_day AND NOT(cross_asset_risk_on) seed explicitly breaks this attractor. (3) hurst_accel anti-precision for AAPL: psar_bullish in the champion is a documented anti-signal (fires when stock is trending — exactly wh...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10b_cycle11_20260316T033217.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10</span>
+        <span class="report-cycle">Cycle 31</span>
+        <span class="report-time">20260316T045831</span>
+      </div>
+      <div class="report-summary">
+        Three structural failure modes dominate this cohort. (1) MSFT gene pool collapse via credit_calm overuse: credit_calm fires on >60% of trading days, so OR(credit_calm, X) is functionally equivalent to credit_calm alone — the evolver collapses onto it because it saves the premium on majority of days without needing to discriminate. Replacing it with credit_calm_confirmed (three-gate confirmation, ~20% fire rate) and adding vrp_adverse_selection (the one signal capturing when realized vol exceeds premium received) should break the 2.5 ceiling. (2) VOO Wyckoff blindspot: cmf_positive fires in both accumulation and distribution phases, so when combined with avwap_sh_above the tree vetoes on ALL strong trending days rather than only distribution-phase days. obv_trend_exhaustion isolates the specific failure case — price near highs while OBV and CMF diverge — which is precisely when CC assignment risk is elevated. (3) COIN/IBIT informed flow onset gap: vol_compression_cluster captures the...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10_cycle31_20260316T045831.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10</span>
+        <span class="report-cycle">Cycle 21</span>
+        <span class="report-time">20260316T035910</span>
+      </div>
+      <div class="report-summary">
+        Failure analysis for cycle 21 / v10 across IBIT, VOO, MSFT, ARKK, COIN. Three primary failure modes identified: (1) MSFT structural ceiling at 2.66 caused by credit_calm acting as a macro false-veto signal — fires during SPX calm periods regardless of MSFT idiosyncratic momentum, producing vetoes on days when CC premium was fully capturable; (2) VOO false-veto cascade from monday + macro_risk_day + avwap_sh_above all firing simultaneously on quiet drift-up days — the AND root requires all three but OR(macro_risk_day, monday) alone covers ~28% of trading days by construction; (3) COIN/IBIT crypto fear coverage gap — crypto_fear captures sentiment but misses crowded-long positioning signals (extreme btc_funding_z), meaning the tree fails to veto on short-squeeze days where calls get blown through. Secondary failures: ARKK's duplicate hurst_accel node wastes genetic capacity on a tautological confirmation (same signal twice in AND produces no marginal information), and COIN's stoch_neu...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10_cycle21_20260316T035910.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+
+    <article class="report-card">
+      <div class="report-meta">
+        <span class="report-tag">v10</span>
+        <span class="report-cycle">Cycle 11</span>
+        <span class="report-time">20260316T030158</span>
+      </div>
+      <div class="report-summary">
+        Failure mining across the 5 current champions reveals three distinct failure archetypes: (1) VOO gene pool collapse — cmf_positive and avwap_sh_above both at 10/10 frequency are near-identical triggers (both fire on rising-price+volume days), creating a tautological AND that falsely vetoes strong trending bull days when premium selling is actually optimal. (2) Momentum redundancy — COIN's dual_momentum+stoch_neutral and ARKK's dual hurst_accel are measuring the same underlying factor twice, wasting tree complexity budget on confirmation rather than new information. (3) Low-fitness ceiling on macro-driven names — VOO (1.85) and MSFT (2.43) are structurally limited because their champions use broad macro/flow signals (cmf, avwap, macro_risk_day) that fire indiscriminately rather than detecting the specific regimes where covered call assignment risk is elevated. The core failure mode: the evolver is optimizing for trigger co-occurrence, not for the asymmetry between 'veto days that sav...
+      </div>
+      <a href="file:///Users/chris/stackstrader/scripts/autoresearch/reports/research_v10_cycle11_20260316T030158.md" class="report-link">Read Full Report &rarr;</a>
+    </article>
+}
+  </main>
+
+  <footer>
+    <span class="footer-wordmark">Stack<span class="dollar">$</span>Trader</span>
+    <span>&copy; 2026 Chris Wiegand Research. All Rights Reserved.</span>
+  </footer>
+</body>
+</html>
