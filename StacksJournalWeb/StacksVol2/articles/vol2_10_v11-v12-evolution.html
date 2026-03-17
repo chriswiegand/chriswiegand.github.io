@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V11 Forward Results, a $75K Alpha Finding, and the Exit-Tree Void — The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="7">
+  <meta name="date" content="2026-03-16">
+  <meta name="tags" content="v11, v12, forward-test, exit-tree, genetic-algorithm, fitness, numba, covered-calls, alpha, architectural-bug">
+  <meta name="read-time" content="16">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .byline {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .lede {
+      margin: 1.5rem 0 1.5rem;
+      padding-left: 0;
+    }
+
+    .lede p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: #222;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 2.5rem 0;
+    }
+
+    .article-body h2 {
+      font-size: 1.35rem;
+      font-weight: bold;
+      margin: 2.2rem 0 0.6rem;
+      border-bottom: 2px solid #CC0001;
+      padding-bottom: 0.25rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 1.6rem 0 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .article-body p {
+      margin-bottom: 1.1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1.1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.3rem;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      margin: 2rem 0;
+      padding: 0.8rem 1.4rem;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fff8f8;
+    }
+
+    /* Data tables */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.2rem 0 1.8rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    table.data-table caption {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+
+    table.data-table thead tr {
+      background: #f0ede6;
+    }
+
+    table.data-table th {
+      padding: 0.45rem 0.6rem;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fafaf6;
+    }
+
+    table.data-table tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+
+    table.data-table tr.highlight {
+      background: #fff8e1 !important;
+    }
+
+    table.data-table tfoot td {
+      font-style: italic;
+      color: #888;
+      font-size: 0.78rem;
+      padding-top: 0.4rem;
+      border-bottom: none;
+    }
+
+    .positive { color: #2e7d32; font-weight: bold; }
+    .negative { color: #c62828; font-weight: bold; }
+    .neutral  { color: #888; }
+
+    /* Code blocks */
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 0.9rem 1.1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f0ede6;
+      padding: 0.1em 0.35em;
+      border-radius: 2px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* Summary box */
+    .summary-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-left: 4px solid #CC0001;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+    }
+
+    .summary-box h4 {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #CC0001;
+      margin-bottom: 0.5rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .summary-box ul {
+      margin-left: 1.2rem;
+    }
+
+    /* Bug callout */
+    .bug-callout {
+      background: #fff3f3;
+      border: 1px solid #c62828;
+      border-left: 4px solid #c62828;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .bug-callout strong {
+      color: #c62828;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Article footer */
+    .article-footer {
+      margin-top: 2.5rem;
+      border-top: 1px solid #ddd;
+      padding-top: 1rem;
+    }
+
+    .tags {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 0 auto 2rem;
+      padding-top: 1rem;
+      border-top: 2px solid #CC0001;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .article-header h1 { font-size: 1.5rem; }
+      table.data-table { font-size: 0.78rem; }
+      table.data-table th, table.data-table td { padding: 0.3rem 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="masthead">The StackStrader Review</header>
+
+<nav class="section-label"><span>Feature</span></nav>
+
+<article>
+  <header class="article-header">
+    <h1>V11 Forward Results, a $75K Alpha Finding, and the Exit-Tree Void</h1>
+    <p class="subtitle">What the first genuine out-of-sample test of the growth-mode fitness function revealed — and the architectural bug that invalidated five months of exit-tree evolution</p>
+    <p class="byline">Chris &middot; March 16, 2026 &middot; 16 min read</p>
+  </header>
+
+  <div class="lede">
+    <p>V11's champion trees generated <strong>$+49,231 in veto PNL against a $-26,212 always-on baseline</strong> over 44 out-of-sample days in early 2026 — a $75,443 alpha on $3.7M notional. That is the strongest external validation the system has produced. And yet, on the same day the forward results arrived, a second finding surfaced that changes what V11 actually proves: every exit tree evolved since Phase 7 launched has been evolving in a void, because the Numba JIT (just-in-time compiled) engine that runs the backtests never calls the exit hook. The number V11 achieved in the forward period is real. The fitness scores that guided V11's selection are not.</p>
+  </div>
+
+  <div class="article-body">
+
+    <h2>What V11 Changed</h2>
+
+    <p>V10 closed with a clean leaderboard: 29 tickers, all positive delta-Sharpe, top 10 averaging 155% annualized return with 10.8% max drawdown. Its fitness function was Sharpe-dominant — the formula weighted risk-adjusted return at 60%, raw growth at 25%, and a Calmar-like drawdown penalty at 15%. The system had been in Sharpe-dominant mode since the core genetic algorithm (GA) was first wired in Phase 4.</p>
+
+    <p>V11 introduced four architectural changes simultaneously. First, the fitness function shifted to <em>growth-maximizing</em> mode: 60% weight on annualized return, 25% on a superlinear drawdown penalty, 5% on Sharpe, and 10% on capital efficiency. The rationale was that Sharpe-dominant fitness was producing conservative trees — trees that fired rarely, avoided regime transitions, and generated small but consistent premiums. The growth mode was a deliberate push toward higher-conviction, larger-position behavior. Second, V11 introduced co-evolved <em>exit trees</em>: a separate tree structure operating on the same trigger vocabulary as the entry veto trees, governed by <code>VetoAlpha.should_close_early()</code>, with a max depth of 4 and its own mutation and crossover operators. Third, a scale-in logic (25-50% initial position sizing) was added. Fourth, a portfolio-level leave-one-out contribution score was wired as a fitness modifier.</p>
+
+    <p>The fitness mode change was the source of the largest observable shift. V10's champion fitness scores in Sharpe-dominant mode ranged from 0.77 to 11.70 on the composite scale. V11's growth-mode scores ranged from 0.28 to 2.87 — structurally incomparable. The scorecard appends a warning: "V10 and V11/12 fitness scores are NOT directly comparable (different scales &amp; objectives)." Any comparison of raw fitness numbers across this boundary is meaningless. What matters is what the underlying annualized return columns show.</p>
+
+    <table class="data-table">
+      <caption>Cross-Version Annualized Return (%) — Key Tickers</caption>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>V4</th>
+          <th>V7</th>
+          <th>V9</th>
+          <th>V10</th>
+          <th>V11/12</th>
+          <th>V11 Veto Tree</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>OPEN</td>
+          <td>386.0%</td>
+          <td>343.8%</td>
+          <td>400.1%</td>
+          <td class="positive">407.1%</td>
+          <td class="positive">478.7%</td>
+          <td><code>OR(OR(AND(OR(support_resist,…</code></td>
+        </tr>
+        <tr>
+          <td>ONDS</td>
+          <td>329.4%</td>
+          <td>386.6%</td>
+          <td>463.8%</td>
+          <td>269.7%</td>
+          <td class="positive">387.7%</td>
+          <td><code>OR(OR(OR(avwap_sl_below,…</code></td>
+        </tr>
+        <tr>
+          <td>COIN</td>
+          <td>217.1%</td>
+          <td>217.1%</td>
+          <td>253.4%</td>
+          <td>259.2%</td>
+          <td>221.8%</td>
+          <td><code>OR(macro_risk_day, AND(turn_…</code></td>
+        </tr>
+        <tr class="highlight">
+          <td>IBIT</td>
+          <td>164.4%</td>
+          <td>154.0%</td>
+          <td>163.7%</td>
+          <td>159.3%</td>
+          <td>163.7%</td>
+          <td><code>OR(hmm_bull, friday_trend)</code></td>
+        </tr>
+        <tr>
+          <td>KTOS</td>
+          <td>156.8%</td>
+          <td>168.8%</td>
+          <td>199.4%</td>
+          <td>215.4%</td>
+          <td class="positive">220.5%</td>
+          <td><code>AND(dual_momentum, OR(…</code></td>
+        </tr>
+        <tr>
+          <td>ARKK</td>
+          <td>102.1%</td>
+          <td>118.5%</td>
+          <td>106.7%</td>
+          <td>140.7%</td>
+          <td class="positive">149.9%</td>
+          <td><code>NOT(AND(hurst, OR(AND(atr_…</code></td>
+        </tr>
+        <tr>
+          <td>NVDA</td>
+          <td>119.4%</td>
+          <td>121.2%</td>
+          <td>142.3%</td>
+          <td>128.7%</td>
+          <td class="positive">135.7%</td>
+          <td><code>OR(AND(kitchen_sink, OR(…</code></td>
+        </tr>
+        <tr>
+          <td>TSLA</td>
+          <td>85.3%</td>
+          <td>138.8%</td>
+          <td>138.8%</td>
+          <td>83.5%</td>
+          <td>93.9%</td>
+          <td><code>avwap_sh_above</code></td>
+        </tr>
+        <tr>
+          <td>VOO</td>
+          <td>5.2%</td>
+          <td>4.7%</td>
+          <td>14.4%</td>
+          <td>11.4%</td>
+          <td>17.6%</td>
+          <td><code>NOT(vortex_bullish)</code></td>
+        </tr>
+        <tr>
+          <td>MSFT</td>
+          <td>26.8%</td>
+          <td>11.9%</td>
+          <td>38.2%</td>
+          <td>37.8%</td>
+          <td>40.8%</td>
+          <td><code>AND(cmf_positive, d_above_sma50)</code></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="7">Source: scripts/scorecard.py — 2026-03-16. V4–V10 = Sharpe-dominant fitness. V11/12 = Growth-dominant fitness. Columns not directly comparable across the boundary.</td></tr>
+      </tfoot>
+    </table>
+
+    <p>The portfolio average annualized return across the 22 tickers with V11 champions was <strong>133.6%</strong>, compared to a V9 average of 122.8% for that same cohort. The gain is real but modest — 10.8 percentage points — and it comes with a fitness signal that, as the forward test would reveal, carries near-zero predictive power for out-of-sample performance.</p>
+
+    <h2>The Forward Test: $75,443 Alpha in 44 Days</h2>
+
+    <p>The V11 forward test (<code>journal/reports/2026-03-16_v11v12_forward_report.md</code>) ran 22 tickers over 2025-12-31 to 2026-03-05 — 44 trading days of data that were never seen during training. The test compared two regimes: the <em>veto strategy</em> (champion trees decide when to skip a covered call) versus the <em>always-on baseline</em> (sell a covered call every eligible bar, no filtering). All positions were sized identically between the two regimes.</p>
+
+    <div class="summary-box">
+      <h4>V11 Forward Test Summary — 22 Tickers, 44 Days OOS</h4>
+      <ul>
+        <li>Veto strategy PNL: <strong>$+49,231</strong></li>
+        <li>Always-on baseline PNL: <strong>$-26,212</strong></li>
+        <li>Veto alpha (excess return): <strong>$+75,443</strong></li>
+        <li>Total notional: $3,719,715</li>
+        <li>Annualized yield, veto: <strong>+11.0%</strong></li>
+        <li>Annualized yield, baseline: <strong>-5.8%</strong></li>
+        <li>PNL-positive tickers: 13 / 22 (59%)</li>
+        <li>Training fitness ↔ forward PNL correlation: <strong>r = -0.033</strong> (p = 0.885)</li>
+      </ul>
+    </div>
+
+    <p>The headline finding is unambiguous: during a 44-day period when always-on covered call selling lost $26K, the champion veto trees turned that into a $49K gain — a $75K swing on $3.7M of notional. That is a meaningful alpha. The mechanism is simple: the trees identified regimes where selling covered calls destroys value (trending up sharply, high momentum, pre-catalyst windows) and sat out those windows. The always-on strategy absorbed that destruction; the veto strategy avoided it.</p>
+
+    <h3>Top Performers</h3>
+
+    <table class="data-table">
+      <caption>Top 5 Tickers by Forward PNL</caption>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Veto PNL</th>
+          <th>Always-On PNL</th>
+          <th>Alpha</th>
+          <th>Ann%</th>
+          <th>&Delta;Sharpe</th>
+          <th>Veto Rate</th>
+          <th>Tree</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td>IBIT</td>
+          <td class="positive">$+52,497</td>
+          <td class="positive">$+21,499</td>
+          <td class="positive">$+30,997</td>
+          <td class="positive">+120.7%</td>
+          <td class="positive">+0.879</td>
+          <td>63%</td>
+          <td><code>OR(hmm_bull, friday_trend)</code></td>
+        </tr>
+        <tr>
+          <td>MSFT</td>
+          <td class="positive">$+22,314</td>
+          <td class="positive">$+6,404</td>
+          <td class="positive">$+15,909</td>
+          <td class="positive">+87.8%</td>
+          <td class="positive">+1.553</td>
+          <td>5%</td>
+          <td><code>AND(cmf_positive, d_above_sma50)</code></td>
+        </tr>
+        <tr>
+          <td>VOO</td>
+          <td class="positive">$+21,651</td>
+          <td class="positive">$+17,161</td>
+          <td class="positive">$+4,490</td>
+          <td class="positive">+9.8%</td>
+          <td class="positive">+0.230</td>
+          <td>40%</td>
+          <td><code>NOT(vortex_bullish)</code></td>
+        </tr>
+        <tr>
+          <td>ARKK</td>
+          <td class="positive">$+17,810</td>
+          <td class="positive">$+4,810</td>
+          <td class="positive">$+13,000</td>
+          <td class="positive">+66.0%</td>
+          <td class="positive">+1.449</td>
+          <td>37%</td>
+          <td><code>NOT(AND(hurst, OR(AND(atr_moderate,…</code></td>
+        </tr>
+        <tr>
+          <td>TSLA</td>
+          <td class="positive">$+11,159</td>
+          <td class="positive">$+5,114</td>
+          <td class="positive">$+6,045</td>
+          <td class="positive">+70.8%</td>
+          <td class="positive">+0.303</td>
+          <td>0%</td>
+          <td><code>avwap_sh_above</code></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="8">Source: journal/reports/2026-03-16_v11v12_forward_report.md. OOS period: 2025-12-31–2026-03-05.</td></tr>
+      </tfoot>
+    </table>
+
+    <p>IBIT stands apart. A 5,000-share position with a <code>OR(hmm_bull, friday_trend)</code> tree generated $52,497 — more than the entire 22-ticker portfolio combined. The tree fired as a veto on 63% of eligible bars, meaning it was mostly holding back the strategy rather than selling calls during the first 44 days of 2026. That was correct: IBIT trended strongly upward during this period, and always-on call selling captured only $21K while leaving substantial upside on the table. MSFT's tree is notable for different reasons — a veto rate of only 5%, meaning it almost always sold calls, yet still generated $15K of alpha. It was the right tree for a sideways-to-mildly-bullish large-cap: sell almost always, but stand down when both Chaikin Money Flow (CMF) is positive and price is above its 200-day SMA simultaneously.</p>
+
+    <h3>Failures</h3>
+
+    <table class="data-table">
+      <caption>Bottom 5 Tickers by Forward PNL</caption>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Veto PNL</th>
+          <th>Always-On PNL</th>
+          <th>Alpha</th>
+          <th>Ann%</th>
+          <th>Diagnosis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>COST</td>
+          <td class="negative">$-25,207</td>
+          <td class="negative">$-16,632</td>
+          <td class="negative">$-8,575</td>
+          <td class="negative">-83.4%</td>
+          <td>Veto rate 0% — <code>d_low_vol_regime</code> never triggered</td>
+        </tr>
+        <tr>
+          <td>INTC</td>
+          <td class="negative">$-44,749</td>
+          <td class="negative">$-65,381</td>
+          <td class="positive">$+20,632</td>
+          <td class="negative">-34.6%</td>
+          <td>Worst absolute PNL; still beat baseline by $20K</td>
+        </tr>
+        <tr>
+          <td>XOM</td>
+          <td class="negative">$-14,146</td>
+          <td class="negative">$-11,510</td>
+          <td class="negative">$-2,637</td>
+          <td class="negative">-111.8%</td>
+          <td><code>avwap_sh_near</code> too aggressive on downtrend</td>
+        </tr>
+        <tr>
+          <td>ONDS</td>
+          <td class="negative">$-6,286</td>
+          <td class="positive">$+14,682</td>
+          <td class="negative">$-20,969</td>
+          <td class="negative">-36.6%</td>
+          <td>Worst alpha loser — tree vetoed profitable windows</td>
+        </tr>
+        <tr>
+          <td>TSM</td>
+          <td class="negative">$-4,818</td>
+          <td class="positive">$+879</td>
+          <td class="negative">$-5,697</td>
+          <td class="negative">-90.5%</td>
+          <td><code>AND(friday, credit_stress)</code> fired on wrong days</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="6">Source: journal/reports/2026-03-16_v11v12_forward_report.md.</td></tr>
+      </tfoot>
+    </table>
+
+    <p>INTC's $44,749 forward loss looks damning until the baseline column appears: always-on lost $65,381 on the same position. The <code>NOT(obv_rising)</code> tree saved $20K of alpha even while INTC fell sharply. The real failures are ONDS and COST. ONDS's complex four-level tree (<code>OR(OR(OR(avwap_sl_below,…), friday), vol_crush_zone)</code>) vetoed the windows when ONDS was actually producing profitable call premium, generating a $20,969 alpha deficit. COST's <code>d_low_vol_regime</code> was essentially dormant — a zero-percent veto rate means the tree never fired, providing no protection during a period when COST's covered calls were losing money. A non-firing tree is a training-fitness artifact that proved brittle the moment it encountered a volatility expansion.</p>
+
+    <h2>The Alarming Statistic: r = -0.033</h2>
+
+    <div class="pull-quote">
+      <p>"The tickers with the highest training fitness are not the best forward performers. The correlation between them is r&nbsp;=&nbsp;&minus;0.033, with p&nbsp;=&nbsp;0.885. The fitness function is not predictive of out-of-sample performance."</p>
+    </div>
+
+    <p>The forward report computed the Pearson correlation between each ticker's training fitness score and its 44-day forward PNL. The result: <strong>r = -0.033</strong> (p = 0.885). Statistically and practically, there is no relationship. A ticker with training fitness 2.866 (OPEN) had no more predictive advantage in the forward period than a ticker with fitness 0.280. The selection pressure that V11's growth-mode fitness was applying — across thousands of generations of evolution on 22 tickers — was not filtering for out-of-sample relevance.</p>
+
+    <p>Three possible explanations are consistent with this finding. First, the fitness function may be overfitting the training window: growth-mode fitness at 60% raw return weight will aggressively reward trees that exploit idiosyncrasies of the 2023-2025 training period without generalizing. Second, the 44-day forward window is short enough that sampling variance in early 2026's volatile market can overwhelm genuine signal. Third — and this is where the exit-tree bug becomes central — the fitness computed during training was never complete. It was measuring entry-only performance, systematically inflating scores for tickers whose exit trees happened to be neutral, and penalizing tickers whose partial exit-tree effects reduced apparent training return. The r = -0.033 finding is, at minimum, partially explained by the fact that the fitness signal being maximized was measuring something other than what was being tested forward.</p>
+
+    <h2>The Critical Bug: Exit Trees Running in a Void</h2>
+
+    <div class="bug-callout">
+      <strong>Bug: V11-EXIT-TODO</strong><br><br>
+      <code>VetoAlpha.should_close_early()</code> is defined and syntactically correct in <code>veto_evolver.py</code> lines 660–680. The genetic algorithm mutates, crosses over, and selects exit trees. But <code>run_backtest_core()</code> in <code>engine_numba.py</code> is a 622-line <code>@njit</code> function — it cannot call Python methods. The exit tree evaluates to a Python boolean but the Numba boundary sits between it and the position management loop. Since Phase 7 launched, fitness has never reflected a single exit decision.
+    </div>
+
+    <p>The Numba JIT (just-in-time compilation) engine achieves its speed by compiling the position management loop to native machine code. That compilation step prohibits calls back into Python objects. <code>VetoAlpha.should_close_early()</code> is a Python method that evaluates a tree expression — exactly the kind of dynamic dispatch that Numba cannot handle inside a compiled function. The entry veto trees avoid this problem because they are evaluated <em>before</em> the Numba boundary, as a pre-computed boolean array that the JIT function consumes natively. The exit trees were designed with a different architecture: they were intended to evaluate per-bar, per-position, inside the hot loop. That design is incompatible with the Numba boundary.</p>
+
+    <p>The consequence is that Phase 7 — StackStrader's most compute-intensive evolution pipeline, running hundreds of exit-tree generations across dozens of tickers — has been optimizing a dead signal. Trees that produce <code>True</code> on a given bar never close a position. Trees that produce <code>False</code> never prevent a position from staying open. Selection pressure has been pointing at nothing. The 71% A/B confirmation rate for exit triggers, documented in the V11 reportcard, is confirmation that the triggers are statistically detectable in isolation — but they have never been tested inside the engine that actually trades. Every reported exit-tree fitness improvement in Phase 7 was phantom.</p>
+
+    <h2>V12: Five Fixes, One True Bug</h2>
+
+    <p>The V12 proposal (<code>artifacts/V12_PROPOSAL.md</code>) distinguishes between what is a bug and what is an optimization. Only Fix 1 is a true bug. The remaining four fixes are architectural improvements that become more valuable once the bug is resolved.</p>
+
+    <table class="data-table">
+      <caption>V12 Implementation Plan — Priority Order</caption>
+      <thead>
+        <tr>
+          <th>Fix</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Effort</th>
+          <th>Expected Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td>1</td>
+          <td>Wire exit trees into Numba engine via pre-computed signal array</td>
+          <td>Critical bug</td>
+          <td>2–3 hrs</td>
+          <td>+5–15% OOS Sharpe (unlocks dark alpha)</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Expand A/B test coverage from 2 to 5 stratified tickers</td>
+          <td>V12</td>
+          <td>1 hr</td>
+          <td>Reduces trigger overfitting to SPY/AAPL</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Decouple AutoResearch worker from GA (async file-based daemon)</td>
+          <td>V12</td>
+          <td>4–5 hrs</td>
+          <td>GA never idles waiting for LLM</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Cross-asset trigger injection (SPY/QQQ/VIX/GLD/TLT/IWM features)</td>
+          <td>V12</td>
+          <td>3–4 hrs</td>
+          <td>Trigger count 133 → ~145; macro context for all tickers</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Bayesian fitness weight sweep (30 evaluations via skopt)</td>
+          <td>V12</td>
+          <td>4–5 hrs</td>
+          <td>Replaces manual growth_weight=0.50 guess; ~12.5 hr overnight run</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="5">Source: artifacts/V12_PROPOSAL.md — 2026-03-16. Fix 1 must precede all others as it establishes the correct evaluation baseline.</td></tr>
+      </tfoot>
+    </table>
+
+    <h3>Fix 1: The Pre-Computed Signal Array Pattern</h3>
+
+    <p>The solution follows the exact pattern that already handles entry vetoes. In <code>engine_fast.py:_prepare_arrays()</code> (after line 194), a Python loop pre-computes exit signals as a <code>np.bool_</code> array before the JIT boundary. The array is passed into <code>run_backtest_core()</code> as a new parameter alongside the existing entry signals. Inside the Numba function, a new block in the position management loop fires on <code>exit_signals[bar_idx]</code> and logs with a new event code <code>_EVT_CLOSE_EXIT_TREE = 11.0</code>.</p>
+
+<pre><code># engine_fast.py — _prepare_arrays(), after entry_signals computation
+exit_signals = np.zeros(N_bars, dtype=np.bool_)
+if hasattr(alpha, 'should_close_early') and alpha._exit_tree is not None:
+    for i in range(N_bars):
+        row = bars.iloc[i]
+        exit_signals[i] = alpha.should_close_early(
+            row, close_prices[i], params
+        )</code></pre>
+
+    <p>The Python loop runs at preparation time, outside the JIT boundary. For a 3,000-bar backtest with a population of 70 individuals, this adds approximately 0.5 seconds per individual — acceptable overhead given that evaluation currently takes several seconds per individual for the entry veto logic alone. The pattern carries zero risk to existing logic: the <code>remove_mask</code> check ensures the exit tree only fires on positions not already closed by the profit-taking, DTE-floor, or delta-rebalancing logic.</p>
+
+    <h3>Fix 4: Cross-Asset Feature Injection</h3>
+
+    <p>The current trigger vocabulary (133 triggers) is entirely self-referential: each ticker's tree can only see its own price action, volume, regime state, and volatility. The GA cannot discover patterns like "don't sell COIN calls when SPY is in HMM bear regime" or "veto ONDS when VIX IV-rank spikes." Those cross-asset correlations are among the most well-documented phenomena in options markets — particularly in correlated drawdowns (2022-style) where high-beta growth names move together.</p>
+
+    <p>Fix 4 adds 8 cross-asset boolean features via <code>pd.merge_asof</code> alignment in <code>harvest_simple_triggers.py</code>: <code>spy_trend_reversal</code>, <code>spy_regime_bear</code>, <code>qqq_regime_bear</code>, <code>vix_spike</code>, <code>spy_drawdown</code>, <code>gld_momentum</code>, <code>tlt_reversal</code>, and <code>iwm_breadth</code>. This expands the trigger count from 133 to approximately 145 without meaningfully increasing computational cost (boolean features evaluated once per bar, not per position).</p>
+
+    <h3>Fix 5: Bayesian Fitness Weight Sweep</h3>
+
+    <p>V11's growth mode used <code>growth_weight: 0.50</code> — a manually chosen round number. The near-zero fitness-to-PNL correlation suggests this guess may be poorly calibrated for OOS performance. Fix 5 replaces it with a Bayesian optimization sweep (<code>skopt.gp_minimize</code>) over four fitness weight dimensions, targeting OOS portfolio Sharpe as the objective. The sweep requires approximately 30 evaluations at 25 minutes each (5 tickers × 5 minutes of abbreviated 20-gen, 30-pop evolution), totaling roughly 12.5 hours — a single overnight run, not months of compute. This is why Fix 5 is preferred over the full meta-GA that Gemini's V12 recommendations proposed: the meta-GA requires hundreds of inner-loop runs across the full population and full ticker set, making it computationally prohibitive. Bayesian optimization achieves 80% of the benefit in one night.</p>
+
+    <h2>What V11's Intraday Evolution Revealed</h2>
+
+    <p>Alongside the forward test, two parallel 15-minute bar evolution pipelines ran on 11 tickers throughout the afternoon. The results provide a useful boundary condition: daily-bar champions consistently outperformed 15-minute-bar champions on the same tickers. For VOO, the daily champion scored +1.545 fitness versus +1.170 for the intraday champion; for TSM, +1.679 versus +1.082; for GLD, +1.286 versus +0.837. TSLA was the single exception — essentially tied at +1.203 versus +1.204, with <code>avwap_sh_above</code> winning on both frequencies. This is not surprising: the covered call veto decision is a weekly-to-monthly scale signal, and daily regime information (HMM state, rolling Sharpe, momentum regime) is more structurally relevant than intraday price patterns when deciding whether to sell a weekly option.</p>
+
+    <p>The intraday evolution did confirm one important dynamic: stagnation-triggered hard diversity restarts fired regularly (at generations 15, 37, 62–76 across tickers), confirming the V11 diversity management is active and necessary. Without these restarts, the GA settles into local optima within 40–50 generations. PLTR's <code>bb_squeeze</code> tree and TSLA's alternative <code>OR(avwap_sl_near, NOT(obv_rising))</code> both hit stagnation thresholds of 50 and triggered early termination — suggesting the landscape around those optima is shallow, with no profitable mutation available at the current population size and mutation rate.</p>
+
+    <p>One pattern emerged across both daily and intraday results: <code>macro_risk_day</code> appears in five or more tickers' best trees. It showed up in COIN's champion (<code>OR(macro_risk_day, AND(turn_of_month, pre_earnings))</code>), in PATH's (<code>OR(macro_risk_day, AND(vix_spike, …))</code>), and was the most transferred trigger across V10 tickers. It functions as a portfolio-level fear gauge — a macro event calendar that all tickers respond to, regardless of their individual volatility regime. Its recurrence across tickers with very different volatility profiles (COIN at 83% IV versus VOO at 11% IV) suggests it captures a genuine cross-asset signal that predates the cross-asset feature injection work planned for V12.</p>
+
+    <h2>The Dual-Agent Review Loop</h2>
+
+    <p>This development cycle surfaced a useful boundary between the two agents operating on the codebase. Gemini's V12 diagnosis (<code>V12_RECOMMENDATIONS.md</code>) was a sharp architectural read: it correctly identified the Numba exit hook gap, the two-ticker A/B overfitting, the GA-blocks-on-LLM coupling, and the manual fitness weight problem. Its recommendation for a full meta-GA was the one overreach — architecturally correct in theory but months of compute in practice. The counter-proposal in <code>artifacts/V12_PROPOSAL.md</code> accepted four of five recommendations and replaced the meta-GA with the Bayesian sweep. The result is a V12 roadmap that is implementable in four days rather than four months.</p>
+
+    <p>The boundary holds: Gemini identifies architectural deficiencies at the system level; the counter-analysis provides implementation order, effort estimates, and the "what we're not doing" list. Both are necessary. Neither is sufficient alone.</p>
+
+    <h2>What Comes Next</h2>
+
+    <p>V12 implementation follows a four-day dependency order. Day 1: Fix 1 (exit hook) and Fix 2 (stratified A/B testing) — the engine must be correct before anything else is benchmarked. Day 2: Fix 4 (cross-asset features) followed immediately by a new evolution run with both exit trees and cross-asset triggers active for the first time simultaneously. Day 3: Fix 3 (async research worker) and Fix 5 (Bayesian sweep, overnight). Day 4: V12 baseline forward test against the same 44-day OOS window, comparing fitness-to-PNL correlation against V11's r = -0.033. The target is r > 0.30 — evidence that the fitness function is now measuring something predictive.</p>
+
+    <p>The MCP tool-calling agent architecture that Gemini proposed is deferred to V13. The file-based hot registry for confirmed triggers (Fix 3) achieves the same decoupling with a fraction of the implementation complexity. Dollar/volume bars, the Rust engine replacement, and live paper trading integration are also deferred — they require a stable V12 champion baseline first.</p>
+
+    <p>V11's $75K alpha is the most important empirical finding in the project's history. It proves the veto-based covered call system captures real edge, even under a fitness function that was partially broken. V12's task is to close the loop: wire the exit trees, expand the feature space, and calibrate the fitness weights so that training performance predicts forward performance. The gap between r = -0.033 and r = 0.30 is the entire agenda.</p>
+
+  </div>
+
+  <footer class="article-footer">
+    <p class="tags">Tags: v11, v12, forward-test, exit-tree, genetic-algorithm, fitness, numba, covered-calls, alpha, architectural-bug</p>
+  </footer>
+</article>
+
+<footer class="issue-footer">
+  <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+</footer>
+
+</body>
+</html>
