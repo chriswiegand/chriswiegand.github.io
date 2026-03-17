@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V13 Superpowers: Three Coupled Models for Multi-Timescale Trade Lifecycle — The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="7">
+  <meta name="date" content="2026-03-17">
+  <meta name="tags" content="v13, superpowers, exit-monitor, horizon-classifier, overlay-model, multi-timescale, trade-lifecycle, genetic-algorithm, intraday, covered-calls, architecture">
+  <meta name="read-time" content="14">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .byline {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .lede {
+      margin: 1.5rem 0 1.5rem;
+      padding-left: 0;
+    }
+
+    .lede p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: #222;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 2.5rem 0;
+    }
+
+    .article-body h2 {
+      font-size: 1.35rem;
+      font-weight: bold;
+      margin: 2.2rem 0 0.6rem;
+      border-bottom: 2px solid #CC0001;
+      padding-bottom: 0.25rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 1.6rem 0 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .article-body p {
+      margin-bottom: 1.1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1.1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.3rem;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      margin: 2rem 0;
+      padding: 0.8rem 1.4rem;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fff8f8;
+    }
+
+    /* Data tables */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.2rem 0 1.8rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    table.data-table caption {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+
+    table.data-table thead tr {
+      background: #f0ede6;
+    }
+
+    table.data-table th {
+      padding: 0.45rem 0.6rem;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fafaf6;
+    }
+
+    table.data-table tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+
+    table.data-table tr.highlight {
+      background: #fff8e1 !important;
+    }
+
+    table.data-table tfoot td {
+      font-style: italic;
+      color: #888;
+      font-size: 0.78rem;
+      padding-top: 0.4rem;
+      border-bottom: none;
+    }
+
+    .positive { color: #2e7d32; font-weight: bold; }
+    .negative { color: #c62828; font-weight: bold; }
+    .neutral  { color: #888; }
+
+    /* Code blocks */
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 0.9rem 1.1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f0ede6;
+      padding: 0.1em 0.35em;
+      border-radius: 2px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* Summary box */
+    .summary-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-left: 4px solid #CC0001;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+    }
+
+    .summary-box h4 {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #CC0001;
+      margin-bottom: 0.5rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .summary-box ul {
+      margin-left: 1.2rem;
+    }
+
+    /* Architecture callout */
+    .arch-callout {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-left: 4px solid #1a4a8a;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .arch-callout strong {
+      color: #1a4a8a;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Article footer */
+    .article-footer {
+      margin-top: 2.5rem;
+      border-top: 1px solid #ddd;
+      padding-top: 1rem;
+    }
+
+    .tags {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 0 auto 2rem;
+      padding-top: 1rem;
+      border-top: 2px solid #CC0001;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .article-header h1 { font-size: 1.5rem; }
+      table.data-table { font-size: 0.78rem; }
+      table.data-table th, table.data-table td { padding: 0.3rem 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="masthead">The StackStrader Review</header>
+
+<nav class="section-label"><span>Feature</span></nav>
+
+<article>
+  <header class="article-header">
+    <h1>V13 Superpowers: Three Coupled Models for Multi-Timescale Trade Lifecycle</h1>
+    <p class="subtitle">StackStrader's next architectural leap replaces the static entry-exit binary with a continuous adaptive system that classifies trade horizons, scales overlay dynamically, and evolves its own exit decisions at 5-minute resolution</p>
+    <p class="byline">Chris &middot; March 17, 2026 &middot; 14 min read</p>
+  </header>
+
+  <div class="lede">
+    <p>V12 fixed the exit-tree void and wired cross-asset features into the genetic algorithm. V13 asks a different question entirely: <strong>what if the system could learn that an INTC covered call sold at $1.94 and bought back 90 minutes later at $1.44 is a fundamentally different trade than holding to expiry &mdash; and discover both strategies on its own?</strong> The V13 &ldquo;superpowers&rdquo; plan introduces three coupled post-entry models &mdash; a Horizon Classifier, an Overlay Model, and an Exit Monitor &mdash; that together transform StackStrader from a system that makes binary sell/don&rsquo;t-sell decisions into one that adaptively manages trade lifecycle across timescales from 30 minutes to 10+ days. The first two components, <code>PositionState</code> and <code>ExitMonitor</code>, are already implemented and tested in the new <code>v13/</code> package (<code>887a94d</code>).</p>
+  </div>
+
+  <div class="article-body">
+
+    <h2>The Problem V13 Solves</h2>
+
+    <p>Through V12, StackStrader&rsquo;s trade lifecycle follows a rigid pattern. The genetic algorithm (GA) evolves veto trees that decide whether to sell a covered call on a given bar. If the tree says &ldquo;sell,&rdquo; the engine opens a position with fixed parameters &mdash; a static overlay percentage, a fixed profit target, and exit logic that operates at daily resolution. The system cannot distinguish between a 90-minute scalp opportunity and a 3-day carry trade. It uses the same delta, the same DTE selection, and the same profit target for both.</p>
+
+    <p>This limitation is not hypothetical. The design spec (<code>docs/superpowers/specs/2026-03-16-v13-multi-timescale-trade-lifecycle-design.md</code>) grounds the problem in a real trade: an INTC covered call sold at $1.94 and bought back at $1.44 ninety minutes later, capturing 26% of premium. The current system cannot recognize this as a scalp, cannot set a 20&ndash;35% profit target appropriate for that horizon, and cannot learn that INTC&rsquo;s intraday behavior (strong fade tendency, mean-reverting) makes it an ideal scalp candidate while NVDA&rsquo;s momentum profile calls for a different holding strategy entirely.</p>
+
+    <p>Four specific capabilities are missing from V11/V12:</p>
+
+    <ol>
+      <li>Recognizing that different setups call for different holding horizons</li>
+      <li>Dynamically adjusting overlay based on IV regime and position evolution</li>
+      <li>Opportunistically closing early when profit arrives faster than expected</li>
+      <li>Learning per-ticker intraday behavior patterns</li>
+    </ol>
+
+    <p>V13 addresses all four with a layered architecture that sits <em>after</em> the entry decision, managing everything that happens between opening a position and closing it.</p>
+
+    <h2>Architecture: Three Models, One Shared State</h2>
+
+    <p>The V13 design introduces three specialized models that operate at different frequencies, loosely coupled through a shared <code>PositionState</code> dataclass and co-evolved via a joint fitness function.</p>
+
+<pre><code>Entry signal (from any source) &rarr; "Enter"
+    &rarr; Horizon Classifier picks trade class + initial params
+    &rarr; Engine opens position with class-specific delta/DTE/overlay
+    &rarr; Every 5 min: Overlay Model adjusts overlay %
+    &rarr; Every 1-5 min: Exit Monitor decides hold/close/tighten/extend
+    &rarr; Close &rarr; outcome feeds back to all three models' fitness</code></pre>
+
+    <p>A critical design decision: these models are <strong>entry-source agnostic</strong>. They consume a minimal interface &mdash; <code>(ticker, entry_bar_idx, entry_price)</code> &mdash; and do not care whether the entry signal came from Pythia (the 20-agent Mixture-of-Experts ensemble in <code>agents.py</code>) or from the AGENT GA (the veto evolution system in <code>veto_evolver.py</code>). This preserves the independence of StackStrader&rsquo;s two trading systems while allowing either to benefit from adaptive trade management.</p>
+
+    <div class="arch-callout">
+      <strong>Design Principle: Entry-Source Agnostic</strong><br><br>
+      Pythia and the AGENT GA are independent entry systems. V13&rsquo;s three models manage the post-entry lifecycle only. The interface is <code>(ticker, entry_bar_idx, entry_price)</code> &mdash; nothing more. This keeps the systems composable: a future &ldquo;best of both&rdquo; entry system can plug in without any V13 changes.
+    </div>
+
+    <h3>The PositionState Protocol</h3>
+
+    <p>All three models and the intraday engine share a common state object, already implemented in <code>v13/position_state.py</code> (<code>887a94d</code>). It captures everything a model needs to make a decision: entry snapshots (price, premium, IV rank, time), current state (price, IV, overlay percentage, contracts short), derived fields (P&amp;L fraction, time fraction, P&amp;L velocity, underlying percent change), and a V12 bridge field (<code>v12_exit_signal</code>) that passes the daily exit tree&rsquo;s recommendation into the intraday decision loop.</p>
+
+<pre><code>@dataclass
+class PositionState:
+    ticker: str
+    horizon_class: str                    # "scalp", "day_trade", "swing", "full_carry"
+    horizon_probs: dict[str, float]       # Original classifier output
+
+    entry_bar_idx: int
+    entry_price: float
+    entry_premium: float
+    entry_iv_rank: float
+    entry_time: datetime
+
+    profit_target: float                  # GA-evolved per horizon class
+    stop_loss: float
+    overlay_base: float
+    overlay_max: float
+
+    # Derived (computed each bar by update_derived)
+    pnl_frac: float       # P&amp;L as fraction of profit target
+    time_frac: float      # time elapsed as fraction of horizon
+    pnl_velocity: float   # slope of recent P&amp;L (30-min window)
+    underlying_pct_change: float
+
+    v12_exit_signal: bool  # Would V12 daily exit tree close today?</code></pre>
+
+    <p>The engine creates this object at entry and updates its derived fields each bar via <code>update_derived()</code>. The P&amp;L velocity is computed as the linear regression slope of the last 6 observations (30 minutes at 5-minute bars) &mdash; a simple but effective measure of whether profit is accelerating or stalling. Models read from the state and return actions; they never mutate it directly.</p>
+
+    <h2>Component 1: Ticker Behavior Profiler</h2>
+
+    <p>Before the three models can operate, they need per-ticker behavior data. The Ticker Behavior Profiler (<code>v13/ticker_profiler.py</code>, planned) is a nightly batch job that computes a rolling 20-day feature vector from 1-minute and 5-minute bars across all 41 tickers.</p>
+
+    <table class="data-table">
+      <caption>Ticker Profiler Feature Set</caption>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>What It Measures</th>
+          <th>Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fade tendency</td>
+          <td>Does the ticker give back morning gains?</td>
+          <td>Autocorrelation at 15min/60min/session lags</td>
+        </tr>
+        <tr>
+          <td>Intraday vol shape</td>
+          <td>When does volatility cluster?</td>
+          <td>Vol profile curve in 30-min session buckets</td>
+        </tr>
+        <tr>
+          <td>Session return distribution</td>
+          <td>How often does close oppose first-hour direction?</td>
+          <td>Empirical distribution, rolling 20-day window</td>
+        </tr>
+        <tr>
+          <td>IV responsiveness</td>
+          <td>How fast does premium decay after vol spikes?</td>
+          <td>Decay half-life of IV rank after &gt;2&sigma; events</td>
+        </tr>
+        <tr>
+          <td>Regime sensitivity</td>
+          <td>Does behavior change in risk-off vs risk-on?</td>
+          <td>Correlation with SPY/VIX regime state</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">Source: docs/superpowers/specs/2026-03-16-v13-multi-timescale-trade-lifecycle-design.md</td></tr>
+      </tfoot>
+    </table>
+
+    <p>The output is adaptive &mdash; a rolling window, not a static cluster label. As a ticker&rsquo;s behavior shifts through earnings seasons, sector rotation, or regime changes, the profile updates. This is the foundation the Horizon Classifier reads at entry time: INTC&rsquo;s negative autocorrelation (mean-reverter) versus NVDA&rsquo;s positive autocorrelation (momentum) is the signal that drives horizon classification.</p>
+
+    <h2>Component 2: Horizon Classifier</h2>
+
+    <p>The Horizon Classifier runs once at entry time and answers a single question: what kind of trade is this? It outputs a probability distribution over four holding classes.</p>
+
+    <table class="data-table">
+      <caption>Horizon Classes &mdash; Expected Duration and GA-Evolved Parameters</caption>
+      <thead>
+        <tr>
+          <th>Class</th>
+          <th>Horizon</th>
+          <th>5min Bars</th>
+          <th>Profit Target</th>
+          <th>Stop</th>
+          <th>Overlay Base</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>scalp</code></td>
+          <td>30min &ndash; 2hr</td>
+          <td>~24</td>
+          <td>0.20&ndash;0.35</td>
+          <td>-0.10&ndash;0.20</td>
+          <td>0.15&ndash;0.30</td>
+        </tr>
+        <tr>
+          <td><code>day_trade</code></td>
+          <td>2hr &ndash; session close</td>
+          <td>~78</td>
+          <td>0.30&ndash;0.50</td>
+          <td>-0.15&ndash;0.25</td>
+          <td>0.20&ndash;0.40</td>
+        </tr>
+        <tr>
+          <td><code>swing</code></td>
+          <td>1 &ndash; 3 days</td>
+          <td>~234</td>
+          <td>0.40&ndash;0.60</td>
+          <td>-0.20&ndash;0.30</td>
+          <td>0.25&ndash;0.50</td>
+        </tr>
+        <tr>
+          <td><code>full_carry</code></td>
+          <td>3+ days to expiry</td>
+          <td>~780</td>
+          <td>0.70&ndash;0.90</td>
+          <td>-0.25&ndash;0.40</td>
+          <td>0.30&ndash;0.60</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="6">Parameter ranges are GA-evolved. Exact values are per-generation, per-individual.</td></tr>
+      </tfoot>
+    </table>
+
+    <p>The classifier is a supervised model (gradient-boosted trees or random forest) trained on simulated trade outcomes. For every potential entry bar in the training window, the pipeline simulates covered call opens across all four horizon classes, measures risk-adjusted outcome (<code>premium_captured / max_drawdown</code>), and labels that bar with the class that performed best. The model learns which features at entry predict which horizon class is optimal.</p>
+
+    <p>Critically, the classifier outputs probabilities, not a hard assignment. An output of <code>{scalp: 0.6, day_trade: 0.3, swing: 0.1, full_carry: 0.0}</code> tells the Exit Monitor &ldquo;probably a scalp, but could stretch to a day trade.&rdquo; If no class exceeds a GA-evolved minimum confidence threshold (initialized at 0.35), the system falls back to <code>full_carry</code> with default V12 parameters &mdash; the behavior the system already knows how to execute. The fallback rate is tracked as a diagnostic; high fallback rates signal insufficient training data or features.</p>
+
+    <p>Input features include both core features (always available: ticker profile, IV rank, IV term structure slope, time of day, session price action, relative volume, VIX, days to earnings) and optional Pythia features (HMM regime state, earnings catalyst score, sentiment composite) that improve accuracy when available but are not required. The classifier works with core features alone, making it usable regardless of which entry system triggered the trade.</p>
+
+    <h2>Component 3: Overlay Model</h2>
+
+    <p>Once a position is open, the Overlay Model runs every 5&ndash;15 minutes and adjusts the overlay percentage &mdash; how many contracts of the covered call are sold relative to shares held. Unlike the current system&rsquo;s fixed overlay, V13&rsquo;s overlay adapts to IV regime, position evolution, and time remaining.</p>
+
+    <p>The core scaling logic uses three GA-evolved parameters per horizon class:</p>
+
+<pre><code>overlay_target = overlay_base + iv_scale * max(0, iv_rank - iv_threshold)
+
+# Additional modifiers (additive, then clamped):
+raw = overlay_target
+    + underlying_up_bonus * max(0, underlying_pct_change)
+    + underlying_down_brake * min(0, underlying_pct_change)
+    + time_decay_ramp * max(0, time_frac - 0.7)
+
+final_overlay = clamp(raw, overlay_base, overlay_max)</code></pre>
+
+    <p>The logic is transparent: <code>iv_scale</code> adds overlay when IV is rich (capturing richer premium), <code>underlying_up_bonus</code> adds overlay when the stock moves up (higher strikes become tradeable), <code>underlying_down_brake</code> reduces overlay when the stock drops (protecting against assignment risk), and <code>time_decay_ramp</code> reduces overlay as the horizon boundary approaches without the profit target being hit. All parameters are evolved by the GA, not hand-tuned.</p>
+
+    <p>For scalp-class trades, the 15-minute cooldown between adjustments means overlay effectively stays at its initial <code>overlay_base</code> for the entire trade. This is intentional &mdash; scalps are about capturing quick premium, not optimizing overlay. The Overlay Model adds the most value for <code>day_trade</code> and <code>swing</code> classes where positions persist long enough for IV regime changes to matter.</p>
+
+    <h2>Component 4: Exit Monitor</h2>
+
+    <p>The Exit Monitor is the most consequential of the three models. It runs every 1&ndash;5 minutes (depending on horizon class) and makes the continuous hold-or-close decision that V11/V12 could not express at intraday resolution.</p>
+
+    <p>The implementation in <code>v13/exit_monitor.py</code> (<code>887a94d</code>) is a GA-evolved binary decision tree &mdash; the same evolutionary framework that produces the entry veto trees in V12, extended to a richer action space. Each leaf node outputs one of four actions:</p>
+
+    <table class="data-table">
+      <caption>Exit Monitor Actions</caption>
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Meaning</th>
+          <th>Engine Effect</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td><code>hold</code></td>
+          <td>Trade is on track</td>
+          <td>No action</td>
+        </tr>
+        <tr>
+          <td><code>close</code></td>
+          <td>Take profit or stop loss</td>
+          <td>Buy back calls, exit position</td>
+        </tr>
+        <tr>
+          <td><code>tighten</code></td>
+          <td>Conditions shifting</td>
+          <td>Reduce profit target or raise stop</td>
+        </tr>
+        <tr>
+          <td><code>extend</code></td>
+          <td>Horizon prior was wrong</td>
+          <td>Update horizon class upward (scalp &rarr; day_trade)</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">Source: v13/exit_monitor.py. Actions are GA-evolved leaf nodes in a binary decision tree.</td></tr>
+      </tfoot>
+    </table>
+
+    <p>The decision tree evaluates 9 real-time features: <code>pnl_frac</code>, <code>time_frac</code>, <code>pnl_velocity</code>, <code>underlying_pct_change</code>, <code>iv_change</code>, <code>fade_tendency</code>, <code>spread_pct</code>, <code>time_of_day_frac</code>, and <code>horizon_confidence</code>. A representative evolved tree might look like:</p>
+
+<pre><code>IF pnl_frac > 0.7 AND time_frac < 0.3:
+    &rarr; close  (captured most of target way early &mdash; take it)
+ELIF iv_velocity < -0.2 AND pnl_frac > 0.4:
+    &rarr; close  (vol crushing, grab what's there)
+ELIF time_frac > 0.8 AND pnl_frac < 0.15:
+    &rarr; close  (running out of time, cut the loser)
+ELIF fade_tendency > 0.5 AND underlying_up > 0.01 AND pnl_frac > 0.3:
+    &rarr; close  (mean-reverter is extended, take profit before fade)
+ELSE:
+    &rarr; hold</code></pre>
+
+    <p>The genetic operators &mdash; <code>random_exit_tree()</code>, <code>mutate_exit_tree()</code>, and <code>crossover_exit_trees()</code> &mdash; are fully implemented and tested. Mutation can change a leaf&rsquo;s action, a branch&rsquo;s feature, its comparison operator, or its threshold (via Gaussian perturbation with &sigma;=0.1). Crossover swaps a random subtree between two parents. The <code>ExitMonitor</code> wrapper adds check-interval logic: it only evaluates the tree at configurable bar intervals, returning <code>HOLD</code> on non-check bars to avoid unnecessary computation.</p>
+
+    <h3>Composition with V12 Exit Trees</h3>
+
+    <p>V13&rsquo;s Exit Monitor does not replace the V12 exit tree. The two systems compose based on horizon class:</p>
+
+    <ul>
+      <li><strong><code>full_carry</code> trades:</strong> V12 exit tree is the primary exit mechanism. Daily resolution is appropriate for multi-day positions. The Exit Monitor is not invoked.</li>
+      <li><strong><code>swing</code> trades:</strong> Both systems contribute. The V12 tree provides a daily &ldquo;should I still be in this?&rdquo; check. The Exit Monitor adds intraday granularity. Either can trigger an exit (logical OR).</li>
+      <li><strong><code>scalp</code> and <code>day_trade</code> trades:</strong> The V12 tree is irrelevant (trade resolves within the day). The Exit Monitor is the sole exit mechanism.</li>
+    </ul>
+
+    <p>The V12 exit tree&rsquo;s daily recommendation is also available as an input feature to the Exit Monitor via the <code>v12_exit_signal</code> field on <code>PositionState</code>. This allows the intraday model to learn that &ldquo;when the daily tree says close, pay attention&rdquo; without being forced to obey it unconditionally.</p>
+
+    <h2>The Intraday Backtesting Engine</h2>
+
+    <p>The current engines (<code>engine.py</code>, <code>engine_fast.py</code>, <code>engine_numba.py</code>) operate on daily bars. They cannot simulate a 90-minute covered call scalp. V13 introduces <code>v13/engine_intraday.py</code> &mdash; a pure-Python engine that runs the full trade lifecycle at 5-minute resolution.</p>
+
+    <div class="arch-callout">
+      <strong>Architecture Decision: Pure Python + Vectorized Premiums</strong><br><br>
+      The existing Numba engines pre-compute signals before entering a JIT-compiled loop. V13&rsquo;s overlay and exit decisions depend on evolving position state and cannot be pre-computed. The solution: the bar-by-bar loop is Python (so it can call model objects directly), but premium decay curves are pre-computed as numpy arrays using Black-Scholes + the IV surface from <code>broker/chain_reconstructor.py</code>, then indexed by bar. This avoids the Numba/Python boundary problem entirely.
+    </div>
+
+    <p>The compute budget is substantial. 41 tickers at 78 bars per session over 40 trading days yields 127,920 bars per individual evaluation. With a population of 70 and 50 generations, that is 3,500 evaluations. At approximately 80 seconds per evaluation with 8-core multiprocessing (10 evaluations in parallel), a full evolution run takes roughly 7.8 hours. The plan includes a fallback: subsample to 10 representative tickers (stratified by behavioral archetype) for development iterations, reserving the full 41-ticker suite for final validation runs.</p>
+
+    <p>The interface returns an <code>IntradayResult</code> containing per-trade lifecycle data, horizon accuracy (fraction of trades that resolved in the predicted class), overlay efficiency (total premium captured per unit of overlay risk deployed), and exit quality (average realized P&amp;L divided by optimal P&amp;L across all trades).</p>
+
+    <h2>Coupled Fitness: Co-Evolving Three Models</h2>
+
+    <p>The most architecturally novel part of V13 is the coupled fitness function. All three models are evaluated together as a single genome, with the GA optimizing their joint performance.</p>
+
+<pre><code>Fitness = w1 * horizon_accuracy + w2 * overlay_efficiency + w3 * exit_quality</code></pre>
+
+    <table class="data-table">
+      <caption>Coupled Fitness Components</caption>
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>What It Measures</th>
+          <th>Pressure Applied</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>horizon_accuracy</code></td>
+          <td>Did the trade resolve in the predicted class?</td>
+          <td>Classifier learns to predict actual outcomes</td>
+        </tr>
+        <tr>
+          <td><code>overlay_efficiency</code></td>
+          <td>Premium captured per unit of overlay risk</td>
+          <td>Overlay Model learns IV-aware scaling</td>
+        </tr>
+        <tr class="highlight">
+          <td><code>exit_quality</code></td>
+          <td>Realized profit vs. optimal exit</td>
+          <td>Exit Monitor learns when early close beats holding</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">Weights w1, w2, w3 are candidates for a Bayesian sweep using the same skopt infrastructure as V12 Fix 5.</td></tr>
+      </tfoot>
+    </table>
+
+    <p>The exit quality metric deserves attention. It compares each trade&rsquo;s realized P&amp;L against the <em>optimal</em> exit &mdash; the best possible close within the horizon window, computed in hindsight. An Exit Monitor that closes at 80% of eventual max profit in 20% of the time/risk earns high fitness. One that closes early on a trade that would have doubled earns low fitness. This creates precise evolutionary pressure to learn when early exit genuinely beats holding &mdash; the hardest question in trade management.</p>
+
+    <p>The coupling between models is bidirectional. If the Horizon Classifier says &ldquo;scalp&rdquo; but the Exit Monitor consistently extends trades to day-trade length, the classifier&rsquo;s horizon accuracy drops, penalizing its fitness. Over generations, the two models align. The same genome is evaluated across all 41 tickers globally &mdash; a scalp profile that works on INTC but fails on NVDA is penalized. The ticker behavior profile allows the system to apply different strategies to different tickers within a single genome, encoding rules like &ldquo;if fade_tendency &gt; 0.5 and IV_rank &gt; 60, then scalp&rdquo; rather than hard-coding ticker assignments.</p>
+
+    <h3>Relationship to V12 Fitness</h3>
+
+    <p>The V12 fitness function (growth/drawdown/Sharpe/capital-efficiency on daily equity curves) continues to evaluate entry gate quality. The V13 coupled fitness evaluates trade lifecycle quality on intraday equity curves. These are separate evaluations applied to separate genomes. The V12 genome encodes which bars to enter on; the V13 genome encodes how entries are managed. The two evolve independently but are evaluated together at the portfolio level: entry rules that produce entries the V13 models cannot manage well see lower portfolio Sharpe, creating indirect selection pressure for coherence between entry and lifecycle.</p>
+
+    <h2>Staged Evolution: Managing Complexity</h2>
+
+    <p>Co-evolving three coupled models introduces complex dynamics. The design spec identifies the convergence risk directly and prescribes a staged approach:</p>
+
+    <ol>
+      <li><strong>Horizon Classifier alone</strong> &mdash; 20 generations with fixed overlay and fixed exit rules. Establish a baseline for horizon accuracy.</li>
+      <li><strong>Add Exit Monitor</strong> &mdash; 20 generations with evolved exit trees and fixed overlay. Establish a baseline for exit quality.</li>
+      <li><strong>Add Overlay Model</strong> &mdash; 20 generations with all three models active. Establish a baseline for overlay efficiency.</li>
+      <li><strong>Full coupling</strong> &mdash; 50+ generations with joint fitness. If coupled fitness stalls for 10 consecutive generations, fall back to independent fitness evaluation.</li>
+    </ol>
+
+    <p>This staged approach also serves as a diagnostic. If horizon accuracy plateaus in stage 1 at an unacceptable level, the classifier needs more features or training data before proceeding. If exit quality is high in stage 2 but collapses when overlay is introduced in stage 3, the overlay model is interfering with exit decisions &mdash; a signal to tighten the overlay cooldown constraints.</p>
+
+    <div class="pull-quote">
+      <p>&ldquo;Real trading requires continuous adaptive decision-making across multiple timescales. A covered call on INTC sold at $1.94 and bought back at $1.44 ninety minutes later &mdash; capturing 26% of premium &mdash; is a fundamentally different trade than holding to expiry. The system needs to discover and execute both.&rdquo;</p>
+    </div>
+
+    <h2>What V13 Does Not Change</h2>
+
+    <p>Equally important is what remains untouched. The GA infrastructure in <code>veto_evolver.py</code> continues as-is. The Numba engine for daily-resolution entry performance backtesting is not replaced. The AutoResearch pipeline still discovers new triggers. Pythia&rsquo;s 20-agent ensemble remains independent. Gemini&rsquo;s V13 pillars (ReAct agent, async workers, macro ingestion) are additive and proceed on their own schedule.</p>
+
+    <table class="data-table">
+      <caption>Reconciliation with Gemini&rsquo;s V13 Plan</caption>
+      <thead>
+        <tr>
+          <th>Gemini Pillar</th>
+          <th>Status</th>
+          <th>Integration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>MCP Agentic Loop (ReAct)</td>
+          <td>Unchanged</td>
+          <td>Gains horizon-aware trade mining</td>
+        </tr>
+        <tr>
+          <td>Decoupled Async Workers</td>
+          <td>Unchanged</td>
+          <td>Ticker Profiler becomes another daemon</td>
+        </tr>
+        <tr>
+          <td>Global Portfolio Evolution</td>
+          <td>Absorbed &amp; extended</td>
+          <td>Coupled fitness evaluates all three models globally</td>
+        </tr>
+        <tr>
+          <td>Macro &amp; Fundamental Ingestion</td>
+          <td>Unchanged</td>
+          <td>Feeds into Horizon Classifier as input features</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">Source: docs/superpowers/specs/2026-03-16-v13-multi-timescale-trade-lifecycle-design.md, Section: Reconciliation.</td></tr>
+      </tfoot>
+    </table>
+
+    <h2>New File Structure</h2>
+
+    <p>All V13 code lives in a dedicated <code>v13/</code> package, avoiding modifications to existing files. The implementation plan (<code>docs/superpowers/plans/2026-03-16-v13-multi-timescale-trade-lifecycle.md</code>) specifies 10 production files and 9 test files.</p>
+
+    <table class="data-table">
+      <caption>V13 Package &mdash; File Inventory</caption>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Status</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td><code>v13/position_state.py</code></td>
+          <td class="positive">Implemented</td>
+          <td><code>PositionState</code>, <code>TradeRecord</code>, <code>IntradayResult</code></td>
+        </tr>
+        <tr class="highlight">
+          <td><code>v13/exit_monitor.py</code></td>
+          <td class="positive">Implemented</td>
+          <td>GA-evolved decision tree + genetic operators</td>
+        </tr>
+        <tr>
+          <td><code>v13/ticker_profiler.py</code></td>
+          <td>Planned</td>
+          <td>Nightly per-ticker behavior profiling</td>
+        </tr>
+        <tr>
+          <td><code>v13/premium_model.py</code></td>
+          <td>Planned</td>
+          <td>Black-Scholes premium decay curve generation</td>
+        </tr>
+        <tr>
+          <td><code>v13/horizon_classifier.py</code></td>
+          <td>Planned</td>
+          <td>Supervised model for 4-class trade classification</td>
+        </tr>
+        <tr>
+          <td><code>v13/horizon_labels.py</code></td>
+          <td>Planned</td>
+          <td>Synthetic label generation from simulated outcomes</td>
+        </tr>
+        <tr>
+          <td><code>v13/overlay_model.py</code></td>
+          <td>Planned</td>
+          <td>GA-evolved parametric overlay scaling</td>
+        </tr>
+        <tr>
+          <td><code>v13/engine_intraday.py</code></td>
+          <td>Planned</td>
+          <td>Pure-Python intraday backtester at 5min resolution</td>
+        </tr>
+        <tr>
+          <td><code>v13/coupled_fitness.py</code></td>
+          <td>Planned</td>
+          <td>Joint fitness for three-model co-evolution</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">Source: docs/superpowers/plans/2026-03-16-v13-multi-timescale-trade-lifecycle.md. Tests mirror each production file in tests/v13/.</td></tr>
+      </tfoot>
+    </table>
+
+    <h2>Execution Order and Data Requirements</h2>
+
+    <p>The implementation follows a strict dependency chain: Ticker Profiler first (all models read from it), then the intraday backtester (cannot train models without simulation), then Horizon Classifier (entry-time decisions before in-trade decisions), then Exit Monitor (needs horizon prior), then Overlay Model (needs exit monitor to measure efficiency), and finally the coupled fitness function that ties them together. Gemini&rsquo;s pillars (ReAct agent, async workers, macro ingestion) layer on top after the core lifecycle models are validated.</p>
+
+    <p>Data requirements are mostly satisfied. The system has 41 tickers with 1-minute through daily bars covering roughly two months (January 15 to March 16, 2026). Intraday options chain snapshots for realistic premium decay modeling are partially available in <code>data/ticks/snapshots/</code>. The gap is filled by Black-Scholes modeling with IV surface interpolation from <code>broker/chain_reconstructor.py</code>. A future validation dataset &mdash; the user&rsquo;s 70 real brokerage trades &mdash; will be added when structured.</p>
+
+    <h2>Risks and Mitigations</h2>
+
+    <table class="data-table">
+      <caption>Risk Register</caption>
+      <thead>
+        <tr>
+          <th>Risk</th>
+          <th>Mitigation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2 months of intraday data insufficient for horizon classification</td>
+          <td>Start with 3-class system (scalp/day/hold), expand as data grows</td>
+        </tr>
+        <tr>
+          <td>Coupled fitness creates complex evolutionary dynamics</td>
+          <td>Staged evolution; fall back to independent fitness if stalled 10 gens</td>
+        </tr>
+        <tr>
+          <td>Intraday backtester too slow at 1min resolution</td>
+          <td>Default to 5min bars; 1min only for scalp-class validation</td>
+        </tr>
+        <tr>
+          <td>Premium decay without full chain snapshots</td>
+          <td>Black-Scholes + IV surface; validate against available snapshots</td>
+        </tr>
+        <tr>
+          <td>Three co-evolved models may not converge</td>
+          <td>Staged: horizon 20 gens, +exit 20 gens, +overlay 20 gens, then couple</td>
+        </tr>
+        <tr>
+          <td>Supervised classifier needs labels that do not exist yet</td>
+          <td>Synthetic labels from simulated outcomes; real trades as validation</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="2">Source: docs/superpowers/specs/2026-03-16-v13-multi-timescale-trade-lifecycle-design.md, Section: Risk &amp; Mitigation.</td></tr>
+      </tfoot>
+    </table>
+
+    <h2>What V13 Means for the System</h2>
+
+    <p>V13 represents the largest architectural expansion since the original genetic algorithm was introduced. Versions 1 through 12 operated on a single axis: should we sell a covered call on this bar, yes or no? V13 adds two new axes &mdash; <em>what kind of trade</em> and <em>how to manage it</em> &mdash; and does so at a temporal resolution 78 times finer than the daily bar loop. The total parameter space under GA control expands from entry gate trees to entry gates plus horizon class parameters plus overlay parameters plus exit trees, per horizon class, per ticker behavioral archetype.</p>
+
+    <p>The design is deliberate about what it does not attempt. It does not try to improve entry signals. It does not replace the existing daily-resolution backtesting infrastructure. It does not force Pythia and the GA into a single system. Each of those boundaries is load-bearing: the entry systems have demonstrated $75K of OOS alpha; the daily backtester validates entry gate quality with Numba-speed; the dual-system architecture allows independent experimentation. V13 layers on top without disturbing what already works.</p>
+
+    <p>The INTC scalp that opened this article &mdash; sold at $1.94, bought back at $1.44 in ninety minutes &mdash; is the simplest possible demonstration of what V13 enables. Today, the system would hold that position to expiry, hoping for full premium capture. V13&rsquo;s Horizon Classifier would recognize INTC&rsquo;s fade tendency and high IV rank as scalp conditions, the Exit Monitor would see P&amp;L reaching 26% of premium in 18 bars and fire a <code>close</code> action, and the system would capture that 26% and free the capital for the next trade. That is the difference between a system that makes a single decision and one that manages a trade.</p>
+
+  </div>
+
+  <footer class="article-footer">
+    <p class="tags">Tags: v13, superpowers, exit-monitor, horizon-classifier, overlay-model, multi-timescale, trade-lifecycle, genetic-algorithm, intraday, covered-calls, architecture</p>
+  </footer>
+</article>
+
+<footer class="issue-footer">
+  <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+</footer>
+
+</body>
+</html>
