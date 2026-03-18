@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V14: Autonomous Quant Lab Overview — The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="7">
+  <meta name="date" content="2026-03-17">
+  <meta name="tags" content="v14, autonomous-research, orchestrator, dynamic-loader, semantic-telemetry, sandbox, mcp, alpha-model, code-injection, architecture">
+  <meta name="read-time" content="11">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .byline {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .lede {
+      margin: 1.5rem 0 1.5rem;
+      padding-left: 0;
+    }
+
+    .lede p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: #222;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 2.5rem 0;
+    }
+
+    .article-body h2 {
+      font-size: 1.35rem;
+      font-weight: bold;
+      margin: 2.2rem 0 0.6rem;
+      border-bottom: 2px solid #CC0001;
+      padding-bottom: 0.25rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 1.6rem 0 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .article-body p {
+      margin-bottom: 1.1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1.1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.3rem;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      margin: 2rem 0;
+      padding: 0.8rem 1.4rem;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fff8f8;
+    }
+
+    /* Data tables */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.2rem 0 1.8rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    table.data-table caption {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+
+    table.data-table thead tr {
+      background: #f0ede6;
+    }
+
+    table.data-table th {
+      padding: 0.45rem 0.6rem;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fafaf6;
+    }
+
+    table.data-table tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+
+    table.data-table tr.highlight {
+      background: #fff8e1 !important;
+    }
+
+    table.data-table tfoot td {
+      font-style: italic;
+      color: #888;
+      font-size: 0.78rem;
+      padding-top: 0.4rem;
+      border-bottom: none;
+    }
+
+    .positive { color: #2e7d32; font-weight: bold; }
+    .negative { color: #c62828; font-weight: bold; }
+    .neutral  { color: #888; }
+
+    /* Code blocks */
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 0.9rem 1.1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f0ede6;
+      padding: 0.1em 0.35em;
+      border-radius: 2px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* Summary box */
+    .summary-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-left: 4px solid #CC0001;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+    }
+
+    .summary-box h4 {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #CC0001;
+      margin-bottom: 0.5rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .summary-box ul {
+      margin-left: 1.2rem;
+    }
+
+    /* Architecture callout */
+    .arch-callout {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-left: 4px solid #1a4a8a;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .arch-callout strong {
+      color: #1a4a8a;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    .arch-diagram .diagram-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.8rem;
+      text-align: center;
+    }
+
+    .arch-diagram .diagram-box {
+      display: inline-block;
+      border: 2px solid #1a4a8a;
+      padding: 0.4rem 0.8rem;
+      margin: 0.3rem;
+      border-radius: 3px;
+      background: #f0f4f8;
+      font-weight: bold;
+      color: #1a4a8a;
+      text-align: center;
+    }
+
+    .arch-diagram .diagram-box.accent {
+      border-color: #CC0001;
+      color: #CC0001;
+      background: #fff8f8;
+    }
+
+    .arch-diagram .diagram-box.engine {
+      border-color: #2e7d32;
+      color: #2e7d32;
+      background: #f0f8f0;
+    }
+
+    .arch-diagram .diagram-arrow {
+      display: inline-block;
+      color: #888;
+      font-size: 1.1rem;
+      vertical-align: middle;
+      margin: 0 0.3rem;
+    }
+
+    .arch-diagram .diagram-row {
+      text-align: center;
+      margin: 0.6rem 0;
+    }
+
+    .arch-diagram .diagram-label {
+      font-size: 0.7rem;
+      color: #888;
+      display: block;
+      margin-top: 0.15rem;
+    }
+
+    /* File tree */
+    .file-tree {
+      background: #f4f4f0;
+      border-left: 3px solid #1a4a8a;
+      padding: 1rem 1.3rem;
+      margin: 1.2rem 0 1.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+    }
+
+    .file-tree .role {
+      color: #CC0001;
+      font-weight: bold;
+      font-style: italic;
+    }
+
+    .file-tree .desc {
+      color: #666;
+    }
+
+    /* Article footer */
+    .article-footer {
+      margin-top: 2.5rem;
+      border-top: 1px solid #ddd;
+      padding-top: 1rem;
+    }
+
+    .tags {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 0 auto 2rem;
+      padding-top: 1rem;
+      border-top: 2px solid #CC0001;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .article-header h1 { font-size: 1.5rem; }
+      table.data-table { font-size: 0.78rem; }
+      table.data-table th, table.data-table td { padding: 0.3rem 0.4rem; }
+      .arch-diagram .diagram-box { font-size: 0.7rem; padding: 0.3rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="masthead">The StackStrader Review</header>
+
+<nav class="section-label"><span>Feature</span></nav>
+
+<article>
+  <header class="article-header">
+    <h1>V14: Autonomous Quant Lab Overview</h1>
+    <p class="subtitle">An API layer that turns the StackStrader engine into a JSON-callable research instrument for LLM orchestrators, with dynamic code injection, semantic telemetry, and a sandboxed experiment pipeline.</p>
+    <p class="byline">Chris &middot; March 17, 2026 &middot; 11 min read</p>
+  </header>
+
+  <div class="lede">
+    <p>V14 is not a new engine. It is not a new set of indicators. It is a 688-line API layer (<code>v14/</code>) that wraps the existing V12 engine and exposes it as a set of JSON-callable tools for an LLM orchestrator &mdash; transforming StackStrader from a system that an AI advises into one that an AI directly operates. Where V10&ndash;V13 used the genetic algorithm (GA) as the primary research driver, with LLMs proposing mutations and reading logs on the side, V14 removes the GA entirely for exploratory research. The orchestrator formulates a hypothesis, writes a custom AlphaModel as Python code, injects it into the engine at runtime, runs a single backtest, reads the semantic telemetry report, and decides what to try next &mdash; all in a single reasoning chain.</p>
+  </div>
+
+  <div class="article-body">
+
+    <div class="summary-box">
+      <h4>V14 at a Glance</h4>
+      <ul>
+        <li><strong>4 modules</strong>, 688 total lines of production code</li>
+        <li><strong>5 commands</strong>: <code>backtest</code>, <code>benchmark</code>, <code>analyze</code>, <code>cleanup</code>, <code>ping</code></li>
+        <li><strong>~5&ndash;15 seconds</strong> per single experiment (vs. 70&ndash;110 sec/generation in V13)</li>
+        <li><strong>Full Python injection</strong>: arbitrary AlphaModel classes compiled and loaded at runtime</li>
+        <li><strong>Isolated sandbox</strong>: all experimental code lives in <code>v14/sandbox/</code>, separate from production V12/V13</li>
+      </ul>
+    </div>
+
+    <h2>File System Structure</h2>
+
+    <p>The <code>v14/</code> directory is isolated from the production V12/V13 codebase by design. No V14 code is imported by the engine, the GA launcher, or the autoresearch pipeline. This isolation ensures that recursive synthesis &mdash; an AI writing and executing its own code &mdash; cannot corrupt the production trading system, even if a generated AlphaModel throws an exception or produces nonsensical signals.</p>
+
+    <div class="file-tree">
+      v14/<br>
+      &boxvr;&HorizontalLine;&HorizontalLine; orchestrator_api.py &nbsp;&nbsp;<span class="role">The "Brain Interface"</span><br>
+      &boxvr;&HorizontalLine;&HorizontalLine;&nbsp;<span class="desc">237 lines &middot; Primary CLI, JSON command router, data loader</span><br>
+      &boxvr;&HorizontalLine;&HorizontalLine; semantic_telemetry.py &nbsp;&nbsp;<span class="role">The "Analyst"</span><br>
+      &boxvr;&HorizontalLine;&HorizontalLine;&nbsp;<span class="desc">286 lines &middot; Failure mining, regime analysis, narrative synthesis</span><br>
+      &boxvr;&HorizontalLine;&HorizontalLine; dynamic_loader.py &nbsp;&nbsp;<span class="role">The "Compiler"</span><br>
+      &boxvr;&HorizontalLine;&HorizontalLine;&nbsp;<span class="desc">69 lines &middot; Runtime Python compilation, UUID-namespaced modules</span><br>
+      &boxvr;&HorizontalLine;&HorizontalLine; sandbox/ &nbsp;&nbsp;<span class="role">The "Laboratory"</span><br>
+      &boxvr;&HorizontalLine;&HorizontalLine;&nbsp;<span class="desc">Temporary .py files for experimental AlphaModels and VetoTrees</span><br>
+      &boxur;&HorizontalLine;&HorizontalLine; run_research_batch.py &nbsp;&nbsp;<span class="role">The "Taskmaster"</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc">96 lines &middot; Multi-ticker, multi-experiment batch runner</span>
+    </div>
+
+    <h3>The Brain Interface &mdash; <code>orchestrator_api.py</code></h3>
+
+    <p>The entry point for all AI-driven research. The <code>V14Orchestrator</code> class (237 lines) accepts a JSON command string via CLI, routes it to the appropriate method, and returns a JSON response. It handles three responsibilities that seem trivial but are essential for reliable orchestration:</p>
+
+    <ul>
+      <li><strong>Date alignment</strong>: Converts all timestamps to timezone-naive <code>pd.Timestamp</code> objects, preventing the silent NaN propagation that occurs when mixing tz-aware and tz-naive indices.</li>
+      <li><strong>VIX joining</strong>: Automatically joins daily VIX data to intraday bars via date-key mapping. The orchestrator never needs to know that VIX is daily while ticker data is 5-minute &mdash; the API handles the frequency mismatch internally.</li>
+      <li><strong>Custom logic injection</strong>: When a command includes a <code>custom_logic</code> field (a Python code string and class name), the orchestrator delegates to the Dynamic Loader, which compiles the code and returns an instantiated object. This object is passed to V12's <code>run_single()</code> via the existing <code>alpha</code> protocol.</li>
+    </ul>
+
+    <h3>The Analyst &mdash; <code>semantic_telemetry.py</code></h3>
+
+    <p>The feedback translator. The <code>SemanticAnalyzer</code> class (286 lines) takes raw backtest results &mdash; a metrics dictionary and a trade log &mdash; and produces a structured narrative report that an LLM can reason about directly. This is the critical insight behind V14's design: an LLM can read "losses correlated with overbought entries (avg RSI 68.2)" and immediately formulate a follow-up experiment, but it cannot usefully reason about a flat list of 847 trade events.</p>
+
+    <p>The analyzer performs four operations:</p>
+
+    <ol>
+      <li><strong>Failure mining</strong>: Clusters losing trades by exit event type (<code>ASSIGN</code>, <code>STOP_LOSS</code>, <code>EXPIRE_ITM</code>, <code>CLOSE_DTE_FLOOR</code>), then correlates with VIX level and RSI at entry. If average VIX on losing trades exceeds 25, the narrative recommends a VIX-cap veto. If average RSI exceeds 65, it suggests lowering the <code>rsi_max</code> threshold.</li>
+      <li><strong>Regime analysis</strong>: Maps each closed trade to the HMM regime state of its entry bar. Computes per-regime trade count, win rate, average PnL, and total PnL. This enables the orchestrator to ask: "What if I only trade during regime 2?"</li>
+      <li><strong>Missed opportunity detection</strong>: Currently a Phase 2 placeholder. Will require engine-level candidate logging to record bars where entry scored high but was vetoed.</li>
+      <li><strong>Narrative synthesis</strong>: Generates a tiered text report with performance status (exceptional/strong/neutral/negative based on Sharpe thresholds), critical failure patterns, regime breakdown, and strategic recommendations.</li>
+    </ol>
+
+    <h3>The Compiler &mdash; <code>dynamic_loader.py</code></h3>
+
+    <p>The most consequential 69 lines in the system. <code>DynamicLoader.load_from_string()</code> accepts a Python code string and a class name, writes the code to a UUID-namespaced file in <code>v14/sandbox/</code> (e.g., <code>v14_sandbox_a1b5bc1d.py</code>), uses <code>importlib.util.spec_from_file_location</code> to compile it into a module, and returns an instantiated class. The caller &mdash; the orchestrator &mdash; passes this object to the engine, which calls its <code>should_open()</code>, <code>score()</code>, and <code>should_close_early()</code> methods during the backtest loop.</p>
+
+    <div class="arch-callout">
+      <strong>Safety Note</strong>: The current loader has no AST-level code restrictions. Before production use, V14 Phase 2 will add validation to prevent file I/O, network calls, and process spawning in injected code. During the current prototype phase, V14 runs only in local research sessions.
+    </div>
+
+    <h3>The Laboratory &mdash; <code>v14/sandbox/</code></h3>
+
+    <p>A temporary directory where each experiment's Python code lands as a uniquely named file. Seven sandbox files were generated during initial prototype testing, ranging from 300-byte pass-through alphas to 817-byte <code>HorizonBiasAlpha</code> classes with RSI-based horizon classification. The <code>cleanup</code> command removes all <code>v14_sandbox_*.py</code> files, resetting the laboratory for the next research session.</p>
+
+    <h3>The Taskmaster &mdash; <code>run_research_batch.py</code></h3>
+
+    <p>A template for running multiple experiments in a single pass. The current prototype contains two experiments: a Horizon-Based Delta/DTE Bias test against AAPL (injecting a <code>HorizonBiasAlpha</code> class that classifies bars by RSI into scalp/swing/full_carry horizons) and a Co-Evolved Exit Tree test against NVDA (injecting an <code>ExitTreeAlpha</code> that triggers early close when RSI < 40 and MACD histogram is negative). Both benchmark against the default parameter baseline over 2025-06 to 2026-02.</p>
+
+    <hr class="section-rule">
+
+    <h2>The V14 CLI / MCP Specification</h2>
+
+    <p>Every V14 interaction follows a single pattern: a JSON object with a <code>command</code> field and an <code>args</code> object, passed as a string argument to the orchestrator script.</p>
+
+    <pre><code>python3 v14/orchestrator_api.py '{"command": "...", "args": {...}}'</code></pre>
+
+    <p>The API returns a JSON string with a <code>status</code> field (<code>"success"</code> or <code>"error"</code>) and command-specific payload fields. All numeric values are cleaned of NumPy types and NaN values before serialization.</p>
+
+    <table class="data-table">
+      <caption>V14 Command Reference</caption>
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>Purpose</th>
+          <th>Required Args</th>
+          <th>Returns</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>backtest</code></td>
+          <td>Run a single backtest with optional custom logic</td>
+          <td><code>ticker</code>, <code>params</code>, <code>start</code>, <code>end</code></td>
+          <td>Sharpe, return, drawdown, trade count</td>
+        </tr>
+        <tr>
+          <td><code>benchmark</code></td>
+          <td>Compare baseline vs. experiment params</td>
+          <td><code>ticker</code>, <code>base_params</code>, <code>experiment_params</code>, <code>start</code>, <code>end</code></td>
+          <td>Sharpe delta, both metric sets, improvement flag</td>
+        </tr>
+        <tr class="highlight">
+          <td><code>analyze</code></td>
+          <td>Run backtest + semantic telemetry report</td>
+          <td><code>ticker</code>, <code>params</code>, <code>start</code>, <code>end</code></td>
+          <td>Full narrative report with failure clusters</td>
+        </tr>
+        <tr>
+          <td><code>cleanup</code></td>
+          <td>Remove all sandbox files</td>
+          <td><em>none</em></td>
+          <td>Confirmation message</td>
+        </tr>
+        <tr>
+          <td><code>ping</code></td>
+          <td>Health check</td>
+          <td><em>none</em></td>
+          <td><code>"pong"</code> + timestamp</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="4">Source: v14/orchestrator_api.py &middot; handle_request()</td></tr>
+      </tfoot>
+    </table>
+
+    <p>The <code>backtest</code> and <code>benchmark</code> commands accept an optional <code>custom_logic</code> field in their args. This is the mechanism for recursive logic injection &mdash; the orchestrator writes Python code, embeds it in the JSON command, and the engine executes it during the backtest. The <code>custom_logic</code> object has two fields: <code>code</code> (the full Python source as a string) and <code>class_name</code> (the class to instantiate).</p>
+
+    <h3>Example: Benchmark with Custom Logic Injection</h3>
+
+    <p>The following command benchmarks a custom exit tree against NVDA's default parameters. The orchestrator hypothesizes that closing early when RSI drops below 40 during a negative MACD histogram will reduce drawdowns. The <code>benchmark</code> command runs both the baseline and experiment, then returns the Sharpe delta.</p>
+
+    <pre><code>python3 v14/orchestrator_api.py '{
+  "command": "benchmark",
+  "args": {
+    "ticker": "NVDA",
+    "base_params": {},
+    "experiment_params": {},
+    "start": "2025-06-01",
+    "end": "2026-02-01",
+    "custom_logic": {
+      "class_name": "ExitTreeAlpha",
+      "code": "class ExitTreeAlpha:\n    def prepare(self, df, params): pass\n    def should_open(self, row, price, params, context=None): return True\n    def score(self, row, price, params, context=None): return 1.0\n    def should_close_early(self, row, current_price, params):\n        return row[\"rsi\"] < 40 and row[\"macd_histo\"] < 0"
+    }
+  }
+}'</code></pre>
+
+    <p>The response includes both metric sets and the critical <code>sharpe_delta</code> and <code>improvement</code> fields:</p>
+
+    <pre><code>{
+  "status": "success",
+  "ticker": "NVDA",
+  "sharpe_delta": 0.0342,
+  "baseline": {"sharpe": 1.24, "ann_return": 0.18, "max_drawdown": 0.09},
+  "experiment": {"sharpe": 1.27, "ann_return": 0.19, "max_drawdown": 0.07},
+  "improvement": true
+}</code></pre>
+
+    <h3>The AlphaModel Interface Contract</h3>
+
+    <p>Any class injected via <code>custom_logic</code> must implement four methods. The engine calls them during the backtest loop at the appropriate lifecycle points:</p>
+
+    <pre><code>class YourAlphaModel:
+    def prepare(self, df, params):
+        """Called once before backtesting. Enrich the DataFrame."""
+        pass
+
+    def should_open(self, row, price, params, context=None):
+        """Called on each bar. Return True to allow entry."""
+        return True
+
+    def score(self, row, price, params, context=None):
+        """Called on each bar. Return a float signal strength."""
+        return 1.0
+
+    def should_close_early(self, row, current_price, params):
+        """Called each bar while a position is open. Return True to exit."""
+        return False</code></pre>
+
+    <hr class="section-rule">
+
+    <h2>System Architecture</h2>
+
+    <p>V14 sits between the LLM orchestrator and the V12 engine. The orchestrator never touches V12 directly &mdash; all interaction flows through the API layer, which handles data loading, indicator computation, custom logic compilation, and result translation.</p>
+
+    <div class="arch-diagram">
+      <div class="diagram-title">V14 Data Flow &mdash; From Hypothesis to Insight</div>
+
+      <div class="diagram-row">
+        <div class="diagram-box accent">
+          LLM Orchestrator
+          <span class="diagram-label">Hypothesis + Python Code</span>
+        </div>
+      </div>
+
+      <div class="diagram-row">
+        <span class="diagram-arrow">&darr;</span> <span style="color:#888; font-size:0.75rem;">JSON command via CLI</span>
+      </div>
+
+      <div class="diagram-row">
+        <div class="diagram-box">
+          orchestrator_api.py
+          <span class="diagram-label">"Brain Interface" &middot; Route &amp; Load</span>
+        </div>
+      </div>
+
+      <div class="diagram-row">
+        <span class="diagram-arrow">&swarr;</span>
+        <span style="color:#888; font-size:0.75rem; margin: 0 2rem;">&nbsp;</span>
+        <span class="diagram-arrow">&searr;</span>
+      </div>
+
+      <div class="diagram-row">
+        <div class="diagram-box" style="margin-right:1.5rem;">
+          dynamic_loader.py
+          <span class="diagram-label">"Compiler" &middot; Code &rarr; Object</span>
+        </div>
+        <div class="diagram-box engine">
+          V12 engine.run_single()
+          <span class="diagram-label">Backtest Engine &middot; alpha Protocol</span>
+        </div>
+      </div>
+
+      <div class="diagram-row">
+        <span class="diagram-arrow" style="margin-left: 5rem;">&darr;</span>
+        <span style="color:#888; font-size:0.75rem; margin: 0 1rem;">result + trade_log</span>
+      </div>
+
+      <div class="diagram-row">
+        <div class="diagram-box">
+          semantic_telemetry.py
+          <span class="diagram-label">"Analyst" &middot; Metrics &rarr; Narrative</span>
+        </div>
+      </div>
+
+      <div class="diagram-row">
+        <span class="diagram-arrow">&darr;</span> <span style="color:#888; font-size:0.75rem;">JSON response</span>
+      </div>
+
+      <div class="diagram-row">
+        <div class="diagram-box accent">
+          LLM Orchestrator
+          <span class="diagram-label">Interpret &rarr; Next Hypothesis</span>
+        </div>
+      </div>
+    </div>
+
+    <p>The key architectural decision: V14 uses the <code>alpha</code> protocol that V12's <code>run_single()</code> already supports, rather than V13's hook system. This means V14 experiments are completely self-contained. The orchestrator writes a Python class, the Dynamic Loader compiles it, the engine calls its methods during the backtest loop, and Semantic Telemetry interprets the results. No genome, no population, no GA.</p>
+
+    <div class="pull-quote">V10&ndash;V13 asked: "Can an AI improve a genetic algorithm?" V14 asks: "Can an AI replace the genetic algorithm entirely for hypothesis-driven research?"</div>
+
+    <h3>How V14 Differs from V13</h3>
+
+    <table class="data-table">
+      <caption>V13 vs. V14 &mdash; Research Paradigm Comparison</caption>
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>V13 (GA + LLM)</th>
+          <th>V14 (LLM Direct)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Research driver</td>
+          <td>Genetic algorithm + LLM advice</td>
+          <td>LLM orchestrator with direct tool use</td>
+        </tr>
+        <tr>
+          <td>Experiment cycle</td>
+          <td>50 gen &times; 30 pop = 1,500 backtests</td>
+          <td>1 hypothesis &rarr; 1 backtest &rarr; interpret</td>
+        </tr>
+        <tr>
+          <td>Code injection</td>
+          <td>Static genome params (floats, ints)</td>
+          <td>Full Python class at runtime</td>
+        </tr>
+        <tr class="highlight">
+          <td>Feedback format</td>
+          <td>Fitness scalar + ablation deltas</td>
+          <td>Semantic narrative with failure clusters</td>
+        </tr>
+        <tr>
+          <td>Exploration width</td>
+          <td>Mutation in parameter space</td>
+          <td>Arbitrary logic (new indicators, rules, trees)</td>
+        </tr>
+        <tr>
+          <td>Time per experiment</td>
+          <td>70&ndash;110 sec/generation</td>
+          <td>~5&ndash;15 sec/backtest</td>
+        </tr>
+        <tr>
+          <td>Integration point</td>
+          <td>V12 engine hooks</td>
+          <td>V12 <code>alpha</code> protocol</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">V13 and V14 are complementary: V13 explores parameter space at scale; V14 enables targeted structural experiments.</td></tr>
+      </tfoot>
+    </table>
+
+    <hr class="section-rule">
+
+    <h2>How to Launch for Claude Collaboration</h2>
+
+    <p>V14 is designed for an LLM orchestrator &mdash; specifically Claude &mdash; to autonomously drive quantitative research against the StackStrader engine. The collaboration workflow has five phases, executed in sequence within a single session or across multiple sessions synchronized via git.</p>
+
+    <h3>Phase 1: Read the Guide</h3>
+
+    <p>The orchestrator reads <code>V14_GUIDE.md</code> at the repository root to internalize the system's capabilities, the AlphaModel interface contract, and the available commands. This file is the source of truth for what V14 can do.</p>
+
+    <pre><code># Claude reads the V14 guide
+Read: V14_GUIDE.md</code></pre>
+
+    <h3>Phase 2: Monitor V13 Artifacts</h3>
+
+    <p>Before designing experiments, Claude reads the latest V13 evolution artifacts to understand the current state of the champion genome and where the GA is struggling:</p>
+
+    <ul>
+      <li><code>artifacts/v13_champions.json</code> &mdash; Current best genome, including exit tree structure, horizon biases, and overlay thresholds</li>
+      <li><code>artifacts/v13_diagnostics.json</code> &mdash; Ablation results showing which V13 hooks help vs. hurt, plus cross-ticker contribution analysis</li>
+      <li><code>artifacts/veto_evo_report.md</code> &mdash; Latest veto evolution status across tickers</li>
+    </ul>
+
+    <p>This context allows the orchestrator to formulate hypotheses that target known weak points. For example, if ablation shows the overlay hook degrading fitness on COIN and IBIT, the orchestrator can design a targeted experiment to find overlay scaling rules that work for crypto-correlated tickers.</p>
+
+    <h3>Phase 3: Command the Engine</h3>
+
+    <p>The orchestrator issues V14 commands to test hypotheses. A typical research cycle:</p>
+
+    <ol>
+      <li><strong>Analyze</strong>: Run <code>analyze</code> on a target ticker to get the semantic telemetry baseline. Read the failure clusters and regime breakdown.</li>
+      <li><strong>Hypothesize</strong>: Based on the narrative ("losses correlated with overbought entries, avg RSI 68.2"), formulate a specific fix ("lower RSI entry threshold to 60").</li>
+      <li><strong>Synthesize</strong>: Write a Python AlphaModel class that implements the hypothesis.</li>
+      <li><strong>Benchmark</strong>: Run <code>benchmark</code> with the custom logic against the baseline. Read the <code>sharpe_delta</code>.</li>
+      <li><strong>Iterate or deploy</strong>: If <code>improvement: true</code>, consider deploying the logic. If not, refine the hypothesis based on the experiment's own telemetry.</li>
+    </ol>
+
+    <pre><code># Step 1: Get the baseline narrative
+python3 v14/orchestrator_api.py '{
+  "command": "analyze",
+  "args": {
+    "ticker": "AAPL",
+    "params": {},
+    "start": "2025-06-01",
+    "end": "2026-02-01"
+  }
+}'
+
+# Step 2: Benchmark a hypothesis
+python3 v14/orchestrator_api.py '{
+  "command": "benchmark",
+  "args": {
+    "ticker": "AAPL",
+    "base_params": {},
+    "experiment_params": {"rsi_max": 60},
+    "start": "2025-06-01",
+    "end": "2026-02-01"
+  }
+}'</code></pre>
+
+    <h3>Phase 4: Iterate on Results</h3>
+
+    <p>The orchestrator reads each benchmark result, extracts the Sharpe delta, and decides the next action. Positive deltas above a significance threshold (typically +0.05 Sharpe) are worth pursuing. The orchestrator can chain experiments: test a parameter change, then layer a custom AlphaModel on top, then test across multiple tickers using the batch runner pattern.</p>
+
+    <h3>Phase 5: Synchronize via Git</h3>
+
+    <p>Successful experiments are persisted through git. The orchestrator saves promising AlphaModel code to a named file (not a sandbox UUID), documents the hypothesis and results in the journal, and commits. This creates a searchable record of what was tried, what worked, and why &mdash; which future orchestrator sessions can read to avoid redundant experiments.</p>
+
+    <div class="arch-callout">
+      <strong>Design Principle</strong>: V14 never modifies production code. All experiments run through the <code>alpha</code> protocol and sandbox. Promotion from V14 prototype to V13/V12 production is always a manual human decision &mdash; the AI proposes, the human disposes.
+    </div>
+
+    <hr class="section-rule">
+
+    <h2>Prototype Evidence</h2>
+
+    <p>Seven sandbox files were generated during V14's initial testing session on March 17, with timestamps spanning 22:07 to 23:10. The experiments ranged from simple pass-through alphas (300 bytes, confirming the loader pipeline works) to the full <code>HorizonBiasAlpha</code> (817 bytes) and <code>ExitTreeAlpha</code> (420 bytes). The <code>run_research_batch.py</code> script executed both experiments end-to-end, confirming that the orchestrator can instantiate the V14Orchestrator, load ticker data, compile custom logic, run benchmarks, and return structured results &mdash; all without touching the V12/V13 production code.</p>
+
+    <p>The batch runner's two prototype experiments demonstrate two distinct research patterns:</p>
+
+    <table class="data-table">
+      <caption>V14 Prototype Experiments</caption>
+      <thead>
+        <tr>
+          <th>Experiment</th>
+          <th>Ticker</th>
+          <th>Hypothesis</th>
+          <th>Injected Class</th>
+          <th>Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Horizon Bias</td>
+          <td>AAPL</td>
+          <td>RSI-based horizon labels improve DTE targeting</td>
+          <td><code>HorizonBiasAlpha</code></td>
+          <td><code>should_open</code> + <code>prepare</code></td>
+        </tr>
+        <tr>
+          <td>Exit Tree</td>
+          <td>NVDA</td>
+          <td>Early close on RSI < 40 + negative MACD reduces drawdown</td>
+          <td><code>ExitTreeAlpha</code></td>
+          <td><code>should_close_early</code></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="5">Source: v14/run_research_batch.py</td></tr>
+      </tfoot>
+    </table>
+
+    <hr class="section-rule">
+
+    <h2>Limitations and Next Steps</h2>
+
+    <p>V14 is a Phase 1 prototype. Three capabilities are explicitly deferred:</p>
+
+    <ol>
+      <li><strong>Missed opportunity mining</strong> (<code>_mine_missed_opportunities()</code> returns a placeholder). Requires engine-level candidate logging to record bars where entry conditions scored high but were vetoed. This would enable the orchestrator to ask: "What if I removed this veto?"</li>
+      <li><strong>Code safety sandbox</strong>. The <code>DynamicLoader</code> currently executes arbitrary Python with no restrictions. Before any production or unattended use, AST-level validation must prevent file I/O, network calls, <code>subprocess</code> invocations, and <code>sys.exit()</code> in injected code.</li>
+      <li><strong>V14-V13 bridge</strong>. The orchestrator should be able to load V13's champion genome, translate its horizon/overlay/exit parameters into a custom AlphaModel class, and iterate on it with targeted experiments rather than blind evolution. This creates a feedback loop between V13's breadth (population-based search) and V14's depth (targeted structural experiments).</li>
+    </ol>
+
+    <p>The 688 lines of V14 code were written during the same session that launched V13's 6-batch evolution across 38 tickers. The timing is not coincidental: V14 exists because V13's ablation results at gen 5 showed all three hooks hurting performance. Rather than wait 50 generations to see if the GA can recover, V14 gives the orchestrator the tools to investigate why &mdash; and to test structural alternatives that the GA's parameter-space mutations cannot reach.</p>
+
+  </div>
+
+  <footer class="article-footer">
+    <p class="tags">Tags: v14, autonomous-research, orchestrator, dynamic-loader, semantic-telemetry, sandbox, mcp, alpha-model, code-injection, architecture</p>
+  </footer>
+</article>
+
+<footer class="issue-footer">
+  <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+</footer>
+
+</body>
+</html>
