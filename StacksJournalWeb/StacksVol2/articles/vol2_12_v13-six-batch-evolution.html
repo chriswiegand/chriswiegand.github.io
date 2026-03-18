@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V13: From Zero to Six-Batch Evolution in 18 Hours — The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="7">
+  <meta name="date" content="2026-03-17">
+  <meta name="tags" content="v13, evolution, exit-monitor, horizon-classifier, overlay-model, genetic-algorithm, autoresearch, covered-calls, multi-timescale">
+  <meta name="read-time" content="14">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .byline {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .lede {
+      margin: 1.5rem 0 1.5rem;
+      padding-left: 0;
+    }
+
+    .lede p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: #222;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 2.5rem 0;
+    }
+
+    .article-body h2 {
+      font-size: 1.35rem;
+      font-weight: bold;
+      margin: 2.2rem 0 0.6rem;
+      border-bottom: 2px solid #CC0001;
+      padding-bottom: 0.25rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 1.6rem 0 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .article-body p {
+      margin-bottom: 1.1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1.1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.3rem;
+    }
+
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      margin: 2rem 0;
+      padding: 0.8rem 1.4rem;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fff8f8;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.2rem 0 1.8rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    table.data-table caption {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+
+    table.data-table thead tr {
+      background: #f0ede6;
+    }
+
+    table.data-table th {
+      padding: 0.45rem 0.6rem;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fafaf6;
+    }
+
+    table.data-table tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+
+    table.data-table tr.highlight {
+      background: #fff8e1 !important;
+    }
+
+    table.data-table tfoot td {
+      font-style: italic;
+      color: #888;
+      font-size: 0.78rem;
+      padding-top: 0.4rem;
+      border-bottom: none;
+    }
+
+    .positive { color: #2e7d32; font-weight: bold; }
+    .negative { color: #c62828; font-weight: bold; }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f4f4f0;
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 1rem 1.2rem;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .article-footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+    }
+
+    .tags {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #888;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 0 auto 2rem;
+      padding-top: 1rem;
+      border-top: 3px solid #CC0001;
+      font-size: 0.8rem;
+      color: #888;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .article-header h1 { font-size: 1.5rem; }
+      table.data-table { font-size: 0.75rem; }
+      table.data-table th, table.data-table td { padding: 0.3rem 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">The StackStrader Review</header>
+  <nav class="section-label"><span>Feature</span></nav>
+  <article>
+    <header class="article-header">
+      <h1>V13: From Zero to Six-Batch Evolution in 18 Hours</h1>
+      <p class="subtitle">22 commits, 7,433 lines, 34 files, and 38 tickers evolving overnight &mdash; the largest single-day build in project history delivers a multi-timescale trade lifecycle system on top of V12's battle-tested engine.</p>
+      <p class="byline">Chris &middot; March 17, 2026 &middot; 14 min read</p>
+    </header>
+
+    <div class="lede">
+      <p>V13 went from a design document to six parallel genetic algorithm (GA) batches covering 38 tickers in under 18 hours. The system introduces three coupled models &mdash; ExitMonitor, HorizonClassifier, and OverlayModel &mdash; that hook into V12's existing engine rather than replacing it, a decision that proved critical when the initial standalone launcher failed immediately. By 22:41, all six batches were running with AutoResearch cycles active, consuming 83 research directives before midnight. Early ablation results show the hooks hurting performance at generation 5, which is expected for randomly initialized genomes &mdash; the question is whether 50 generations of evolution can discover configurations that beat V12's baseline.</p>
+    </div>
+
+    <div class="article-body">
+
+      <h2>The Morning: $69K in Premium, Then Build</h2>
+
+      <p>The day opened with the daily tradelist scan at 08:35. The champion scanner recommended 24 covered call positions producing $69,115 in total premium and $5,521/day in theta decay across 380 contracts. Eleven tickers were vetoed &mdash; COST, ARKK, XOM, GLD, VST, HON, TLT, CEG, SOFI, CVX, and PATH &mdash; because their champion trees fired under current conditions.</p>
+
+      <table class="data-table">
+        <caption>Top 5 Premium Earners &mdash; March 17 Tradelist</caption>
+        <thead>
+          <tr><th>Ticker</th><th>Premium</th><th>Theta/day</th><th>IV</th><th>Contracts</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>INTC</td><td>$23,491</td><td class="positive">+$2,430</td><td>72%</td><td>160</td></tr>
+          <tr><td>VOO</td><td>$9,521</td><td class="positive">+$626</td><td>11%</td><td>20</td></tr>
+          <tr><td>ONDS</td><td>$5,699</td><td class="positive">+$540</td><td>118%</td><td>90</td></tr>
+          <tr><td>IBIT</td><td>$5,505</td><td class="positive">+$479</td><td>58%</td><td>40</td></tr>
+          <tr><td>COIN</td><td>$4,796</td><td class="positive">+$415</td><td>83%</td><td>5</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">Source: journal/tradelist/2026-03-17_0835_daily.md</td></tr></tfoot>
+      </table>
+
+      <p>With the market scan out of the way, the rest of the day was pure construction.</p>
+
+      <hr class="section-rule">
+
+      <h2>What V13 Actually Is</h2>
+
+      <p>V13 adds a multi-timescale adaptive trade lifecycle to StackStrader's covered call system. Where V12's GA evolves veto trees that decide <em>whether</em> to enter a trade, V13 evolves three coupled models that govern <em>how</em> trades are managed once open:</p>
+
+      <ul>
+        <li><strong>ExitMonitor</strong> &mdash; A GA-evolved binary decision tree that evaluates 9 features (P&amp;L fraction, time fraction, P&amp;L velocity, underlying change, IV change, fade tendency, spread percentage, time of day, horizon confidence) on each bar and outputs <code>close</code>, <code>extend</code>, or <code>tighten</code>.</li>
+        <li><strong>HorizonClassifier</strong> &mdash; A random forest that maps current market state to an optimal holding period: <code>scalp</code>, <code>day_trade</code>, <code>swing</code>, or <code>full_carry</code>. This adjusts DTE and delta targets before trade entry.</li>
+        <li><strong>OverlayModel</strong> &mdash; An IV-rank-driven contract scaler (0.5x to 1.5x) with cooldown logic, controlling position sizing based on implied volatility regime.</li>
+      </ul>
+
+      <p>These three models share a single genome that the GA evolves jointly. Fitness is multi-objective: 60% growth score, 25% drawdown penalty, 5% average Sharpe, 10% capital efficiency, minus a parsimony penalty &mdash; the same formula V12 uses, ensuring apples-to-apples comparison.</p>
+
+      <hr class="section-rule">
+
+      <h2>The Build: Six Sessions, 22 Commits</h2>
+
+      <h3>Session 1: Foundation (commits <code>887a94d</code>, <code>4c22740</code>)</h3>
+
+      <p>The first two commits delivered the entire V13 module set: 1,756 lines across 16 files. <code>v13/exit_monitor.py</code> (168 lines) defines the ExitNode tree structure with random generation, crossover, and mutation operators. <code>v13/engine_intraday.py</code> (393 lines) runs bar-by-bar trade simulation with per-bar IV interpolation and Black-Scholes premium decay. Eight test files (812 lines) covered the full module surface.</p>
+
+      <table class="data-table">
+        <caption>V13 Module Inventory</caption>
+        <thead>
+          <tr><th>Module</th><th>Lines</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>v13/exit_monitor.py</code></td><td>168</td><td>GA-evolved exit decision tree</td></tr>
+          <tr><td><code>v13/engine_intraday.py</code></td><td>393</td><td>Bar-by-bar intraday simulation</td></tr>
+          <tr><td><code>v13/ticker_profiler.py</code></td><td>211</td><td>Per-ticker fade/reversal/regime scoring</td></tr>
+          <tr><td><code>v13/horizon_classifier.py</code></td><td>77</td><td>Random forest horizon prediction</td></tr>
+          <tr><td><code>v13/overlay_model.py</code></td><td>89</td><td>IV-rank contract scaling</td></tr>
+          <tr><td><code>v13/premium_model.py</code></td><td>78</td><td>Black-Scholes premium decay</td></tr>
+          <tr><td><code>v13/coupled_fitness.py</code></td><td>74</td><td>Multi-objective fitness</td></tr>
+          <tr><td><code>v13/engine_hooks.py</code></td><td>414</td><td>V12 engine integration hooks</td></tr>
+          <tr><td><code>v13/diagnostics.py</code></td><td>123</td><td>Ablation and gradient analysis</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="3">Total: ~1,627 lines of production code, plus 1,761 lines of tests</td></tr></tfoot>
+      </table>
+
+      <h3>Session 2: Bug Fixes (<code>4b21a46</code>, <code>c21e740</code>, <code>b14f769</code>)</h3>
+
+      <p>The initial implementation had five significant bugs. Premium P&amp;L was computing from delta alone instead of full Black-Scholes repricing. Per-bar IV used entry IV for all bars instead of interpolating from the daily surface. Time-of-day used bar index as a proxy rather than actual fractional market time. The OverlayModel carried cooldown state across trades. And <code>exit_quality</code> had no floor, causing fitness explosion from outlier trades. All five were fixed in rapid succession.</p>
+
+      <h3>Session 3: The Architecture Decision (<code>8121edc</code>, <code>9ed5f19</code>, <code>3099a6e</code>)</h3>
+
+      <p>The original <code>launch_v13.py</code> contained its own mini-engine that duplicated V12's backtesting logic. It failed immediately &mdash; fitness stuck at -0.09. The root cause was architectural: V12's <code>engine.py</code> has months of accumulated infrastructure (data loading, indicator computation, Numba-compiled trade simulation, daily veto tree evaluation) that a parallel implementation could not replicate.</p>
+
+      <div class="pull-quote">V13 should not replace V12's engine &mdash; it should hook into it.</div>
+
+      <p>The solution was three hooks that fire at specific points in V12's trade lifecycle: a pre-trade hook where the HorizonClassifier adjusts DTE and delta targets, a position-monitoring hook where ExitMonitor evaluates on each bar, and an overlay hook where contract count scales based on IV rank. This required 1,145 lines across 6 files (<code>v13/engine_hooks.py</code> at 251 lines, <code>v13/diagnostics.py</code> at 123 lines) and 585 lines of modifications to <code>engine.py</code> itself. The launcher was rewritten from scratch: 816 lines added, 467 removed.</p>
+
+      <h3>Session 4: V12 Feature Restoration (commits <code>c9aef4d</code> through <code>e61b41e</code>)</h3>
+
+      <p>After integration, the V13 launcher was still missing 9 features that V12's <code>guided_evolution.py</code> had battle-tested. These were restored in 5 commits over approximately 2 hours:</p>
+
+      <table class="data-table">
+        <caption>Restored V12 Features</caption>
+        <thead>
+          <tr><th>Feature</th><th>Commit</th><th>What It Does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ExitNode serialization</td><td><code>c9aef4d</code></td><td><code>to_dict()</code>/<code>from_dict()</code> for JSON champion persistence</td></tr>
+          <tr><td>Multi-objective fitness</td><td><code>c9aef4d</code></td><td>Replaced delta-Sharpe with V12's 4-component formula</td></tr>
+          <tr><td>WFE penalty</td><td><code>c85c200</code></td><td>Walk-forward efficiency: penalizes in-sample/OOS divergence</td></tr>
+          <tr><td>Champion persistence</td><td><code>c85c200</code></td><td>Saves best genome to <code>artifacts/v13_champions.json</code></td></tr>
+          <tr><td>Stagnation tiers</td><td><code>af3abf9</code></td><td>4-tier adaptive mutation (normal/shakeup/nuclear/park)</td></tr>
+          <tr><td>7-phase AutoResearch</td><td><code>fab3c3e</code></td><td>Full orchestrator routing via <code>v13_adapter.py</code></td></tr>
+          <tr><td>Stagnation scaling</td><td><code>e61b41e</code></td><td>Tier thresholds scale with <code>limit</code> parameter</td></tr>
+        </tbody>
+      </table>
+
+      <p>The stagnation system deserves a note. V12 learned the hard way that fixed mutation rates cause either premature convergence (too low) or inability to refine (too high). The 4-tier system &mdash; 30% mutation at generations 0&ndash;4, escalating to 90% at 10&ndash;14, then parking at 15+ &mdash; solved this. V13 inherits it wholesale.</p>
+
+      <hr class="section-rule">
+
+      <h2>The Launch: Six Batches, 38 Tickers</h2>
+
+      <p>At 22:41, six parallel V13 evolution batches launched covering the full portfolio. Each runs population 30, generation limit 50, with diagnostic suites at generation 5 and 7-phase AutoResearch cycles after diagnostics. Per-generation runtime: 70&ndash;110 seconds depending on ticker count.</p>
+
+      <table class="data-table">
+        <caption>V13 Evolution Batches &mdash; Launch Configuration</caption>
+        <thead>
+          <tr><th>Batch</th><th>Tickers</th><th>Count</th><th>Bars/Ticker</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>QQQ, IWM, VOO, ARKK, TLT</td><td>5</td><td>~13,950</td></tr>
+          <tr><td>2</td><td>COST, LULU, MAR, PATH, PLTR, INTC, LRCX</td><td>7</td><td>~13,900</td></tr>
+          <tr><td>3</td><td>AMD, TSM, COIN, IBIT, SOFI, XOM</td><td>6</td><td>~13,900</td></tr>
+          <tr><td>4</td><td>CVX, LMT, HON, CEG, VST, TSLA</td><td>6</td><td>~13,900</td></tr>
+          <tr><td>5</td><td>NVDA, AAPL, GOOG, AMZN, MSFT</td><td>5</td><td>~13,900</td></tr>
+          <tr><td>6</td><td>IBM, NVO, SRPT, OPEN, KTOS, GLD, VYM</td><td>7</td><td>~13,900</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">AVGO excluded: 0 shares &lt; 100-share lot minimum. Total: 36 active tickers.</td></tr></tfoot>
+      </table>
+
+      <hr class="section-rule">
+
+      <h2>Early Results: V13 Hurts at Generation 5</h2>
+
+      <p>Batch 1 reached generation 5 with best fitness +0.1406. The diagnostic suite produced the first ablation analysis, toggling each V13 hook on and off independently:</p>
+
+      <table class="data-table">
+        <caption>Ablation Results &mdash; Batch 1, Generation 5</caption>
+        <thead>
+          <tr><th>Hook</th><th>On</th><th>Off</th><th>Delta</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ExitMonitor</td><td class="negative">-0.09</td><td>0.00</td><td class="negative">-0.09</td></tr>
+          <tr><td>HorizonClassifier</td><td class="negative">-0.09</td><td class="positive">+0.14</td><td class="negative">-0.23</td></tr>
+          <tr><td>OverlayModel</td><td class="negative">-0.09</td><td class="positive">+0.14</td><td class="negative">-0.23</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">Source: artifacts/v13_diagnostics.json</td></tr></tfoot>
+      </table>
+
+      <p>All three hooks degrade fitness compared to the V12-only baseline. This is expected for generation 5 of a cold start: the exit tree is randomly initialized, the horizon biases are arbitrary, and the overlay thresholds have not been tuned. V12's veto trees, by contrast, have been evolving for weeks. The meaningful test comes at generation 20+, when the GA has had enough iterations to discover configurations where the hooks actually add value.</p>
+
+      <p>Cross-ticker analysis was more encouraging. LRCX contributed +0.736 to portfolio fitness &mdash; by far the strongest individual signal. LRCX is a semiconductor ticker with high <code>regime_sensitivity</code> (0.625 from the TickerProfiler), suggesting it may benefit most from horizon-aware DTE targeting. INTC added +0.216. On the other end, MAR (-0.011) and PLTR (-0.010) dragged slightly.</p>
+
+      <hr class="section-rule">
+
+      <h2>AutoResearch at Scale</h2>
+
+      <p>All six batches triggered their first 7-phase AutoResearch cycle at generation 5. The research memory loaded 783 hypotheses and 358 triggers from prior V12 evolution. Each cycle ran through all seven phases: failure mining (3&ndash;8 new triggers per batch), trigger synthesis (6&ndash;8 triggers, 6&ndash;8 seed trees), cross-ticker narrative (5&ndash;10 seed trees with fitness adjustments for 30+ tickers), literature hypothesis scanning, and trigger testing against SPY/QQQ bars.</p>
+
+      <p>The literature scanner proposed six new features across batches: <code>spectral_trend_dominance</code>, <code>option_implied_kurtosis</code>, <code>gex_rate_of_change</code>, <code>iv_regime_duration</code>, <code>macro_diffusion_breadth</code>, and <code>cp_tbill_funding_spread</code>. Whether these survive trigger testing remains to be seen.</p>
+
+      <p>By 23:09, the system had consumed 83 research directive files in <code>scripts/autoresearch/</code> from this session alone. One batch (batch 4) experienced a Claude CLI timeout during failure mining but recovered on retry.</p>
+
+      <hr class="section-rule">
+
+      <h2>Why "Hook Into V12" Was the Right Call</h2>
+
+      <p>The failed standalone launcher is worth examining. The original <code>launch_v13.py</code> (467 lines, now deleted) attempted to build a parallel backtesting engine that would run V13's intraday simulation independently. It produced fitness values stuck at -0.09 across all genomes &mdash; a clear sign that the simulation was not producing meaningful trade outcomes.</p>
+
+      <p>The problem was scope. V12's <code>engine.py</code> handles data loading with gap-fill logic, indicator computation across 50+ features, Numba-compiled trade matching, daily veto tree evaluation, and walk-forward train/test splitting. Replicating this in a separate file was not feasible in a single session, and any divergence between the two engines would produce misleading fitness comparisons.</p>
+
+      <p>The hook architecture solves this cleanly. V13's three hooks are called by V12's existing engine at the right moments &mdash; before entry, during position monitoring, and at overlay sizing &mdash; inheriting all of V12's data handling, indicator computation, and Numba optimization for free. The cost is tight coupling to V12's internal interfaces, but for a system where V12 <em>is</em> the engine, that is a feature, not a bug.</p>
+
+      <hr class="section-rule">
+
+      <h2>What to Watch Overnight</h2>
+
+      <p>Six open questions will resolve as the batches progress toward generation 50:</p>
+
+      <ol>
+        <li><strong>When do ablation deltas turn positive?</strong> If the hooks are still hurting at generation 20, the feature set or tree depth may need revision.</li>
+        <li><strong>COIN and IBIT baselines.</strong> Batch 3 shows COIN at -1.48 and IBIT at -0.84 Sharpe in the V12 baseline. V13 cannot fix a broken V12 champion &mdash; these tickers may need recalibration first.</li>
+        <li><strong>WFE convergence.</strong> The current champion shows WFE penalty of 0.24, indicating moderate overfitting. If this does not improve, the exit tree <code>max_depth=3</code> may be too expressive.</li>
+        <li><strong>LRCX signal persistence.</strong> The +0.736 contribution is compelling but based on 5 generations. Sustained outperformance would validate the regime-sensitivity hypothesis.</li>
+        <li><strong>AutoResearch trigger survival rate.</strong> Of the 6 proposed literature features, how many pass closed-loop trigger testing?</li>
+        <li><strong>Champion persistence across batches.</strong> Batch 1's champion (fitness +0.14) seeded batch 3's population. Cross-batch pollination should accelerate convergence if the genomes are generalizable.</li>
+      </ol>
+
+      <hr class="section-rule">
+
+      <h2>By the Numbers</h2>
+
+      <table class="data-table">
+        <caption>March 17 Build Summary</caption>
+        <thead>
+          <tr><th>Metric</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>Commits</td><td>22</td></tr>
+          <tr><td>Lines added</td><td>7,433</td></tr>
+          <tr><td>Files touched</td><td>34</td></tr>
+          <tr><td>New modules</td><td>9 production + 16 test files</td></tr>
+          <tr><td>Evolution batches</td><td>6 parallel</td></tr>
+          <tr><td>Tickers under evolution</td><td>36 (of 38)</td></tr>
+          <tr><td>Research directives consumed</td><td>83</td></tr>
+          <tr><td>Morning tradelist premium</td><td>$69,115 across 24 positions</td></tr>
+          <tr><td>Time: design doc to running GA</td><td>~18 hours</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <footer class="article-footer">
+      <p class="tags">Tags: v13, evolution, exit-monitor, horizon-classifier, overlay-model, genetic-algorithm, autoresearch, covered-calls, multi-timescale</p>
+    </footer>
+  </article>
+  <footer class="issue-footer">
+    <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+  </footer>
+</body>
+</html>
