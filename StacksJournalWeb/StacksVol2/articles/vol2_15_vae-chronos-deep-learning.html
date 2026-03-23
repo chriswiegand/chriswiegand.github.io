@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAE Manifold and Chronos Forecaster: Deep Learning Enters the Gate Pipeline — The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="15">
+  <meta name="date" content="2026-03-22">
+  <meta name="tags" content="v15, vae, chronos, deep-learning, regime-detection, probabilistic-forecast, gemini, multi-llm, triggers, entry-gate">
+  <meta name="read-time" content="9">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .byline {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 0.03em;
+    }
+
+    .lede {
+      font-size: 1.15rem;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .article-body h2 {
+      font-size: 1.4rem;
+      margin: 2rem 0 0.8rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .article-body h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem;
+      color: #333;
+    }
+
+    .article-body p {
+      margin-bottom: 1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.4rem;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f4f4f0;
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 1rem 1.2rem;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82em;
+      line-height: 1.6;
+    }
+
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      padding: 0.8rem 1.2rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fff8f8;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.92em;
+    }
+
+    table.data-table caption {
+      text-align: left;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    table.data-table th {
+      background: #f0ede6;
+      text-align: left;
+      padding: 0.5rem 0.7rem;
+      border-bottom: 2px solid #ccc;
+      font-size: 0.88em;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    table.data-table td {
+      padding: 0.45rem 0.7rem;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    table.data-table tbody tr:nth-child(odd) { background: #ffffff; }
+    table.data-table tbody tr:nth-child(even) { background: #fafaf6; }
+    table.data-table tbody tr.highlight { background: #fff8e1; }
+
+    table.data-table tfoot td {
+      font-size: 0.82em;
+      color: #888;
+      padding-top: 0.4rem;
+      border-bottom: none;
+    }
+
+    .positive { color: #2e7d32; }
+    .negative { color: #c62828; }
+
+    .arch-diagram {
+      background: #f4f4f0;
+      border: 1px solid #ddd;
+      padding: 1.2rem;
+      margin: 1.5rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78em;
+      line-height: 1.55;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    a { color: #1a4a8a; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .tags {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 0 auto 2rem;
+      padding-top: 1rem;
+      border-top: 3px solid #CC0001;
+      font-size: 0.82rem;
+      color: #888;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .article-header h1 { font-size: 1.5rem; }
+      pre { font-size: 0.75em; padding: 0.8rem; }
+      .arch-diagram { font-size: 0.68em; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">The StackStrader Review</header>
+  <nav class="section-label"><span>Feature</span></nav>
+  <article>
+    <header class="article-header">
+      <h1>VAE Manifold and Chronos Forecaster: Deep Learning Enters the Gate Pipeline</h1>
+      <p class="subtitle">Gemini builds a 3D latent regime map and a probabilistic trajectory engine. Two new V15 triggers compress 201 macro features and foundation-model forecasts into binary entry gates.</p>
+      <p class="byline">Chris &middot; March 22, 2026 &middot; 9 min read</p>
+    </header>
+
+    <div class="lede">
+      <p>Two deep-learning systems shipped today as V15 entry-gate triggers: a Variational Autoencoder (VAE) that compresses 201 macro-financial features into a 3D latent space for geometric regime classification, and a Chronos T5-Small probabilistic forecaster that generates 5-day price trajectories with confidence intervals. Both were built by Gemini as standalone modules in <code>latent_regime_engine/</code>, then wired into the trigger registry by Claude as <code>vae_regime_safe</code> (Phase 13, commit <code>e1d5568</code>) and <code>chronos_upside_safe</code> (Phase 14, commit <code>d19e309</code>). They bring the total trigger count to 107 and represent the first neural-network-derived gates in the StackStrader pipeline.</p>
+    </div>
+
+    <div class="article-body">
+
+      <h2>The Problem: Regime Detection Beyond Thresholds</h2>
+
+      <p>StackStrader's existing macro triggers are hand-coded threshold rules: <code>vix_regime</code> fires when VIX exceeds a cutoff, <code>credit_stress</code> checks FRED credit spreads against a fixed level, <code>yield_curve_warn</code> watches the 10Y-2Y spread. Seven of these were quarantined on the same day these deep-learning triggers shipped (commit <code>632f662</code>) because they had 0% activation rates&mdash;their thresholds were miscalibrated for the 2026 vol regime, their data columns were stale, or the upstream APIs were geo-blocked.</p>
+
+      <p>The fundamental limitation is dimensionality. A human can write a rule for VIX. Writing a rule that simultaneously accounts for VIX, VVIX, skew, 10 sector ETF returns, 7 factor ETF returns, 5 commodity proxies, 5 currency pairs, 4 rate instruments, and 6 FRED credit/macro series&mdash;and their rolling 1-day, 5-day, and 21-day returns, 21-day volatilities, and 63-day z-scores&mdash;is not feasible. The VAE addresses this by learning a compressed representation of the entire 201-dimensional macro state.</p>
+
+      <h2>System 1: The VAE Latent Regime Engine</h2>
+
+      <h3>Architecture</h3>
+
+      <p>The Variational Autoencoder is a PyTorch model (<code>latent_regime_engine/vae_model.py</code>, class <code>MarketVAE</code>) with a symmetric encoder-decoder architecture:</p>
+
+      <div class="arch-diagram">Encoder:  201 features --> Linear(128) --> ReLU --> Linear(64) --> ReLU
+                                                              |
+                                                    +---------+---------+
+                                                    |                   |
+                                              fc_mu(64->3)       fc_logvar(64->3)
+                                                    |                   |
+                                                    +----> z = mu + eps * exp(0.5 * logvar)
+                                                                  |
+Decoder:  3D latent <-- Linear(128) <-- ReLU <-- Linear(64) <-- ReLU <-- z</div>
+
+      <p>The bottleneck is deliberately set to 3 dimensions (<code>latent_dim=3</code>), producing coordinates <code>(x, y, z)</code> that Gemini's handoff document describes as a navigable "market map." The loss function combines reconstruction error (MSE) with KL divergence, the standard VAE objective that encourages a smooth, continuous latent space where nearby points represent similar market conditions.</p>
+
+      <h3>Data Pipeline</h3>
+
+      <p>The <code>MacroDataFetcher</code> class (<code>latent_regime_engine/data_fetcher.py</code>) ingests data from two sources:</p>
+
+      <table class="data-table">
+        <caption>VAE Feature Sources &mdash; 201 Engineered Dimensions</caption>
+        <thead>
+          <tr><th>Source</th><th>Instruments</th><th>Count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>yfinance &mdash; Sectors</td><td>XLK, XLF, XLE, XLU, XLV, XLP, XLY, XLB, XLI, XLRE</td><td>10</td></tr>
+          <tr><td>yfinance &mdash; Factors</td><td>MTUM, VLUE, QUAL, USMV, IWM, IWD, IWF</td><td>7</td></tr>
+          <tr><td>yfinance &mdash; Commodities</td><td>GLD, SLV, USO, UNG, DBA</td><td>5</td></tr>
+          <tr><td>yfinance &mdash; Currencies</td><td>UUP, FXE, FXY, FXB, FXA</td><td>5</td></tr>
+          <tr><td>yfinance &mdash; Volatility</td><td>^VIX, ^VVIX, ^SKEW</td><td>3</td></tr>
+          <tr><td>yfinance &mdash; Rates</td><td>^TNX, ^IRX, ^FVX, ^TYX</td><td>4</td></tr>
+          <tr><td>FRED</td><td>HY Spread, 10Y-2Y, Fed Balance Sheet, TED, Breakeven, NFCI</td><td>6</td></tr>
+          <tr class="highlight"><td colspan="2">Per-instrument features: 1d return, 5d return, 21d return, 21d vol, 63d z-score</td><td>5x each</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="3">Source: latent_regime_engine/data_fetcher.py &mdash; 40 instruments x 5 features + Growth/Defensive ratio = 201</td></tr></tfoot>
+      </table>
+
+      <p>Each of the 40 instruments gets five engineered features: log returns at 1-day, 5-day, and 21-day horizons, 21-day rolling volatility, and a 63-day z-score. Plus one cross-asset ratio (XLK/XLU, growth vs. defensive). The training run on March 22 used 10 years of daily history.</p>
+
+      <h3>The Geometric Veto</h3>
+
+      <p>The trigger implementation (<code>scripts/triggers/vae_regime_trigger.py</code>, class <code>VaeRegimeSafeAlpha</code>) computes once per <code>prepare()</code> call at daily resolution. It fetches the latest 180 days of macro features, passes them through the trained VAE to get <code>(x, y, z)</code> coordinates, and computes Euclidean distance from the origin:</p>
+
+<pre>dist = sqrt(x**2 + y**2 + z**2)
+is_safe = dist < max_distance  # default: 4.0</pre>
+
+      <p>The threshold of 4.0 was empirically calibrated to exclude the bottom ~20% of historical regime states. The March 22 training run placed the current market at <code>(-0.553, 2.782, -0.806)</code>, yielding a distance of ~2.97&mdash;safely within the threshold. The handoff document describes regions beyond 4.0 as "The Abyss": extreme stress/crisis states where the system should avoid selling covered calls entirely.</p>
+
+      <div class="pull-quote">The VAE replaces seven dead threshold-based macro triggers with a single learned representation. Instead of asking "is VIX above 25?" it asks "is the market's 201-dimensional state geometrically close to states where we have historically made money?"</div>
+
+      <h3>Future: Alpha Island Mining</h3>
+
+      <p>Gemini's handoff proposes a more sophisticated use: rather than measuring distance from the origin, cluster winning trades by their latent coordinates to find "Alpha Island" centroids, then veto when the market drifts too far from any known profitable regime. The <code>get_centroid_distance</code> API command already supports this. A further evolution, cited as following Buehler et al.'s "Deep Hedging" paper, would use the 3D coordinates as the state space for a reinforcement learning agent that learns continuous delta-hedge policies conditioned on regime.</p>
+
+      <h2>System 2: The Chronos Probabilistic Forecaster</h2>
+
+      <h3>What Chronos Is</h3>
+
+      <p>Amazon Chronos is a family of foundation models for time-series forecasting, built on the T5 encoder-decoder architecture. Unlike traditional forecasting models that require per-series training, Chronos treats numerical time series as a "language"&mdash;tokenizing values into bins and training on massive cross-domain datasets. The <code>amazon/chronos-t5-small</code> variant used here has 185 million parameters and requires no fine-tuning on StackStrader's specific tickers.</p>
+
+      <h3>Architecture</h3>
+
+      <p>The forecaster (<code>latent_regime_engine/forecaster.py</code>, class <code>ProbabilisticForecaster</code>) wraps the <code>chronos-forecasting</code> pipeline with quantile extraction:</p>
+
+<pre>context = torch.tensor(df["close"].values)   # last 60 bars
+forecast = pipeline.predict(context, prediction_length=5, num_samples=20)
+low, median, high = np.quantile(forecast[0].numpy(), [0.1, 0.5, 0.9], axis=0)</pre>
+
+      <p>The output is a 5-day probabilistic trajectory: median expected path, P10 (10th percentile, downside bound), and P90 (90th percentile, upside bound). Inference takes approximately 1.5 seconds on CPU. The first call triggers a ~200MB model download from HuggingFace if not cached.</p>
+
+      <h3>The Trajectory Veto</h3>
+
+      <p>The trigger (<code>scripts/triggers/chronos_trigger.py</code>, class <code>ChronosUpsideSafeAlpha</code>) uses the P90 upside to veto covered-call entries when the model forecasts a likely rally:</p>
+
+<pre>p90_max = max(forecast["p90_high"])   # highest P90 over 5-day horizon
+upside_pct = (p90_max - current_price) / current_price
+is_safe = upside_pct < threshold      # default: 0.05 (5%)</pre>
+
+      <p>The logic: if Chronos thinks there is a 10% chance the stock rallies more than 5% in 5 days, do not sell a covered call&mdash;you are likely to get assigned or miss the upside. This is specific to covered-call (CC) selling, where the primary risk is capping gains during a strong move. The 5% default threshold is a parameter exposed via <code>params["chronos_upside_threshold"]</code> for per-ticker calibration.</p>
+
+      <h3>The Refined Probability Engine</h3>
+
+      <p>A third module (<code>latent_regime_engine/refined_forecast.py</code>, class <code>RefinedProbabilityEngine</code>) fuses both systems. It runs the Chronos forecast, then queries the VAE for the current regime coordinates, computes the market's distance to an empirically defined "Abyss Centroid" at <code>(2.5, -2.5, 2.5)</code>, and uses proximity as a stress multiplier on the confidence interval:</p>
+
+<pre>stress_factor = max(1.0, 3.0 - (dist_to_abyss / 2.0))  # 1.0 to 2.5x
+refined_low = median - (median - base_p10) * stress_factor
+refined_high = median + (base_p90 - median) * stress_factor</pre>
+
+      <p>When the VAE places the market near the Abyss, the Chronos confidence interval widens by up to 2.5x. This captures the intuition that forecast uncertainty should increase during stress regimes. The fused forecast is available via the <code>refined_forecast</code> API command but is not yet wired as a trigger&mdash;it serves as the foundation for a future "regime-aware trajectory veto."</p>
+
+      <h2>Integration: How They Fit the Pipeline</h2>
+
+      <p>Both triggers slot into StackStrader's canonical 4-phase trade lifecycle at the entry gate phase. They follow the same <code>prepare()</code> / <code>should_open()</code> interface as the 105 existing triggers:</p>
+
+      <table class="data-table">
+        <caption>New V15 Deep-Learning Triggers</caption>
+        <thead>
+          <tr><th>Trigger Name</th><th>Resolution</th><th>Scope</th><th>Phase</th><th>Default Threshold</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td><code>vae_regime_safe</code></td><td>Daily</td><td>Global (all tickers)</td><td>Phase 13</td><td><code>vae_max_distance = 4.0</code></td></tr>
+          <tr class="highlight"><td><code>chronos_upside_safe</code></td><td>Daily</td><td>Per-ticker</td><td>Phase 14</td><td><code>chronos_upside_threshold = 0.05</code></td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">Source: scripts/harvest_simple_triggers.py, lines 2512-2515</td></tr></tfoot>
+      </table>
+
+      <p>The registration in <code>TRIGGER_MODES</code> uses lazy imports with <code>AlwaysOnAlpha</code> fallback, so the system loads cleanly when the deep-learning dependencies (PyTorch, chronos-forecasting, fredapi) are not installed. Both triggers default to "safe" (allow trades) on any failure&mdash;import errors, API errors, insufficient data. This is a deliberate design choice: a missing model should not block the entire trading pipeline.</p>
+
+      <p>They are composable with the full gate algebra. The autoresearch loop can now propose gates like <code>AND(vae_regime_safe, cmf_positive)</code> to combine macro regime awareness with technical momentum, or <code>AND(chronos_upside_safe, earn_avoid)</code> to stack trajectory-based veto with earnings avoidance.</p>
+
+      <h2>Module Inventory</h2>
+
+      <table class="data-table">
+        <caption>latent_regime_engine/ &mdash; Complete Module Map</caption>
+        <thead>
+          <tr><th>Module</th><th>Purpose</th><th>Dependencies</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>data_fetcher.py</code></td><td>Fetches yfinance + FRED data, engineers 201 features</td><td>yfinance, fredapi</td></tr>
+          <tr><td><code>vae_model.py</code></td><td>PyTorch VAE architecture (encoder, reparameterize, decoder)</td><td>torch</td></tr>
+          <tr><td><code>engine.py</code></td><td>Training loop, StandardScaler, checkpoint save/load</td><td>torch, sklearn</td></tr>
+          <tr><td><code>forecaster.py</code></td><td>Chronos T5-Small wrapper with quantile extraction</td><td>chronos-forecasting</td></tr>
+          <tr><td><code>refined_forecast.py</code></td><td>Fuses VAE regime + Chronos trajectory for stress-adjusted cones</td><td>all above</td></tr>
+          <tr><td><code>api.py</code></td><td>JSON command router: <code>train</code>, <code>get_latent</code>, <code>get_centroid_distance</code>, <code>forecast</code>, <code>refined_forecast</code></td><td>all above</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="3">Checkpoint: models/latent_vae/vae_checkpoint.pth</td></tr></tfoot>
+      </table>
+
+      <h2>Architectural Constraints and Limitations</h2>
+
+      <p>Several constraints apply to these systems in their current form:</p>
+
+      <ul>
+        <li><strong>Feature alignment is brittle.</strong> The <code>StandardScaler</code> in <code>engine.py</code> is trained on exactly 201 features. Any drift in the yfinance or FRED schemas&mdash;a ticker delisting, a FRED series being discontinued&mdash;will cause a dimension mismatch at inference time. The <code>fillna(0)</code> in <code>data_fetcher.py</code> masks missing columns rather than raising an error.</li>
+        <li><strong>No backtest integration yet.</strong> Both triggers compute on live data via <code>MacroDataFetcher</code> and the Chronos pipeline. They cannot be evaluated in the standard backtest engine, which operates on pre-computed DataFrames without API calls. Backtest evaluation requires either pre-computing the latent coordinates and forecasts for the entire history period, or mocking the API responses.</li>
+        <li><strong>Separation of concerns.</strong> The Chronos handoff explicitly warns: "do not mix the 3D coordinates into the Chronos input yet." The VAE operates on global macro state; Chronos operates on per-ticker price history. The <code>RefinedProbabilityEngine</code> combines them at the output level (stress-adjusting the confidence cone) rather than at the input level (conditioning the forecast on regime). Whether input-level conditioning would improve forecasts is an open research question.</li>
+        <li><strong>Chronos is zero-shot.</strong> The T5-Small model has not been fine-tuned on options-relevant price dynamics. It treats NVDA the same as a weather time series. Whether its probabilistic cones are well-calibrated for the specific tickers and horizons StackStrader trades is unvalidated.</li>
+        <li><strong>CPU inference cost.</strong> At ~1.5 seconds per Chronos forecast, running all 8 portfolio tickers adds 12 seconds to the daily gate evaluation. The VAE inference is negligible by comparison. Neither is suitable for intraday-resolution triggers without GPU acceleration or caching.</li>
+      </ul>
+
+      <h2>The Multi-LLM Development Model</h2>
+
+      <p>These modules illustrate the dual-agent workflow that has characterized StackStrader development since Phase 6. Gemini built the standalone deep-learning infrastructure: the VAE architecture, the data pipeline, the Chronos wrapper, the JSON API, and the refined probability engine. Gemini's handoff documents (<code>artifacts/VAE_LATENT_SPACE_HANDOFF.md</code> and <code>artifacts/CHRONOS_FORECASTER_HANDOFF.md</code>) describe the implementation and propose integration patterns, including the "Alpha Island" mining loop and dynamic strike selection.</p>
+
+      <p>Claude then wrote the trigger wrappers (<code>vae_regime_trigger.py</code>, <code>chronos_trigger.py</code>) that conform to the existing <code>prepare()</code> / <code>should_open()</code> interface, registered them in <code>TRIGGER_MODES</code> with lazy-import fallback, and updated <code>harvest_simple_triggers.py</code> with 1,832 lines of changes across the two commits. The division is clean: Gemini builds the model layer, Claude builds the integration layer.</p>
+
+      <p>This is the tenth Gemini contribution to the codebase, following earlier work on edge-in sampling validation (Phase 6, commit <code>946a8cb</code>), scipy optimization framework (<code>0fe26ca</code>), the Phase 7 dealer positioning architecture (<code>9e0cbe3</code>), and the V14 research lab orchestrator (<code>d9839c2</code>). The pattern has been consistent: Gemini excels at building self-contained analytical modules with well-documented APIs; Claude excels at wiring them into the existing pipeline with its knowledge of the trigger registry, gate algebra, and backtest infrastructure.</p>
+
+      <h2>What Comes Next</h2>
+
+      <p>Three immediate research directions follow from this work:</p>
+
+      <ol>
+        <li><strong>Backtest materialization.</strong> Pre-compute VAE coordinates and Chronos forecasts for the full 2024-2026 backtest window, write them to parquet columns, and evaluate both triggers through the standard engine. Without this, neither trigger can be scored by the V15 autoresearch pipeline or compared to the current champion gate (<code>cmf_positive</code>, composite +0.3401).</li>
+        <li><strong>Alpha Island clustering.</strong> Run the V15 backtest, tag each trade with its latent <code>(x, y, z)</code> coordinates, and apply K-Means to winning trades. Replace the origin-distance heuristic with centroid-distance to known profitable regimes. This is the highest-value next step described in Gemini's handoff.</li>
+        <li><strong>Chronos calibration study.</strong> Compare Chronos P10/P50/P90 predictions against realized 5-day returns for all 8 portfolio tickers over 2 years. Measure coverage (what fraction of realized returns fall within the P10-P90 interval) and sharpness (how tight the interval is). A well-calibrated model should have ~80% coverage; under-coverage means the thresholds need adjustment, over-coverage means the model is too conservative to add value.</li>
+      </ol>
+
+      <p>The VAE and Chronos triggers are the first entries in what could become a larger deep-learning gate family. But they remain unvalidated against the backtest engine. Until the backtest materialization is complete, they are architecturally sound but empirically unproven&mdash;a foundation, not yet a finding.</p>
+
+    </div>
+
+    <footer class="article-footer">
+      <p class="tags">Tags: v15, vae, chronos, deep-learning, regime-detection, probabilistic-forecast, gemini, multi-llm, triggers, entry-gate</p>
+    </footer>
+  </article>
+  <footer class="issue-footer">
+    <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+  </footer>
+</body>
+</html>
