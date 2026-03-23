@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V15: When the Numbers Stopped Lying — The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="8">
+  <meta name="date" content="2026-03-22">
+  <meta name="tags" content="v15, infrastructure, honest-measurement, preflight-validator, trigger-quarantine, champion-gate, autoresearch, overfitting, calibration">
+  <meta name="read-time" content="14">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .byline {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .lede {
+      margin: 1.5rem 0 1.5rem;
+      padding-left: 0;
+    }
+
+    .lede p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: #222;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 2.5rem 0;
+    }
+
+    .article-body h2 {
+      font-size: 1.35rem;
+      font-weight: bold;
+      margin: 2.2rem 0 0.6rem;
+      border-bottom: 2px solid #CC0001;
+      padding-bottom: 0.25rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 1.6rem 0 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .article-body p {
+      margin-bottom: 1.1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1.1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.3rem;
+    }
+
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      margin: 2rem 0;
+      padding: 0.8rem 1.4rem;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fff8f8;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.2rem 0 1.8rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    table.data-table caption {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+
+    table.data-table thead tr {
+      background: #f0ede6;
+    }
+
+    table.data-table th {
+      padding: 0.45rem 0.6rem;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fafaf6;
+    }
+
+    table.data-table tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+
+    table.data-table tr.highlight {
+      background: #fff8e1 !important;
+    }
+
+    table.data-table tfoot td {
+      font-style: italic;
+      color: #888;
+      font-size: 0.78rem;
+      padding-top: 0.4rem;
+      border-bottom: none;
+    }
+
+    .positive { color: #2e7d32; font-weight: bold; }
+    .negative { color: #c62828; font-weight: bold; }
+    .neutral  { color: #888; }
+
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 0.9rem 1.1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f0ede6;
+      padding: 0.1em 0.35em;
+      border-radius: 2px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    .summary-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-left: 4px solid #CC0001;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+    }
+
+    .summary-box h4 {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #CC0001;
+      margin-bottom: 0.5rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .summary-box ul {
+      margin-left: 1.2rem;
+    }
+
+    .arch-callout {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-left: 4px solid #1a4a8a;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .article-footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+    }
+
+    .tags {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+      padding-top: 1rem;
+      border-top: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.85rem;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header class="masthead">The StackStrader Review</header>
+<nav class="section-label"><span>Feature</span></nav>
+
+<article>
+  <header class="article-header">
+    <h1>V15: When the Numbers Stopped Lying</h1>
+    <p class="subtitle">How four days of sideways work, seven pipeline bugs, and 2,565 wasted experiments led to honest measurement &mdash; and a real path forward</p>
+    <p class="byline">Chris &middot; March 22, 2026 &middot; 14 min read</p>
+  </header>
+
+  <div class="lede">
+    <p>V15 is not a new trading strategy. It is the infrastructure that makes strategy discovery possible. After two weeks chasing phantom Sharpe numbers that were never real, three days of systematic investigation revealed that V12's reported 2.1&ndash;3.5 Sharpe ratios were walk-forward overfitting to 1&ndash;6 trades per out-of-sample window. The honest number is 0.5&ndash;1.6. V15 accepts this, fixes three systemic bugs that wasted 90% of V14's compute, and ran its first clean batch &mdash; rejecting 58% of queued experiments as structurally broken before they consumed a single backtest cycle. The top experiment, <code>v15-seed-002</code>, scored +0.340 composite across all 8 tickers with honest scoring. It is a smaller number than V14 ever produced. It is also the first one that means something.</p>
+  </div>
+
+  <div class="article-body">
+
+    <h2>The Problem: Two Weeks of Phantom Numbers</h2>
+
+    <p>V12 reported average out-of-sample (OOS) Sharpe ratios of 2.1&ndash;3.5 across NVDA, AMD, TSLA, and AAPL. These numbers came from a genetic algorithm (GA) that evaluated roughly 18,000 gate configurations per ticker across three expanding-window OOS folds of 26 days each. The champion was whichever configuration happened to score highest averaged across those three windows. For two weeks, every V14 experiment was measured against this target.</p>
+
+    <p>The target was fiction.</p>
+
+    <p>On March 20, a diagnostic script (<code>scripts/v12_v14_gap_diagnostic.py</code>) ran V12's own code against the same data. The results were devastating:</p>
+
+    <table class="data-table">
+      <caption>V12 Sharpe Reproduction &mdash; Same Code, Fresh Run</caption>
+      <thead>
+        <tr><th>Ticker</th><th>V12 Reported</th><th>Reproduced Mar 20</th><th>Gap</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>NVDA</td><td>2.13</td><td class="negative">0.13</td><td class="negative">2.00</td></tr>
+        <tr><td>AMD</td><td>2.50</td><td class="positive">1.29</td><td class="negative">1.22</td></tr>
+        <tr><td>TSLA</td><td>1.91</td><td class="negative">-1.45</td><td class="negative">3.36</td></tr>
+        <tr><td>AAPL</td><td>3.51</td><td class="negative">-0.84</td><td class="negative">4.35</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="4">Source: artifacts/v12_v14_gap_diagnostic_2026-03-20.md</td></tr></tfoot>
+    </table>
+
+    <p>V12's own code could not reproduce V12's own numbers. Baselines matched fine (NVDA: reported 0.38, reproduced 0.30), confirming the engine and data were unchanged. Only the gated results diverged, because the GA had selected configurations that happened to have favorable trade timing in all three tiny windows.</p>
+
+    <h3>Root Cause: Walk-Forward OOS Overfitting</h3>
+
+    <p>With 1&ndash;6 trades per 26-day OOS window, individual fold Sharpe ratios ranged from -6.4 to +5.8. The "best" configuration was the one that got lucky three times. Per-fold evidence for NVDA tells the story: Fold 1 had 4 trades, Fold 2 had 2 trades, Fold 3 had 1 trade. The GA was maximizing noise, not finding genuine edge. The selection of the highest <code>avg_oos_sharpe</code> from 18,000 candidates is a textbook multiple-testing violation.</p>
+
+    <p>This finding reset the project's calibration target. Honest full-period Sharpe for a good entry gate: 0.5&ndash;1.6. Not 2.1+. Every "gap" we had been debugging between V14 and V12 was actually V14 converging on the correct answer while we assumed V14 was broken.</p>
+
+    <hr class="section-rule">
+
+    <h2>The Investigation: Seven Bugs and a Reckoning</h2>
+
+    <p>The path to honest measurement was not a single revelation. It was a seven-bug pipeline audit across March 18&ndash;20 that peeled back layers of masking errors.</p>
+
+    <table class="data-table">
+      <caption>V14 Pipeline Bug Inventory</caption>
+      <thead>
+        <tr><th>#</th><th>Bug</th><th>Impact</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Indicator timeframe (5min vs daily)</td><td>Sharpe 0.1 &rarr; 0.6&ndash;1.6</td><td>Fixed</td></tr>
+        <tr><td>2</td><td>Supervisor double-filter</td><td>0 trades &rarr; 13+</td><td>Fixed</td></tr>
+        <tr><td>3</td><td>Engine mismatch (Python vs Numba)</td><td>Wrong trade lifecycle</td><td>Fixed</td></tr>
+        <tr><td>4</td><td>Position size (100 vs 1000 shares)</td><td>1 trade &rarr; 13 trades</td><td>Fixed</td></tr>
+        <tr><td>5</td><td>Champion bet_params</td><td>bet_params hurt full-period Sharpe</td><td>Characterized</td></tr>
+        <tr><td>6</td><td>Sharpe formula (rf=5% vs rf=0%)</td><td>~0.2&ndash;0.4 point shift</td><td>Characterized</td></tr>
+        <tr><td>7</td><td><code>VetoGateAlpha</code> missing <code>context</code> kwarg</td><td>0 trades (silent TypeError)</td><td>Fixed</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="4">Source: v14_clean/alphas/veto_gate_alpha.py, v14_clean/experiment_runner.py</td></tr></tfoot>
+    </table>
+
+    <p>Bug 7 was the most insidious. <code>VetoGateAlpha.should_open()</code> required a <code>context</code> parameter that <code>engine_fast</code> passes, but the method had no default value. Every call threw a <code>TypeError</code> that was silently swallowed, producing 0 trades with no error message. The system appeared to work. It was completely inert. The fix was a single keyword argument: <code>context=None</code>.</p>
+
+    <p>Bug 5 yielded a surprising result: V12's co-evolved <code>bet_params</code> (target_delta=0.45, close_at_frac=0.55) <em>hurt</em> full-period performance versus V14 defaults (target_delta=0.25, close_at_frac=0.20) for every ticker tested. The evolved parameters had overfit to the training windows. Conservative defaults outperformed "optimized" ones &mdash; a universal lesson in quantitative finance.</p>
+
+    <hr class="section-rule">
+
+    <h2>Dead Ends Explored: The Process of Elimination</h2>
+
+    <p>March 21 was the most thorough systematic research day in the project's history. With honest metrics finally established, every plausible optimization dimension was tested. Most led nowhere.</p>
+
+    <h3>Exit Trees: Dead End</h3>
+
+    <p>Position-aware exit alphas (<code>v14_clean/alphas/position_aware_exits.py</code>) were tested across three conditions: <code>moneyness_97</code>, <code>loss_50pct</code>, <code>moneyness_100</code>. All showed positive in-sample delta (+0.022 to +0.033) and negative OOS delta (-0.045 to -0.066). Every combination of pairs and triples matched the single best exit's delta exactly &mdash; no synergy. The engine's built-in exponential close already handles exits near-optimally. This confirmed the "exit tree void" first observed on March 16: the exit dimension has no remaining alpha in the current architecture.</p>
+
+    <h3>Per-Ticker Parameter Tuning: Pure Overfitting</h3>
+
+    <p>Per-ticker DTE and <code>close_at_frac</code> optimization across 8 tickers: 0/8 improved OOS. Average OOS delta: -0.171. The uniform champion parameters are the most robust choice. Per-ticker tuning is noise-fitting.</p>
+
+    <h3>Sizing Sweeps and bet_params Co-Evolution: Harmful</h3>
+
+    <p>Already demonstrated by the V12 diagnostic: co-evolving position sizing with gates overfit to training windows. V14 defaults (conservative) beat V12 "optimized" params by 0.06&ndash;0.50 Sharpe points across all four tickers tested.</p>
+
+    <p>These dead ends were not wasted time. They were the process of elimination that established the optimization frontier: <strong>entry gates contain genuine alpha; exit trees, per-ticker tuning, and sizing optimization do not.</strong> This distinction defines V15's research agenda.</p>
+
+    <hr class="section-rule">
+
+    <h2>The Breakthrough: Champion ATR+CMF Gate</h2>
+
+    <p>On March 21, a 146-trigger calibration sweep (<code>scripts/trigger_calibration_sweep.py</code>) tested every trigger in the vocabulary as a standalone entry gate across 8 tickers. The top performer was <code>atr_moderate</code> at +0.668 average delta &mdash; but it only improved 4/8 tickers, completely blocking low-volatility names (AAPL, QQQ, MSFT) with 0 trades.</p>
+
+    <p>The solution was portfolio-aware routing by median ATR%:</p>
+
+    <ul>
+      <li><strong>High-vol tickers</strong> (ATR% &ge; 3%): Use <code>atr_moderate</code> &mdash; veto when ATR% &lt; 4%</li>
+      <li><strong>Low-vol tickers</strong> (ATR% &lt; 3%): Use <code>cmf_positive</code> &mdash; veto when Chaikin Money Flow &lt; 0</li>
+    </ul>
+
+    <table class="data-table">
+      <caption>Champion Gate &mdash; Portfolio-Aware ATR+CMF Routing</caption>
+      <thead>
+        <tr><th>Ticker</th><th>Regime</th><th>Baseline</th><th>Gated</th><th>Delta</th><th>Trades</th><th>Veto%</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight"><td>AMD</td><td>atr_moderate</td><td class="positive">+0.916</td><td class="positive">+1.990</td><td class="positive">+1.073</td><td>35</td><td>21%</td></tr>
+        <tr><td>NVDA</td><td>atr_moderate</td><td class="positive">+0.928</td><td class="positive">+1.427</td><td class="positive">+0.186</td><td>21</td><td>45%</td></tr>
+        <tr><td>AAPL</td><td>cmf_positive</td><td class="positive">+0.813</td><td class="positive">+1.438</td><td class="positive">+0.592</td><td>26</td><td>25%</td></tr>
+        <tr><td>QQQ</td><td>cmf_positive</td><td class="positive">+0.660</td><td class="positive">+1.271</td><td class="positive">+0.481</td><td>21</td><td>35%</td></tr>
+        <tr><td>INTC</td><td>cmf_positive</td><td class="positive">+1.191</td><td class="positive">+1.745</td><td class="positive">+0.554</td><td>41</td><td>7%</td></tr>
+        <tr><td>TSLA</td><td>atr_moderate</td><td class="positive">+0.970</td><td class="positive">+1.435</td><td class="positive">+0.466</td><td>30</td><td>32%</td></tr>
+        <tr><td>MSFT</td><td>cmf_positive</td><td class="negative">-0.361</td><td class="negative">-0.370</td><td class="negative">-0.009</td><td>39</td><td>17%</td></tr>
+        <tr><td>IBIT</td><td>atr_moderate</td><td class="negative">-0.756</td><td class="negative">-0.879</td><td class="negative">-0.122</td><td>23</td><td>57%</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="7">Portfolio avg: Sharpe +1.007, Delta +0.403, 6/8 tickers improved. Source: artifacts/champion_gate_summary_2026-03-21.md</td></tr></tfoot>
+    </table>
+
+    <p>Forward testing on OOS data (January&ndash;March 2026) showed the gate maintaining a positive sign (+0.02 delta) during a brutal drawdown regime where baseline covered calls averaged -0.27 Sharpe. AMD flipped from negative to positive (+0.65 delta OOS). The gate is not overfitting &mdash; it is simply less powerful out-of-sample, which is expected for any genuine signal.</p>
+
+    <p>Two tickers remain structurally problematic. MSFT declined 14% over the test period with ATR% of only 1.7%; zero triggers out of 146 provided delta &gt; 0.1. IBIT declined 31.2% but showed 14 responsive triggers, suggesting a custom crypto gate stack is viable. Neither invalidates the portfolio-level result.</p>
+
+    <hr class="section-rule">
+
+    <h2>V15 Infrastructure: Three Systemic Fixes</h2>
+
+    <p>March 22 was infrastructure day: 7 commits (<code>d14b5fe</code> through <code>552ab21</code>), 2,861 lines across 11 files. The work addressed three systemic bugs that had wasted an estimated 90% of V14's 2,565 experiment evaluations.</p>
+
+    <h3>Bug 1: Scoring Rewarded Zero-Trade Gates</h3>
+
+    <p>Gates that blocked all trades scored +0.1932 composite &mdash; a buy-and-hold artifact where the engine returns the stock's baseline return as "gated" performance. No minimum trade count was enforced. An estimated 30&ndash;50% of V14 batch results were false positives.</p>
+
+    <p>Fix (commit <code>56d0a9f</code>): Two hard gates at the top of <code>compute_composite()</code> in <code>v14_clean/scorecard.py</code>:</p>
+
+    <pre><code># V15 hard gates -- reject degenerate experiments
+if trades_exp &lt; 10:
+    return 0.0   # Insufficient sample size
+if trades_base &gt; 0 and (1.0 - trades_exp / trades_base) &gt; 0.90:
+    return 0.0   # Over-filtering (&gt;90% veto)</code></pre>
+
+    <p>The 10-trade minimum ensures Sharpe estimates are not dominated by single-trade outliers. The 90% veto ceiling catches kill-switch gates that block nearly everything &mdash; a generous threshold, since genuine gates veto 15&ndash;60%.</p>
+
+    <h3>Bug 2: <code>earn_avoid</code> Poisons OR Compositions</h3>
+
+    <p>The <code>earn_avoid</code> trigger fires approximately 100% of the time during the backtest window (most sessions are not earnings days). Any <code>OR(earn_avoid, X)</code> collapses to 100% veto regardless of X. The LLM frequently proposed compositions like <code>OR(earn_avoid, atr_moderate)</code>, thinking it was combining safety with volatility filtering. This contaminated 40%+ of V14's seed trees.</p>
+
+    <h3>Bug 3: Dead Macro/Crypto Indicators</h3>
+
+    <p>Seven triggers had 0% activation rate across all tickers and all time periods: <code>vix_regime</code>, <code>vol_term_inverted</code>, <code>yield_curve_warn</code>, <code>credit_stress</code>, <code>crypto_fear</code>, <code>funding_extreme</code>, <code>fin_tight</code>. Some relied on FRED data columns that were missing or stale; others depended on Binance funding rates that are geo-blocked. Hundreds of V14 experiments were seeded with completely inert triggers.</p>
+
+    <p>Quarantine configuration (commit <code>632f662</code>) lives in <code>config/trigger_quarantine.json</code>. The autoresearch loop validates all triggers against both <code>TRIGGER_MODES</code> and the quarantine list before dispatching any experiment.</p>
+
+    <hr class="section-rule">
+
+    <h2>The Pre-Flight Validator</h2>
+
+    <p>The centerpiece of V15 infrastructure is <code>v14_clean/preflight.py</code> (commit <code>627a553</code>, 334 lines): five structural checks that run before any backtest is dispatched.</p>
+
+    <table class="data-table">
+      <caption>Pre-Flight Validator &mdash; 5 Structural Checks</caption>
+      <thead>
+        <tr><th>Check</th><th>What It Does</th><th>Reject Reason</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1. Trigger existence</td><td>All leaf triggers exist in <code>TRIGGER_MODES</code></td><td>Unknown trigger name</td></tr>
+        <tr><td>2. Quarantine</td><td>No leaves in quarantine list</td><td>Dead indicator</td></tr>
+        <tr><td>3. <code>earn_avoid</code> OR ban</td><td><code>earn_avoid</code> must not appear under any OR node</td><td>100% veto collapse</td></tr>
+        <tr><td>4. Deduplication</td><td>SHA256 of canonicalized tree not in scorecard</td><td>Already tested</td></tr>
+        <tr><td>5. Dry-run veto rate</td><td>Evaluate gate on sample bars; reject &lt;5% or &gt;90%</td><td>Inert or kill-switch gate</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="3">Source: v14_clean/preflight.py</td></tr></tfoot>
+    </table>
+
+    <p>The canonicalization is thorough: sort OR/AND children alphabetically, flatten nested same-type nodes (<code>AND(a, AND(b, c))</code> becomes <code>AND(a, b, c)</code>), deduplicate within nodes (<code>OR(a, a)</code> becomes <code>a</code>), collapse double negation (<code>NOT(NOT(x))</code> becomes <code>x</code>). SHA256 hash for O(1) dedup lookup against the full scorecard history.</p>
+
+    <p>The LLM prompt was also updated (commit <code>e90b935</code>) to exclude quarantined triggers entirely and annotate <code>earn_avoid</code> with: "SAFETY VETO &mdash; must be ANDed at top level, NEVER in an OR node." Prevention at the source, not just at the gate.</p>
+
+    <hr class="section-rule">
+
+    <h2>First V15 Batch: Honest Numbers</h2>
+
+    <p>The first V15 batch ran 31 queued experiments through the full pipeline. The pre-flight validator rejected 18 (58%):</p>
+
+    <ul>
+      <li><strong>11 rejected for <code>earn_avoid</code> in OR position</strong> &mdash; the most common structural bug</li>
+      <li><strong>4 rejected for quarantined triggers</strong> (<code>crypto_fear</code>, <code>funding_extreme</code>, <code>credit_stress</code>, <code>fin_tight</code>)</li>
+      <li><strong>3 rejected for other structural issues</strong></li>
+    </ul>
+
+    <p>That 58% rejection rate is the single strongest validation of V15's infrastructure. More than half of V14's experiment queue was structurally broken &mdash; experiments that would have consumed compute, polluted the scorecard, and produced false-positive scores of +0.1932 from zero-trade artifacts. V14's 10% hit rate was not bad luck. It was predictable waste.</p>
+
+    <p>The 13 experiments that passed pre-flight were evaluated across 8 tickers in 53 minutes:</p>
+
+    <table class="data-table">
+      <caption>V15 First Batch Results &mdash; 13 Experiments Evaluated</caption>
+      <thead>
+        <tr><th>Rank</th><th>Experiment</th><th>Gate</th><th>Composite</th><th>Tickers Passed</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight"><td>1</td><td>v15-seed-002</td><td><code>cmf_positive</code></td><td class="positive">+0.340</td><td>8/8</td></tr>
+        <tr><td>2</td><td>ar-seed-000-15</td><td><code>AND(earn_avoid, OR(rv_expanding, hurst_accel))</code></td><td class="positive">+0.265</td><td>4/4</td></tr>
+        <tr><td>3</td><td>ar-seed-000-12</td><td>autoresearch tree</td><td class="positive">+0.241</td><td>4/4</td></tr>
+        <tr><td>4</td><td>ar-seed-000-10</td><td>autoresearch tree</td><td class="positive">+0.169</td><td>4/4</td></tr>
+        <tr><td>5</td><td>ar-seed-000-16</td><td>autoresearch tree</td><td class="positive">+0.169</td><td>4/4</td></tr>
+        <tr><td>6</td><td>v15-seed-001</td><td><code>AND(OR(earn_avoid, adx_strong), OR(atr_moderate, rv_expanding))</code></td><td class="positive">+0.165</td><td>4/8</td></tr>
+        <tr><td>7</td><td>ar-seed-000-07</td><td>autoresearch tree</td><td class="positive">+0.039</td><td>3/4</td></tr>
+        <tr><td>8&ndash;13</td><td>(6 experiments)</td><td>various</td><td class="neutral">0.000&ndash;0.028</td><td>0&ndash;2/4</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="5">Source: artifacts/autoresearch_scorecard.parquet, V15 batch</td></tr></tfoot>
+    </table>
+
+    <p><code>v15-seed-002</code> is <code>cmf_positive</code> &mdash; the simplest possible gate, a single trigger that vetoes when Chaikin Money Flow is negative. It leads with +0.340 composite and 8/8 ticker pass rate. This is the same <code>cmf_positive</code> that ranked #3 in the 146-trigger sweep, behind <code>atr_moderate</code> and <code>d_low_vol_regime</code>, but its cross-ticker generalization is superior. It was the CMF leg of the champion ATR+CMF routing gate from March 21.</p>
+
+    <h3>Per-Ticker Scorecard Leaders</h3>
+
+    <p>Across all evaluated experiments (V14 legacy + V15 batch), <code>cmf_positive</code> dominates the per-ticker leaderboard:</p>
+
+    <table class="data-table">
+      <caption>Best Experiment per Ticker &mdash; Full Scorecard</caption>
+      <thead>
+        <tr><th>Ticker</th><th>Best Gate</th><th>Composite</th><th>Experiment</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>NVDA</td><td><code>cmf_positive</code></td><td class="positive">+0.455</td><td>v15-seed-002</td></tr>
+        <tr><td>AMD</td><td><code>cmf_positive</code></td><td class="positive">+0.451</td><td>v15-seed-002</td></tr>
+        <tr><td>QQQ</td><td><code>AND(earn_avoid, adx_strong, atr_moderate)</code></td><td class="positive">+0.506</td><td>v15-seed-003</td></tr>
+        <tr><td>INTC</td><td><code>AND(earn_avoid, adx_strong, atr_moderate)</code></td><td class="positive">+0.573</td><td>v15-seed-003</td></tr>
+        <tr><td>AAPL</td><td><code>AND(earn_avoid, AND(adx_strong, NOT(d_low_vol_regime)))</code></td><td class="positive">+0.369</td><td>ar-seed-000-16</td></tr>
+        <tr><td>IBIT</td><td><code>cmf_positive</code></td><td class="positive">+0.332</td><td>v15-seed-002</td></tr>
+        <tr><td>MSFT</td><td><code>cmf_positive</code></td><td class="positive">+0.286</td><td>v15-seed-002</td></tr>
+        <tr><td>TSLA</td><td><code>AND(earn_avoid, OR(rv_expanding, hurst_accel))</code></td><td class="positive">+0.286</td><td>ar-seed-000-15</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="4">Source: artifacts/autoresearch_scorecard.parquet, all experiments</td></tr></tfoot>
+    </table>
+
+    <p><code>cmf_positive</code> from <code>v15-seed-002</code> is the best gate for 4 of 8 tickers (NVDA, AMD, IBIT, MSFT). The remaining 4 are led by more complex trees, but none achieve dramatically higher scores. The signal is clear: simple, cross-ticker gates with honest scoring outperform complex, overfit compositions.</p>
+
+    <div class="pull-quote">
+      <p>V14 produced +0.48 composite scores from zero-trade artifacts. V15 produces +0.34 from 8/8 tickers passing with real trades. The smaller number is the honest one.</p>
+    </div>
+
+    <hr class="section-rule">
+
+    <h2>The Remaining Challenges</h2>
+
+    <p>V15's first batch also revealed ongoing weaknesses. Trigger synthesis remains unreliable: 0 out of 10 LLM-synthesized triggers were confirmed in this batch. The LLM keeps inventing triggers that reference columns not present in the backtest data (<code>btc_funding_z</code>, <code>earnings_surprise_pct</code>, etc.). The quarantine system prevents known-dead triggers but cannot prevent novel hallucinations.</p>
+
+    <p>The narrative analysis surfaced a deeper structural concern: universal convergence to <code>AND(OR(earn_avoid, adx_strong), atr_moderate)</code> across all four fast tickers at stagnation level 5, representing terminal gene pool collapse driven by <code>atr_moderate</code> dominance. The autoresearch loop needs diversity pressure to escape this attractor.</p>
+
+    <p>MSFT and IBIT remain structurally unprofitable in the current regime. MSFT declined 14% with 1.7% ATR &mdash; premium income cannot offset stock depreciation at that rate. IBIT declined 31.2% but shows 14 responsive triggers (best: <code>monday</code> at +0.346 delta), suggesting a custom crypto gate is viable but unbuilt.</p>
+
+    <hr class="section-rule">
+
+    <h2>What V15 Actually Is</h2>
+
+    <div class="summary-box">
+      <h4>V15 Infrastructure Components</h4>
+      <ul>
+        <li><strong>Pre-flight validator</strong> (<code>v14_clean/preflight.py</code>, 334 lines) &mdash; 5 structural checks before backtest dispatch</li>
+        <li><strong>Scoring hard gates</strong> (<code>v14_clean/scorecard.py</code>) &mdash; reject &lt;10 trades or &gt;90% veto rate</li>
+        <li><strong>Trigger quarantine</strong> (<code>config/trigger_quarantine.json</code>) &mdash; 7 dead macro/crypto indicators blocked</li>
+        <li><strong>LLM prompt guardrails</strong> (<code>scripts/autoresearch/orchestrator.py</code>) &mdash; quarantined triggers excluded, <code>earn_avoid</code> annotated</li>
+        <li><strong>Migration script</strong> (<code>scripts/migrate_v15.py</code>) &mdash; V14's 2,565 experiments archived, clean slate</li>
+        <li><strong>3 validated seed gates</strong> &mdash; ATR+CMF champion, <code>avwap_sh_near</code>, <code>cmf_positive</code></li>
+      </ul>
+    </div>
+
+    <p>Total: 7 commits, 2,861 lines across 11 files in a single day. The experiment queue is currently empty &mdash; the first batch consumed all seeded experiments. The next step is running V15 autoresearch cycles to discover gates that can outperform <code>cmf_positive</code> and the ATR+CMF champion, now measured against honest baselines.</p>
+
+    <hr class="section-rule">
+
+    <h2>The Four-Day Arc: March 19&ndash;22</h2>
+
+    <p>Looking across the full four-day span, the trajectory is clear in retrospect even if it felt aimless while living it.</p>
+
+    <p><strong>March 19</strong> &mdash; Merged V14 autoresearch queue infrastructure. Immediately discovered the champion fitness was -0.01 with -57% drawdown. The GA was converging on single-node exit trees that said "never exit." Infrastructure was wired; experiments were producing nothing.</p>
+
+    <p><strong>March 20</strong> &mdash; The diagnostic day. V12's numbers failed the most basic test: running the same code again. The project's calibration target was fiction. Honest Sharpe: 0.5&ndash;1.6. Bug 7 (silent <code>TypeError</code>) was found and fixed. No commits landed &mdash; this was pure investigation.</p>
+
+    <p><strong>March 21</strong> &mdash; The sweep day. 146 triggers, 48 combos, 20 adaptive gates. Exit trees proven dead. Per-ticker tuning proven harmful. The champion ATR+CMF gate discovered: delta +0.403 across 6/8 tickers. Forward test confirmed the gate maintains its sign OOS.</p>
+
+    <p><strong>March 22</strong> &mdash; Infrastructure day. Three systemic bugs fixed. Pre-flight validator built. First clean batch: 58% rejected, <code>cmf_positive</code> leads at +0.340 with 8/8 tickers.</p>
+
+    <p>The user's assessment is accurate: "a lot of work that may have taken us sideways, but hopefully we have found a path forward." The sideways work was necessary. You cannot know the optimization frontier exists until you have exhausted the approaches that do not work. The dead ends &mdash; exit trees, per-ticker tuning, <code>bet_params</code> co-evolution &mdash; are now documented so they are never revisited. The phantom Sharpe targets are retired. The measurement is honest. The infrastructure is clean.</p>
+
+    <p>V15 is not a strategy. It is the precondition for finding one.</p>
+
+  </div>
+
+  <footer class="article-footer">
+    <p class="tags">Tags: v15, infrastructure, honest-measurement, preflight-validator, trigger-quarantine, champion-gate, autoresearch, overfitting, calibration</p>
+  </footer>
+</article>
+
+<footer class="issue-footer">
+  <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+</footer>
+
+</body>
+</html>
