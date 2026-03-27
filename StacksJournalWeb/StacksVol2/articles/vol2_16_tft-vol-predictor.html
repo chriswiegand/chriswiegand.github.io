@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TFT Realized Volatility Predictor: 0.702 Correlation, One Data Leakage Lesson, and a Hybrid Gate Path Forward &mdash; The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="15">
+  <meta name="date" content="2026-03-27">
+  <meta name="tags" content="tft, deep-learning, realized-volatility, data-leakage, covered-calls, vix, temporal-fusion-transformer, ml-studio">
+  <meta name="read-time" content="11">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .byline {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .lede {
+      margin: 1.5rem 0 1.5rem;
+      padding-left: 0;
+    }
+
+    .lede p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: #222;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 2.5rem 0;
+    }
+
+    .article-body h2 {
+      font-size: 1.35rem;
+      font-weight: bold;
+      margin: 2.2rem 0 0.6rem;
+      border-bottom: 2px solid #CC0001;
+      padding-bottom: 0.25rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 1.6rem 0 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .article-body p {
+      margin-bottom: 1.1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1.1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.3rem;
+    }
+
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      margin: 2rem 0;
+      padding: 0.8rem 1.4rem;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fff8f8;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.2rem 0 1.8rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    table.data-table caption {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+
+    table.data-table thead tr {
+      background: #f0ede6;
+    }
+
+    table.data-table th {
+      padding: 0.45rem 0.6rem;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fafaf6;
+    }
+
+    table.data-table tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+
+    table.data-table tr.highlight {
+      background: #fff8e1 !important;
+    }
+
+    .positive { color: #2e7d32; }
+    .negative { color: #c62828; }
+
+    table.data-table tfoot td {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.78rem;
+      color: #888;
+      padding-top: 0.5rem;
+      border-bottom: none;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f4f4f0;
+      padding: 0.1rem 0.35rem;
+      border-radius: 2px;
+    }
+
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0 1.5rem;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .article-footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+    }
+
+    .tags {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #888;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 2rem auto;
+      padding-top: 1rem;
+      border-top: 3px solid #CC0001;
+      font-size: 0.85rem;
+      color: #888;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .article-header h1 { font-size: 1.5rem; }
+      table.data-table { font-size: 0.78rem; }
+      table.data-table th, table.data-table td { padding: 0.3rem 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">The StackStrader Review</header>
+  <nav class="section-label"><span>Feature</span></nav>
+
+  <article>
+    <header class="article-header">
+      <h1>TFT Realized Volatility Predictor: 0.702 Correlation, One Data Leakage Lesson, and a Hybrid Gate Path Forward</h1>
+      <p class="subtitle">StackStrader&rsquo;s first deep learning model &mdash; a Temporal Fusion Transformer trained on 20 years of daily data across 7 tickers &mdash; predicts per-ticker forward realized volatility with genuine skill on high-vol names (TSLA, NVDA) but loses to VIX on index-like tickers. The honest result, after fixing a data leakage bug that inflated correlation from 0.988 to 0.702.</p>
+      <p class="byline">Chris &middot; March 27, 2026 &middot; 11 min read</p>
+    </header>
+
+    <div class="lede">
+      <p>Can deep learning predict per-ticker realized volatility better than VIX? If so, we can identify when to sell covered calls &mdash; when implied volatility is overpriced relative to what a given stock will actually realize. The answer, after building and honestly evaluating a Temporal Fusion Transformer (TFT) with 20 input features and a 60-day lookback window, is: sometimes. The model achieves 0.702 Pearson correlation with forward 20-day realized volatility on the test set (2024&ndash;2026), versus 0.127 for VIX. But the aggregate number hides a story. TSLA and NVDA show strong TFT advantage (+0.36 and +0.33 correlation lift over VIX). AAPL, QQQ, and MSFT favor VIX. The practical path forward is a hybrid gate: TFT for high-vol individual stocks, VIX for index-like names.</p>
+    </div>
+
+    <div class="article-body">
+
+      <h2>The Question</h2>
+
+      <p>Covered call profitability depends on the gap between implied volatility (IV) and realized volatility (RV). When IV exceeds future RV, the premium seller collects more than the option is actuarially worth. When RV exceeds IV, the position bleeds alpha through assignment costs and unrealized gains capped at the strike.</p>
+
+      <p>VIX is the standard IV proxy, but it is a market-wide measure. It cannot distinguish between TSLA&rsquo;s idiosyncratic earnings-driven vol regime and AAPL&rsquo;s low-vol mean-reversion. A per-ticker realized volatility predictor, if accurate, would enable a more precise gate: sell CCs on tickers where the model predicts low forward RV relative to current IV, veto tickers where the model predicts high forward RV.</p>
+
+      <p>The Temporal Fusion Transformer (TFT) is the architecture of choice because it handles mixed-frequency inputs (daily OHLCV, weekly macro, static ticker identity), produces quantile forecasts (P10/P50/P90), and exposes variable importance weights that reveal which features drive predictions. This is StackStrader&rsquo;s first deep learning model, built in <code>ml_studio/</code> across three files and 880 lines of production code.</p>
+
+      <h2>The Architecture</h2>
+
+      <p>The TFT ingests 20 time-varying features across a 60-trading-day lookback window and predicts a single step ahead: today&rsquo;s forward 20-day annualized realized volatility.</p>
+
+      <h3>Feature Groups (20 Features)</h3>
+
+      <table class="data-table">
+        <caption>TFT Input Features &mdash; 20 Time-Varying Unknown Reals</caption>
+        <thead>
+          <tr><th>Group</th><th>Features</th><th>Count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>OHLCV-derived</td><td><code>log_return</code>, <code>rv_20d</code>, <code>rv_5d</code>, <code>range_pct</code>, <code>volume_zscore</code></td><td>5</td></tr>
+          <tr><td>Technical</td><td><code>rsi_14</code>, <code>atr_14</code>, <code>adx_14</code>, <code>cmf_20</code>, <code>hurst</code>, <code>bb_width</code></td><td>6</td></tr>
+          <tr><td>VIX / Macro</td><td><code>vix</code>, <code>delta_vix_1d</code>, <code>delta_vix_5d</code>, <code>vix3m</code>, <code>vix_term_ratio</code>, <code>skew</code></td><td>6</td></tr>
+          <tr><td>Cross-asset</td><td><code>spy_return</code>, <code>qqq_return</code>, <code>tlt_return</code></td><td>3</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="3">Source: ml_studio/tft_data.py, FEATURE_COLS</td></tr></tfoot>
+      </table>
+
+      <p>Three known-future covariates &mdash; <code>day_of_week</code>, <code>month</code>, and <code>is_opex_week</code> &mdash; give the model calendar awareness. OpEx week is computed as the Monday-through-Friday window containing the third Friday of each month, when options expiration concentrates gamma exposure and amplifies intraday volatility.</p>
+
+      <p>Static categoricals: <code>ticker</code> identity, enabling the model to learn per-ticker volatility regimes. Seven training tickers: INTC, NVDA, AAPL, AMD, MSFT, QQQ, TSLA. IBIT excluded from training (only 538 rows, listed January 2024) but available for inference.</p>
+
+      <h3>Model Configuration</h3>
+
+      <table class="data-table">
+        <caption>TFT Hyperparameters</caption>
+        <thead>
+          <tr><th>Parameter</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hidden size</td><td>32</td></tr>
+          <tr><td>Attention heads</td><td>4</td></tr>
+          <tr><td>LSTM layers</td><td>1</td></tr>
+          <tr><td>Dropout</td><td>0.2</td></tr>
+          <tr><td>Learning rate</td><td>1e-3</td></tr>
+          <tr><td>Batch size</td><td>64</td></tr>
+          <tr><td>Max epochs</td><td>100 (early stopping, patience 10)</td></tr>
+          <tr><td>Loss function</td><td>QuantileLoss [0.1, 0.5, 0.9]</td></tr>
+          <tr><td>Gradient clip</td><td>0.1</td></tr>
+          <tr><td>Parameters</td><td>93K&ndash;340K (varies by dataset)</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">Source: ml_studio/tft_vol_predictor.py</td></tr></tfoot>
+      </table>
+
+      <p>Training runs on Apple Silicon MPS acceleration via PyTorch Lightning. The temporal train/validation/test split is strict: train on data before 2022-01-01, validate on 2022&ndash;2023, test on 2024&ndash;2026. No shuffling, no random splits &mdash; the test set is entirely out-of-sample and forward in time.</p>
+
+      <h3>Target: Forward Realized Volatility</h3>
+
+      <p>The target is <code>fwd_rv_20d</code>: the annualized standard deviation of log returns over the next 20 trading days, computed as <code>std(log_returns[t+1:t+20]) * sqrt(252)</code>. This is the quantity a covered call seller needs to forecast &mdash; how much the stock will actually move over the option&rsquo;s remaining life. Three horizons are computed (5d, 10d, 20d) but the primary model targets 20-day RV, matching the typical covered call DTE of 20&ndash;30 days.</p>
+
+      <h2>The Data Leakage Lesson</h2>
+
+      <p>The first training run produced a 0.988 Pearson correlation between predicted and actual forward realized volatility on the test set. A result that good, on a noisy financial time series, is not a breakthrough. It is a bug.</p>
+
+      <div class="pull-quote">A 0.988 correlation on financial data is not a model. It is a data leak. Always verify your pipeline before celebrating.</div>
+
+      <p>The root cause was a single line in <code>ml_studio/tft_data.py</code>, function <code>make_timeseries_dataset()</code>:</p>
+
+<pre>time_varying_unknown_reals=FEATURE_COLS + TARGET_COLS</pre>
+
+      <p><code>TARGET_COLS</code> is <code>["fwd_rv_5d", "fwd_rv_10d", "fwd_rv_20d"]</code> &mdash; the forward-looking realized volatility targets themselves. By including them as time-varying unknown reals, the TFT received the actual future RV values in the encoder&rsquo;s lookback window. The model did not need to predict anything. It only needed to copy the most recent target value forward by one step.</p>
+
+      <p>The fix (commit <code>0997e9e</code>) was one line:</p>
+
+<pre>time_varying_unknown_reals=FEATURE_COLS</pre>
+
+      <p>After removing the leak, correlation dropped from 0.988 to 0.673 on the immediate retrain, stabilizing at 0.702 on the final v8 run after training converged. The lesson is not novel &mdash; target leakage is the most common ML failure mode in finance &mdash; but it is worth documenting because the bug was syntactically invisible. The <code>+ TARGET_COLS</code> concatenation looked like deliberate feature engineering. Only the implausible accuracy revealed the error.</p>
+
+      <p>The commit also fixed <code>predict_to_parquet()</code> in <code>ml_studio/tft_vol_predictor.py</code>, which had been calling <code>model.predict()</code> in <code>mode="quantiles"</code> and extracting a tensor of shape <code>[N, 3]</code> for P10/P50/P90. After the leakage fix, the quantile output structure changed. The corrected code uses default prediction mode with <code>.squeeze()</code> and estimates P10/P90 from the point prediction via scaling factors (P10 = P50 * 0.7, P90 = P50 * 1.4). This is an approximation; proper quantile extraction requires further work.</p>
+
+      <h2>Honest Results (v8)</h2>
+
+      <h3>Aggregate Correlation and RMSE</h3>
+
+      <table class="data-table">
+        <caption>TFT vs VIX &mdash; Aggregate Test Set (2024&ndash;2026)</caption>
+        <thead>
+          <tr><th>Metric</th><th>TFT</th><th>VIX</th><th>TFT Advantage</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>Pearson correlation with fwd_rv_20d</td><td class="positive">0.702</td><td>0.127</td><td class="positive">+0.575</td></tr>
+          <tr><td>RMSE</td><td class="positive">0.168</td><td>0.467</td><td class="positive">-0.299</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">Source: ml_studio/tft_evaluate.py, run_evaluation()</td></tr></tfoot>
+      </table>
+
+      <p>On aggregate, the TFT dramatically outperforms VIX as a predictor of forward realized volatility. The 0.702 correlation is strong for a financial forecasting task &mdash; for context, typical equity return prediction models achieve 0.01&ndash;0.05 correlation. Volatility is more predictable than returns because it clusters (GARCH effects) and mean-reverts, but 0.702 across 7 tickers and 2+ years of out-of-sample data is a genuine result.</p>
+
+      <p>The RMSE comparison (0.168 vs 0.467) tells a complementary story. VIX systematically overestimates realized volatility during calm periods &mdash; the well-documented variance risk premium (VRP). The TFT learns the per-ticker volatility distribution directly and avoids this structural bias.</p>
+
+      <h3>Per-Ticker Breakdown</h3>
+
+      <table class="data-table">
+        <caption>TFT vs VIX Correlation &mdash; Per-Ticker Test Set</caption>
+        <thead>
+          <tr><th>Ticker</th><th>TFT Corr</th><th>VIX Corr</th><th>Delta</th><th>Winner</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>TSLA</td><td class="positive">0.78</td><td>0.42</td><td class="positive">+0.36</td><td>TFT</td></tr>
+          <tr class="highlight"><td>NVDA</td><td class="positive">0.76</td><td>0.43</td><td class="positive">+0.33</td><td>TFT</td></tr>
+          <tr><td>AMD</td><td class="positive">0.71</td><td>0.49</td><td class="positive">+0.22</td><td>TFT</td></tr>
+          <tr><td>INTC</td><td class="positive">0.68</td><td>0.52</td><td class="positive">+0.16</td><td>TFT</td></tr>
+          <tr><td>AAPL</td><td>0.58</td><td class="positive">0.61</td><td class="negative">-0.03</td><td>VIX</td></tr>
+          <tr><td>MSFT</td><td>0.55</td><td class="positive">0.59</td><td class="negative">-0.04</td><td>VIX</td></tr>
+          <tr><td>QQQ</td><td>0.52</td><td class="positive">0.63</td><td class="negative">-0.11</td><td>VIX</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">Source: ml_studio/tft_evaluate.py, per_ticker results</td></tr></tfoot>
+      </table>
+
+      <p>The per-ticker breakdown reveals a clean split. The TFT excels on high-vol individual stocks with strong idiosyncratic volatility regimes: TSLA (+0.36 lift), NVDA (+0.33), AMD (+0.22), INTC (+0.16). These tickers have earnings-driven vol spikes, product cycle dynamics, and sector-specific risk factors that per-ticker features (RSI, CMF, ATR, Hurst exponent) can capture but VIX cannot.</p>
+
+      <p>VIX wins on index-like and low-idiosyncratic-vol names: QQQ (-0.11), MSFT (-0.04), AAPL (-0.03). This makes structural sense. QQQ is an index ETF &mdash; its realized volatility is, by construction, close to market-wide vol. AAPL and MSFT are mega-caps whose vol dynamics are dominated by macro factors (rates, risk appetite) rather than idiosyncratic events. VIX is already a good proxy for their realized vol, and the TFT&rsquo;s per-ticker features add noise rather than signal.</p>
+
+      <h3>Quantile Calibration</h3>
+
+      <p>The TFT was trained with QuantileLoss targeting the 10th, 50th, and 90th percentiles. Calibration measures whether the model&rsquo;s uncertainty estimates are honest &mdash; does the actual value fall below the P10 prediction roughly 10% of the time?</p>
+
+      <table class="data-table">
+        <caption>Quantile Calibration &mdash; v8 Test Set</caption>
+        <thead>
+          <tr><th>Quantile</th><th>Target Coverage</th><th>Actual Coverage</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>P10</td><td>10%</td><td>16%</td><td>Slightly wide</td></tr>
+          <tr><td>P50</td><td>50%</td><td>55%</td><td>Reasonably calibrated</td></tr>
+          <tr><td>P90</td><td>90%</td><td>83%</td><td>Slightly narrow</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">Note: P10/P90 currently estimated via scaling (0.7x, 1.4x P50). True quantile extraction pending.</td></tr></tfoot>
+      </table>
+
+      <p>The P50 at 55% actual coverage is close to ideal. The P10 and P90 are somewhat miscalibrated &mdash; the lower tail is too wide (16% vs 10%) and the upper tail is too narrow (83% vs 90%). This means the model slightly underestimates the probability of very high realized vol events. For covered call gating, this is the dangerous direction: underestimating tail vol means the gate may allow selling premium into regimes that are riskier than the model thinks. A caveat: the current quantile estimates use the P50 * 0.7/1.4 approximation rather than native quantile outputs, so calibration numbers will change once proper quantile extraction is restored.</p>
+
+      <h3>Covered Call Signal Accuracy</h3>
+
+      <table class="data-table">
+        <caption>CC Gate Signal &mdash; TFT-Based Strategy</caption>
+        <thead>
+          <tr><th>Metric</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Signal accuracy (pred RV &lt; VIX matches actual RV &lt; VIX)</td><td class="positive">68.5%</td></tr>
+          <tr><td>Win rate when model says &ldquo;sell&rdquo;</td><td class="positive">73.9%</td></tr>
+          <tr><td>Win rate when model says &ldquo;don&rsquo;t sell&rdquo;</td><td>61.2%</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">Source: ml_studio/tft_evaluate.py, strategy_tft_based()</td></tr></tfoot>
+      </table>
+
+      <p>The TFT-based CC gate fires when predicted forward RV is below VIX (IV overpriced, favorable for premium sellers). When the model says &ldquo;sell,&rdquo; the win rate is 73.9% &mdash; materially higher than the 61.2% win rate on days the model vetoes. The 68.5% signal accuracy means the model correctly identifies the VRP direction (whether realized vol will be above or below implied vol) more than two-thirds of the time.</p>
+
+      <p>For comparison, the VIX-based baseline strategy (sell when VIX/100 > historical RV) has no predictive directionality &mdash; it uses backward-looking RV, not forward-looking. The TFT&rsquo;s advantage is that it forecasts where RV is going, not where it has been.</p>
+
+      <h2>What It Means</h2>
+
+      <p>The TFT has genuine predictive skill on high-vol individual stocks where per-ticker features &mdash; technical indicators, microstructure signals, the Hurst exponent &mdash; carry information beyond what VIX encodes. It does not have skill on index-like tickers where market-wide volatility is the dominant factor. This is not a model failure. It is the model correctly identifying which tickers have learnable idiosyncratic vol dynamics.</p>
+
+      <p>The practical path for the StackStrader covered call system is a hybrid gate:</p>
+
+      <ul>
+        <li><strong>TFT gate</strong> for TSLA, NVDA, AMD, INTC &mdash; tickers where the model&rsquo;s per-ticker features add 0.16&ndash;0.36 correlation lift over VIX.</li>
+        <li><strong>VIX gate</strong> for AAPL, MSFT, QQQ &mdash; tickers where VIX is already a strong proxy and the TFT&rsquo;s additional features are noise.</li>
+        <li><strong>Default to VIX</strong> for any ticker without sufficient training data (e.g., IBIT with only 538 rows).</li>
+      </ul>
+
+      <p>This mirrors the per-ticker routing architecture already in place for Chronos entry gates (documented in the <a href="2026-03-24_v15-chronos-breakthrough.html">V15 Chronos Breakthrough article</a>). The TFT gate would operate as a complementary signal &mdash; Chronos captures directional momentum risk, while TFT captures volatility regime risk. The two address different failure modes of the covered call strategy.</p>
+
+      <h2>Technical Details</h2>
+
+      <h3>Implementation</h3>
+
+      <p>Three files in <code>ml_studio/</code> comprise the full pipeline:</p>
+
+      <ul>
+        <li><code>ml_studio/tft_data.py</code> (425 lines) &mdash; Feature engineering, forward RV target computation, temporal splits, <code>TimeSeriesDataSet</code> construction. Computes the Hurst exponent via rolling rescaled range (R/S method, 100-bar window), Chaikin Money Flow (20-period), Bollinger Band width, and VIX term structure ratio. CBOE VIX3M and SKEW data are joined from <code>data/macro/cboe_vix_term.parquet</code> when available, with sensible imputation (VIX3M = VIX * 1.05, SKEW = 1.20) for pre-2018 dates.</li>
+        <li><code>ml_studio/tft_vol_predictor.py</code> (351 lines) &mdash; Model definition, training loop, checkpoint management, prediction export. Uses PyTorch Forecasting&rsquo;s <code>TemporalFusionTransformer.from_dataset()</code> with QuantileLoss, Adam optimizer, and reduce-on-plateau LR scheduling. Training logs (hyperparameters, best val loss, epoch count) are saved to <code>training_log.json</code> alongside each checkpoint.</li>
+        <li><code>ml_studio/tft_evaluate.py</code> (454 lines) &mdash; Evaluation framework with Pearson correlation, RMSE, Black-Scholes CC simulation, and three strategy comparisons (always-sell, VIX-based, TFT-based). The CC simulation prices options using <code>engine.bs_call()</code> with strike = close + ATR_14, T = 20/252, r = 4%, sigma = VIX.</li>
+      </ul>
+
+      <p>The gate trigger itself lives at <code>scripts/triggers/tft_trigger.py</code> (149 lines), implementing <code>TFTRvSafeAlpha</code> &mdash; a stateless trigger that loads pre-computed predictions from parquet, compares the P50 forward RV to current VIX, and returns <code>should_open() = True</code> (safe to sell) when predicted RV &lt; IV. Default is safe (allow selling) when predictions are unavailable.</p>
+
+      <h3>Data Scale</h3>
+
+      <p>Training data spans approximately 2006&ndash;2022 (16 years), with validation on 2022&ndash;2023 and test on 2024&ndash;2026. For each of the 7 training tickers, this yields roughly 4,000 daily rows per ticker, or 28,000 total training samples. With a 60-day lookback, the effective training set contains roughly 25,000 input-output pairs. The model converges in 15&ndash;25 epochs before early stopping fires, with typical training time of 8&ndash;12 minutes on Apple Silicon M-series MPS.</p>
+
+      <h3>Limitations</h3>
+
+      <p>Several limitations constrain the current results and should be addressed before production deployment:</p>
+
+      <ol>
+        <li><strong>Quantile extraction is approximate.</strong> The P10/P90 estimates use fixed scaling factors (0.7x, 1.4x) rather than native QuantileLoss outputs. The commit <code>0997e9e</code> note documents this as a known regression from the leakage fix. Calibration numbers will shift once proper quantile extraction is restored.</li>
+        <li><strong>Seven training tickers is narrow.</strong> The model has seen INTC, NVDA, AAPL, AMD, MSFT, QQQ, and TSLA. Generalization to the remaining 39 tickers in the portfolio is unvalidated. IBIT, with only 538 rows (listed January 2024), cannot be trained at all with a 60-day lookback.</li>
+        <li><strong>No feature importance reported yet.</strong> The TFT&rsquo;s interpretability mechanism (<code>extract_interpretability()</code> in <code>tft_evaluate.py</code>) is implemented but has not been run on the v8 model. Variable importance weights would reveal whether the model relies on sensible features (rv_20d, atr_14, vix_term_ratio) or latches onto spurious correlations.</li>
+        <li><strong>CBOE term structure data is partially imputed.</strong> VIX3M and SKEW are available from approximately 2018 onward. For 2006&ndash;2018 training data, these features use fixed imputation (VIX3M = VIX * 1.05, SKEW = 1.20), meaning the model trains on synthetic macro data for half its history.</li>
+        <li><strong>The CC simulation uses simplified pricing.</strong> Strike is close + ATR_14, a rough OTM proxy. Real covered call strikes depend on delta targeting, available strike granularity, and bid-ask spread. The simulation does not model transaction costs, slippage, or early exercise risk.</li>
+      </ol>
+
+      <hr class="section-rule">
+
+      <p>The TFT realized volatility predictor is not a silver bullet. It does not replace VIX, and on three of seven tickers it should not try. But on the four high-vol names that matter most for covered call premium &mdash; TSLA, NVDA, AMD, INTC &mdash; it provides a per-ticker volatility forecast that VIX cannot. The immediate next step is to wire the hybrid gate (TFT for individual stocks, VIX for index-like names) into the V15 experiment loop and measure the marginal alpha over Chronos entry gates alone. The deeper lesson is that the first deep learning model in the system was not held back by architecture or compute. It was held back by a one-line data leakage bug that made the results look too good to question.</p>
+
+    </div>
+
+    <footer class="article-footer">
+      <p class="tags">Tags: tft, deep-learning, realized-volatility, data-leakage, covered-calls, vix, temporal-fusion-transformer, ml-studio</p>
+    </footer>
+  </article>
+
+  <footer class="issue-footer">
+    <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+  </footer>
+</body>
+</html>
