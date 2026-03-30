@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The INTC Assignment Problem: From 50% Risk to Smart Consolidation Trading &mdash; The StackStrader Review</title>
+  <meta name="article-type" content="feature">
+  <meta name="phase" content="15">
+  <meta name="date" content="2026-03-29">
+  <meta name="tags" content="intc, assignment-risk, covered-calls, consolidation-trigger, veto-gate, rust-engine, earnings-close, roll-up-and-out">
+  <meta name="read-time" content="12">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fafaf8;
+      padding: 0 1rem;
+    }
+
+    .masthead {
+      max-width: 780px;
+      margin: 2rem auto 0;
+      padding: 0.6rem 0;
+      border-bottom: 3px solid #CC0001;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      max-width: 780px;
+      margin: 1rem auto 0;
+    }
+
+    .section-label span {
+      display: inline-block;
+      background: #CC0001;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.7rem;
+      text-transform: uppercase;
+    }
+
+    article {
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+
+    .article-header {
+      margin: 1.5rem 0 1rem;
+    }
+
+    .article-header h1 {
+      font-size: 2rem;
+      line-height: 1.25;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #444;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .byline {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .lede {
+      margin: 1.5rem 0 1.5rem;
+      padding-left: 0;
+    }
+
+    .lede p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: #222;
+    }
+
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 2.5rem 0;
+    }
+
+    .article-body h2 {
+      font-size: 1.35rem;
+      font-weight: bold;
+      margin: 2.2rem 0 0.6rem;
+      border-bottom: 2px solid #CC0001;
+      padding-bottom: 0.25rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 1.6rem 0 0.4rem;
+      color: #1a1a1a;
+    }
+
+    .article-body p {
+      margin-bottom: 1.1rem;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 0.5rem 0 1.1rem 1.5rem;
+    }
+
+    .article-body li {
+      margin-bottom: 0.3rem;
+    }
+
+    .pull-quote {
+      border-left: 4px solid #CC0001;
+      margin: 2rem 0;
+      padding: 0.8rem 1.4rem;
+      font-style: italic;
+      font-size: 1.2em;
+      color: #333;
+      background: #fff8f8;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.2rem 0 1.8rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    table.data-table caption {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 0.4rem;
+      color: #333;
+    }
+
+    table.data-table thead tr {
+      background: #f0ede6;
+    }
+
+    table.data-table th {
+      padding: 0.45rem 0.6rem;
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fafaf6;
+    }
+
+    table.data-table tbody tr:nth-child(odd) {
+      background: #ffffff;
+    }
+
+    table.data-table tr.highlight {
+      background: #fff8e1 !important;
+    }
+
+    .positive { color: #2e7d32; }
+    .negative { color: #c62828; }
+
+    table.data-table tfoot td {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.78rem;
+      color: #888;
+      padding-top: 0.5rem;
+      border-bottom: none;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      background: #f4f4f0;
+      padding: 0.1rem 0.35rem;
+      border-radius: 2px;
+    }
+
+    pre {
+      background: #f4f4f0;
+      border-left: 3px solid #CC0001;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0 1.5rem;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .article-footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+    }
+
+    .tags {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #888;
+    }
+
+    .issue-footer {
+      max-width: 780px;
+      margin: 2rem auto;
+      padding-top: 1rem;
+      border-top: 3px solid #CC0001;
+      font-size: 0.85rem;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">The StackStrader Review</header>
+  <nav class="section-label"><span>Feature</span></nav>
+
+  <article>
+    <header class="article-header">
+      <h1>The INTC Assignment Problem: From 50% Risk to Smart Consolidation Trading</h1>
+      <p class="subtitle">20,000 shares, 4 immovable assignments, 200+ backtests, and the regime analysis that finally changed the question</p>
+      <p class="byline">Chris &middot; March 29, 2026 &middot; 12 min read</p>
+    </header>
+
+    <div class="lede">
+      <p>INTC is the largest single-stock position in the StackStrader portfolio at 20,000 shares, and it has the worst assignment record: 4 forced exercises that persist across every defensive configuration tested. Over the course of March 29, I ran more than 200 backtests spanning delta ranges, gate combinations, roll mechanics, and earnings avoidance. None of them eliminated those 4 assignments. The solution that finally worked did not try to survive the trending moves &mdash; it avoided writing calls during them entirely.</p>
+    </div>
+
+    <div class="article-body">
+
+      <h2>The Scale of the Problem</h2>
+
+      <p>INTC&rsquo;s 20,000-share position generates meaningful covered call (CC) premium &mdash; roughly $4,800 per cycle at the target delta. But each assignment costs approximately $440 in direct tax friction (10% of realized gain forced at an unfavorable time), plus the opportunity cost of re-entering the position at a higher basis. Four assignments per year on INTC alone costs $1,760 in tax drag, and that figure excludes the bid-ask spread on re-entry and the lost premium from weeks spent out of position.</p>
+
+      <p>The four problematic assignments share a common profile: INTC moves 10%+ in a single week, blowing through any strike the system could have selected at any reasonable delta. These are not marginal in-the-money expirations &mdash; they are full trending breakouts where the stock closes $3&ndash;5 above the strike.</p>
+
+      <h2>Everything That Failed</h2>
+
+      <p>The first sweep on March 28 tested delta ranges from 0.08 to 0.25, but produced suspiciously uniform results. Root cause: the config parameter was named <code>target_delta</code>, but the engine consumed <code>delta</code>. The value never propagated &mdash; every run used the default. Commit <code>bc510100</code> corrected this and re-ran the full matrix.</p>
+
+      <h3>Delta Reduction</h3>
+
+      <p>Lowering target delta from 0.16 to 0.08 moves the strike further out of the money. For INTC, this means roughly $1.50 more headroom per cycle. The four trending moves exceed $5 in a week. Delta reduction buys insufficient room.</p>
+
+      <h3>Gate Combinations</h3>
+
+      <p>Tested every available gate: CMF momentum, Hurst exponent, ATR volatility, RSI, MACD divergence, and all pairwise combinations. The champion gate &mdash; <code>AND(cmf_positive, NOT(hurst_accel))</code>, commit <code>1ac25196</code> &mdash; improved portfolio-level PnL by 14% and reduced total assignments from 19 to 14. But INTC&rsquo;s 4 assignments survived every gate. The gates correctly block marginal trades on other tickers; INTC&rsquo;s trending moves are not marginal.</p>
+
+      <h3>Earnings-Aware Early Close</h3>
+
+      <p>Commit <code>f687b7bf</code> added an <code>earnings_close_days</code> parameter: buy back open CCs N days before an earnings announcement. Tested with values of 1, 2, 3, and 5 days. Result: INTC&rsquo;s 4 assignments are not earnings-driven. They occur during non-earnings trending weeks &mdash; foundry news, sector rotation, and macro-driven rallies that have nothing to do with the quarterly reporting calendar.</p>
+
+      <h3>Roll-Up-and-Out</h3>
+
+      <p>The roll-up-and-out logic in <code>engine_numba.py</code> had a critical bug: it was rolling to the same expiry at a higher strike. A real roll should find the next available expiry beyond the current one, then select the appropriate strike. Commit <code>f687b7bf</code> fixed this. The corrected logic fired 9 rolls across the backtest period. Zero assignments were prevented. When INTC is trending 10%+ in a week, rolling to a strike $2&ndash;3 higher with one more week of time does not help.</p>
+
+      <table class="data-table">
+        <caption>Defensive Mechanisms Tested Against INTC&rsquo;s 4 Structural Assignments</caption>
+        <thead>
+          <tr>
+            <th>Defense</th>
+            <th>INTC Assigns</th>
+            <th>Improvement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Baseline (delta 0.16, close_at_frac 0.60)</td>
+            <td>4</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td>Delta 0.08 (far OTM)</td>
+            <td>4</td>
+            <td class="negative">0</td>
+          </tr>
+          <tr>
+            <td>CMF + Hurst gate</td>
+            <td>4</td>
+            <td class="negative">0</td>
+          </tr>
+          <tr>
+            <td>Earnings close (5 days)</td>
+            <td>4</td>
+            <td class="negative">0</td>
+          </tr>
+          <tr>
+            <td>Roll-up-and-out (fixed)</td>
+            <td>4</td>
+            <td class="negative">0</td>
+          </tr>
+          <tr>
+            <td>close_at_frac 0.20</td>
+            <td>4</td>
+            <td class="negative">0</td>
+          </tr>
+          <tr>
+            <td>All combined</td>
+            <td>4</td>
+            <td class="negative">0</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3">Source: 200+ backtest configurations, 2024&ndash;2026 data</td></tr>
+        </tfoot>
+      </table>
+
+      <h2>The VetoGateAlpha Inversion</h2>
+
+      <p>While debugging why <code>earn_avoid</code> was not protecting against earnings assignments, I discovered that all human-readable triggers work backwards when routed through <code>VetoGateAlpha</code>. The inversion: <code>VetoGateAlpha</code> treats <code>trigger=True</code> as &ldquo;veto this trade.&rdquo; So <code>earn_avoid</code> (True when earnings are near) was correctly vetoing from the engine&rsquo;s perspective &mdash; but from a human perspective, it blocked non-earnings trades and allowed earnings trades.</p>
+
+      <p>The full scope of the inversion:</p>
+
+      <ul>
+        <li><code>earn_avoid</code> &mdash; blocks when earnings are NOT near, allows when they are</li>
+        <li><code>cmf_positive</code> &mdash; blocks when CMF IS positive, allows when negative</li>
+        <li>Every human-readable trigger has this same inversion</li>
+      </ul>
+
+      <p>The V12 GA-evolved triggers were designed with this inversion already baked in &mdash; the GA optimized trigger polarity to maximize fitness, so it naturally discovered the correct (inverted) polarity. Human-readable triggers added since March 21 were written with natural-language semantics, which is exactly backwards through the VetoGateAlpha path. The fix: wrap in <code>NOT()</code>. Semantically ugly, mechanically correct.</p>
+
+      <h2>Regime Analysis: 49.6% Baseline Assignment Probability</h2>
+
+      <p>The dedicated INTC TFT model (commit <code>827683e</code>, March 28) enabled a proper regime analysis. INTC&rsquo;s annualized realized volatility is 56% &mdash; placing it permanently in the high-vol regime for a covered call strategy. The baseline assignment probability, computed as the fraction of CC cycles where the stock closes above the strike at expiry, is 49.6%.</p>
+
+      <p>For comparison:</p>
+
+      <table class="data-table">
+        <caption>Assignment Probability by Ticker (Annualized RV and Baseline Assignment Rate)</caption>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Ann. RV</th>
+            <th>Assign Prob</th>
+            <th>Regime</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td>INTC</td>
+            <td>56%</td>
+            <td class="negative">49.6%</td>
+            <td>Permanent high-vol</td>
+          </tr>
+          <tr>
+            <td>TSLA</td>
+            <td>62%</td>
+            <td class="negative">44.2%</td>
+            <td>Permanent high-vol</td>
+          </tr>
+          <tr>
+            <td>AMD</td>
+            <td>48%</td>
+            <td>31.8%</td>
+            <td>Cyclical</td>
+          </tr>
+          <tr>
+            <td>NVDA</td>
+            <td>51%</td>
+            <td>35.1%</td>
+            <td>Cyclical</td>
+          </tr>
+          <tr>
+            <td>AAPL</td>
+            <td>28%</td>
+            <td class="positive">18.4%</td>
+            <td>Low-vol</td>
+          </tr>
+          <tr>
+            <td>MSFT</td>
+            <td>25%</td>
+            <td class="positive">15.7%</td>
+            <td>Low-vol</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="4">Source: TFT regime classification, 2024&ndash;2026 backtest data</td></tr>
+        </tfoot>
+      </table>
+
+      <p>INTC&rsquo;s 49.6% assignment rate is higher than TSLA&rsquo;s despite lower absolute vol because INTC&rsquo;s moves are more directional. TSLA whipsaws &mdash; it gaps up 8% then drops 6% within the same cycle, often finishing near the strike. INTC trends: when it moves, it moves in one direction for the entire expiry cycle. Directional persistence, not absolute volatility, drives assignment risk.</p>
+
+      <p>The TFT model catches 2 of the 3 major trending moves in its vol spike predictions. But catching the move and preventing the assignment are different problems. By the time the vol spike is detectable, the CC is already open and deep in the money.</p>
+
+      <div class="pull-quote">
+        <p>The assignment problem is not episodic. INTC is permanently in the high-vol regime. The question is not &ldquo;when will assignments stop?&rdquo; but &ldquo;when is it safe to write calls?&rdquo;</p>
+      </div>
+
+      <h2>The Solution: Consolidation Trigger</h2>
+
+      <p>Commit <code>dc63df0d</code> introduced <code>intc_consolidation_safe</code>, a trigger that reframes the question. Instead of asking &ldquo;can we survive this move?&rdquo; it asks &ldquo;is the stock likely to make a large move right now?&rdquo;</p>
+
+      <p>The trigger logic has two components:</p>
+
+      <h3>1. Rally Confirmation</h3>
+
+      <p>Require the stock to have risen at least 5% over the past 20 trading days. This confirms that upside has already been captured &mdash; the rally that would cause an assignment has already happened. Writing a CC after a rally profits from the elevated implied volatility while the directional move is exhausted.</p>
+
+      <h3>2. Consolidation Detection</h3>
+
+      <p>Require 5 consecutive days where the daily range (high minus low) is below the 20-day Average True Range (ATR). This confirms the move has cooled. Consolidation is the empirical signature of a trend pause &mdash; the stock is digesting gains, not extending them.</p>
+
+      <h3>3. Strike Ceiling</h3>
+
+      <p>Cap the strike at <code>min(52-week high, spot + 10%)</code>. This prevents the system from writing calls that would be exercised if the stock merely returns to its recent high. The 10% cap provides a hard ceiling on the maximum upside surrender.</p>
+
+      <h3>The Combined Effect</h3>
+
+      <p>The trigger only permits CC writing when all three conditions are met: a recent rally (elevated IV, exhausted trend), consolidation (reduced directional risk), and a protected strike (capped upside exposure). This combination targets the specific market microstructure that precedes safe CC writing on high-vol names.</p>
+
+      <h2>Results</h2>
+
+      <p>Assignment probability dropped from <strong>45.5% to 23.1%</strong> in backtesting &mdash; roughly halved. The remaining 23.1% represents cycles where the stock breaks out of consolidation into a new trend. These are genuinely unpredictable events; no trigger can eliminate them without also eliminating all premium income.</p>
+
+      <table class="data-table">
+        <caption>INTC Consolidation Trigger vs Baseline</caption>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Baseline</th>
+            <th>Consolidation</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td>Assignment Prob</td>
+            <td class="negative">45.5%</td>
+            <td class="positive">23.1%</td>
+            <td class="positive">&minus;22.4pp</td>
+          </tr>
+          <tr>
+            <td>CC Cycles Written</td>
+            <td>100%</td>
+            <td>~58%</td>
+            <td>&minus;42%</td>
+          </tr>
+          <tr>
+            <td>Premium Captured</td>
+            <td>$19,200</td>
+            <td>$12,400</td>
+            <td class="negative">&minus;35%</td>
+          </tr>
+          <tr>
+            <td>Net PnL (tax-adj)</td>
+            <td>$14,100</td>
+            <td>$11,800</td>
+            <td class="negative">&minus;16%</td>
+          </tr>
+          <tr>
+            <td>Sharpe (CC only)</td>
+            <td>0.71</td>
+            <td class="positive">0.94</td>
+            <td class="positive">+0.23</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="4">Source: engine_numba.py backtest, 2024-01 to 2026-03, INTC only</td></tr>
+        </tfoot>
+      </table>
+
+      <p>The trade-off is explicit: 35% less premium captured in exchange for 49% fewer assignments. On a tax-adjusted basis, the net PnL reduction is only 16% because avoided assignments eliminate tax friction, re-entry costs, and opportunity cost. The Sharpe ratio improves from 0.71 to 0.94 because assignment losses are the primary source of variance.</p>
+
+      <h2>Rust Backend Parity</h2>
+
+      <p>Commit <code>fb093542</code> ported the earnings-aware early close and roll-up-and-out fix to the Rust backend. Earlier in the day, I flagged the growing feature divergence between the Rust and Numba engines as a maintenance risk &mdash; tests that ran against the default Rust backend silently skipped new features. The port resolves this for the two most critical features.</p>
+
+      <p>The Rust engine now consumes the same <code>earnings_days</code> array and <code>earnings_close_days</code> parameter as the Numba backend. The roll logic correctly advances to the next available expiry rather than rolling to the same expiry at a higher strike. Both backends produce identical results on the INTC test suite.</p>
+
+      <h2>Gate Routing</h2>
+
+      <p>Commit <code>fae9faec</code> updated <code>config/gate_routing.json</code> to route INTC through the new consolidation trigger. The routing table now assigns each ticker its optimal gate based on cumulative evidence:</p>
+
+      <table class="data-table">
+        <caption>Updated Gate Routing Table (March 29)</caption>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Primary Gate</th>
+            <th>Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td>INTC</td>
+            <td>intc_consolidation_safe</td>
+            <td>Halves assignment risk on highest-vol position</td>
+          </tr>
+          <tr>
+            <td>TSLA</td>
+            <td>TFT (multi)</td>
+            <td>TFT correlation 0.36</td>
+          </tr>
+          <tr>
+            <td>NVDA</td>
+            <td>TFT (multi)</td>
+            <td>TFT correlation 0.33</td>
+          </tr>
+          <tr>
+            <td>AAPL</td>
+            <td>TFT (multi)</td>
+            <td>TFT correlation 0.28</td>
+          </tr>
+          <tr>
+            <td>QQQ</td>
+            <td>Chronos</td>
+            <td>TFT near-random (0.12)</td>
+          </tr>
+          <tr>
+            <td>MSFT</td>
+            <td>CMF</td>
+            <td>TFT near-random (0.08)</td>
+          </tr>
+          <tr>
+            <td>IBIT</td>
+            <td>CMF</td>
+            <td>No TFT model</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>The consolidation trigger is INTC-specific by design. Its parameters (5% rally threshold, 5-day consolidation window, 20-day lookback) were calibrated on INTC&rsquo;s volatility structure. Applying it to TSLA or AMD without recalibration would produce different &mdash; likely worse &mdash; results. Per-ticker specialization continues to outperform universal gates.</p>
+
+      <h2>System State</h2>
+
+      <p>The trigger registry now contains <strong>161 total triggers</strong>, up from 146 at the March 21 sweep. The test suite passes all <strong>200 tests</strong>. The V15 default configuration ships <code>close_at_frac: 0.40</code> (commit <code>9ce231ad</code>), the champion gate <code>AND(cmf_positive, NOT(hurst_accel))</code>, and per-ticker routing with the INTC consolidation override.</p>
+
+      <h2>Honest Conclusions</h2>
+
+      <p>The consolidation trigger halves INTC&rsquo;s assignment risk. It does not eliminate it. A 23.1% assignment rate means roughly 1 in 4 CC cycles still results in exercise. On a stock with 56% annualized realized volatility, this is close to the theoretical floor &mdash; you cannot write covered calls on a high-vol name without accepting some assignment risk. The premium exists precisely because the risk exists.</p>
+
+      <p>The broader lesson from this investigation: reactive defenses (rolls, early close, delta reduction) fail against large trending moves because they activate too late. The only effective defense is <em>not being in the trade</em> during the dangerous period. The consolidation trigger achieves this by identifying safe windows rather than trying to survive dangerous ones.</p>
+
+      <p>Whether this approach generalizes beyond INTC depends on whether other high-vol tickers share the same rally-then-consolidation pattern. TSLA&rsquo;s whipsaw character suggests it may not. The next step is per-ticker consolidation analysis across the full portfolio, with ticker-specific calibration of the rally threshold and consolidation window.</p>
+
+    </div>
+
+    <footer class="article-footer">
+      <p class="tags">Tags: intc, assignment-risk, covered-calls, consolidation-trigger, veto-gate, rust-engine, earnings-close, roll-up-and-out</p>
+    </footer>
+  </article>
+
+  <footer class="issue-footer">
+    <p>The StackStrader Review &middot; Quantitative Research at the Intersection of Algorithms and Options</p>
+  </footer>
+</body>
+</html>
